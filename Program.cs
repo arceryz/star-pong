@@ -1,2 +1,2 @@
-﻿using var game = new Pong.Pong();
+﻿using var game = new StarPong.Engine();
 game.Run();

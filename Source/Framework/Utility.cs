@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Numerics;
 
-namespace Pong.Source
+namespace StarPong.Source.Framework
 {
 	public static class Utility
 	{

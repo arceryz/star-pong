@@ -1,40 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using StarPong.Source.Framework;
 
-namespace Pong.Source.GameStates
+namespace StarPong.Source.GameStates
 {
 	public class MenuState: GameState
 	{
-		Label titleLabel;
-		Label titleLabelBack;
-		Button playButton;
+		List<GameObject> uiLayer = new();
 
-		public MenuState()
+		public override void Initialize()
 		{
-			titleLabel = new Label("ASTER-PONG", Color.Blue, new Vector2(Pong.ScreenWidth / 2.0f, Pong.ScreenHeight / 3.0f));
-			titleLabelBack = new Label("ASTER-PONG", Color.Gray, new Vector2(Pong.ScreenWidth / 2.0f + 4, Pong.ScreenHeight / 3.0f + 4));
-			playButton = new Button("Play", Color.Black, new Vector2(Pong.ScreenWidth / 2.0f, Pong.ScreenHeight / 2.0f));
+			uiLayer.Add(new Label("STAR-Pong", Color.Gray, new Vector2(Engine.Instance.ScreenWidth / 2.0f + 4, Engine.Instance.ScreenHeight / 3.0f + 4)));
+			uiLayer.Add(new Label("STAR-Pong", Color.Blue, new Vector2(Engine.Instance.ScreenWidth / 2.0f, Engine.Instance.ScreenHeight / 3.0f)));
+
+			Button playButton = new Button("Play", Color.Black, new Vector2(Engine.Instance.ScreenWidth / 2.0f, Engine.Instance.ScreenHeight / 2.0f));
+			playButton.Pressed += _OnPlayPressed;
+			uiLayer.Add(playButton);
 		}
 
 		public override void Update(float delta)
 		{
-			titleLabel.Update(delta);
-			titleLabelBack.Update(delta);
-			playButton.Update(delta);
+			foreach (GameObject obj in uiLayer) obj.Update(delta);
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			titleLabelBack.Draw(batch);
-			titleLabel.Draw(batch);
-			playButton.Draw(batch);
+			foreach (GameObject obj in uiLayer) obj.Draw(batch);
+		}
+
+		public void _OnPlayPressed()
+		{
+			Engine.Instance.ChangeState(Engine.GameStateEnum.PlayingState);
 		}
 	}
 }

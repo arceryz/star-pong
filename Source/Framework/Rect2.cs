@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Pong.Source
+namespace StarPong.Source.Framework
 {
 	public class Rect2
 	{
+		public static Rect2 Zero = new Rect2(0, 0, 0, 0);
+
 		public float X, Y, Width, Height;
 
 		public Rect2(float x, float y, float width, float height)
@@ -27,9 +29,14 @@ namespace Pong.Source
 			return new Rect2(X + trans.X, Y + trans.Y, Width, Height);
 		}
 
+		public Rect2 Centered()
+		{
+			return new Rect2(X - Width / 2, Y - Height / 2, Width, Height);
+		}
+
 		public bool ContainsPoint(Vector2 point)
 		{
-			return (X <= point.X && point.X <= X + Width && Y <= point.Y && point.Y <= Y + Height);
+			return X <= point.X && point.X <= X + Width && Y <= point.Y && point.Y <= Y + Height;
 		}
 		public bool IsOverlapping(Rect2 other)
 		{
@@ -41,5 +48,10 @@ namespace Pong.Source
 		public Vector2 GetTR() => new Vector2(X + Width, Y);
 		public Vector2 GetBL() => new Vector2(X, Y + Height);
 		public Vector2 GetBR() => new Vector2(X + Width, Y + Height);
+
+		public override string ToString()
+		{
+			return $"{X},{Y}+{Width},{Height}";
+		}
 	}
 }

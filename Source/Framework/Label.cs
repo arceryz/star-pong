@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pong.Source
+namespace StarPong.Source.Framework
 {
-	public class Label
+	public class Label: GameObject
 	{
 		static SpriteFont font;
 		public static void LoadContent(ContentManager content)
@@ -17,26 +17,19 @@ namespace Pong.Source
 			font = content.Load<SpriteFont>("title_font");
 		}
 
-		string text;
-		public Vector2 Position;
-		Color color;
+		public string Text;
 
 		public Label(string _text, Color _color, Vector2 _position)
 		{
-			text = _text;
+			Text = _text;
 			Position = _position;
-			color = _color;
+			Color = _color;
 		}
 
-		public void Draw(SpriteBatch batch)
+		public override void Draw(SpriteBatch batch)
 		{
-			Vector2 size = font.MeasureString(text);
-			batch.DrawString(font, text, Position - 0.5f * size, color);
-		}
-
-		public void Update(float delta)
-		{
-
+			Vector2 size = font.MeasureString(Text);
+			batch.DrawString(font, Text, Position - 0.5f * size, Color);
 		}
 	}
 }

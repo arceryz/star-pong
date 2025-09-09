@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using StarPong.Source.Framework;
 
-namespace Pong.Source
+namespace StarPong.Source
 {
-	public class Ball: ICollideable
+	public class Ball: CollisionObject
 	{
 		public delegate void PaddleGoalHit(bool side);
 		static Texture2D ballTexture;
@@ -19,57 +20,54 @@ namespace Pong.Source
 			ballTexture = content.Load<Texture2D>("bal");
 		}
 
-		Vector2 position;
-		Vector2 velocity;
-
 		public Ball()
 		{
 			Reset();
+			CollisionRect = new Rect2(ballTexture.Bounds);
 		}
 
-		public void Update(float delta)
+		public override void Update(float delta)
 		{
-			position += ballSpeed * velocity * delta;
+			Position += ballSpeed * Velocity * delta;
 
 			// Handle reflection and reset when out of bounds on either side.
-			if (position.Y < 0) // Upper wall
+			if (Position.Y < 0) // Upper wall
 			{
-				position.Y = 0;
-				velocity.Y *= -1;
+				Position.Y = 0;
+				Velocity.Y *= -1;
 			}
-			if (position.Y > Pong.ScreenHeight - ballTexture.Height)
+			if (Position.Y > Engine.Instance.ScreenHeight - ballTexture.Height)
 			{
-				velocity.Y *= -1;
-				position.Y = Pong.ScreenHeight - ballTexture.Height;
+				Velocity.Y *= -1;
+				Position.Y = Engine.Instance.ScreenHeight - ballTexture.Height;
 			}
 		}
 
-		public void Draw(SpriteBatch batch)
+		public override void Draw(SpriteBatch batch)
 		{
-			batch.Draw(ballTexture, position, Color.White);
+			batch.Draw(ballTexture, Position, Color.White);
 		}
 
 		public void Reset()
 		{
 			// Set the position to the center of the screen.
-			position = new Vector2(Pong.ScreenWidth / 2.0f, Pong.ScreenHeight / 2.0f);
+			Position = new Vector2(Engine.Instance.ScreenWidth / 2.0f, Engine.Instance.ScreenHeight / 2.0f);
 
 			// Set the velocity to a random angle between +- spread and random direction.
 			float spread = MathHelper.ToRadians(initialVelocitySpread);
 			float rotateAngle = Utility.RandRange(-spread, spread);
 
-			velocity = new Vector2(1.0f, 0.0f);
-			velocity.Rotate(rotateAngle);
-			velocity *= Utility.RandBool() ? -1.0f : 1.0f;
+			Velocity = new Vector2(1.0f, 0.0f);
+			Velocity.Rotate(rotateAngle);
+			Velocity *= Utility.RandBool() ? -1.0f : 1.0f;
 		}
 
-		// Collideable interface.
-		public Rect2 GetCollisionRect() => new Rect2(ballTexture.Bounds);
-		public void OnCollision(Vector2 pos, Vector2 normal, ICollideable other)
+		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			velocity.X *= -1;
+			if (other is Paddle)
+			{
+				Velocity.X *= -1;
+			}
 		}
-
-		public Vector2 GetPosition() => position;
 	}
 }

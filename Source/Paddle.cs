@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StarPong.Source.Framework;
 
-namespace Pong.Source
+namespace StarPong.Source
 {
-    public class Paddle: ICollideable
+    public class Paddle: CollisionObject
     {
         public enum Side
         {
@@ -26,15 +27,15 @@ namespace Pong.Source
         }
 
         float height = 0.0f;
-        Vector2 position = Vector2.Zero;
         Side side;
 
         public Paddle(Side _side)
         {
             side = _side;
+            CollisionRect = new Rect2(paddleTextureBlue.Bounds);
         }
 
-        public void Update(float delta)
+        public override void Update(float delta)
         {
             // Query keyboard state for each of the player, then compute the
             // total step in pixels using delta. 
@@ -52,30 +53,25 @@ namespace Pong.Source
             }
 
             // Ensure height remains clamped to the screen dimensions.
-            height = MathHelper.Clamp(height + step, 0.0f, Pong.ScreenHeight - paddleTextureRed.Height);
+            height = MathHelper.Clamp(height + step, 0.0f, Engine.Instance.ScreenHeight - paddleTextureRed.Height);
         }
 
-        public void Draw(SpriteBatch batch)
+        public override void Draw(SpriteBatch batch)
         {
-            position.Y = height;
+            Position.Y = height;
             Texture2D texture = paddleTextureRed;
 
             if (side == Side.Left)
             {
                 texture = paddleTextureBlue;
-                position.X = paddleOffset;
+                Position.X = paddleOffset;
             }
             else if (side == Side.Right)
             {
-                position.X = Pong.ScreenWidth - paddleTextureBlue.Width - paddleOffset;
+                Position.X = Engine.Instance.ScreenWidth - paddleTextureBlue.Width - paddleOffset;
             }
 
-            batch.Draw(texture, position, Color.White);
+            batch.Draw(texture, Position, Color.White);
         }
-
-        // ICollideable interface
-        public Rect2 GetCollisionRect() => new Rect2(paddleTextureBlue.Bounds);
-        public void OnCollision(Vector2 pos, Vector2 normal, ICollideable other) { }
-        public Vector2 GetPosition() => position;
     }
 }

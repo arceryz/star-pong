@@ -2,21 +2,21 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Pong.Source;
-using Pong.Source.GameStates;
+using StarPong.Source;
+using StarPong.Source.GameStates;
+using StarPong.Source.Framework;
 using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace Pong
+namespace StarPong
 {
-    public class Pong : Game
+    public class Engine : Game
     {
-        // If ever becomes dynamic/resizeable window, then change here.
-        // For now assume constant.
-        public const int ScreenWidth = 1280;
-        public const int ScreenHeight = 720;
-
-		// Assets not in any classes.
+        public static Engine Instance;
 		public static Texture2D MapLineTexture;
+
+		public int ScreenWidth = 1280;
+        public int ScreenHeight = 720;
 
 		// Game states.
 		public enum GameStateEnum
@@ -24,21 +24,16 @@ namespace Pong
 			MenuState,
 			PlayingState,
 		}
-        static GameStateEnum activeState;
-        static Dictionary<GameStateEnum, GameState> gameStates = new();
+        GameStateEnum activeState;
+        Dictionary<GameStateEnum, GameState> gameStates = new();
 
-        public static void ChangeState(GameStateEnum state)
-        {
-            activeState = state;
-            gameStates[state].Initialize();
-        }
-
-        // Runtime part.
+        // Internal.
 		GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-		public Pong()
+		public Engine()
         {
+            Instance = this;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
@@ -49,21 +44,21 @@ namespace Pong
 
         protected override void Initialize()
         {
-            gameStates[GameStateEnum.MenuState] = new MenuState();
+			base.Initialize();
+			gameStates[GameStateEnum.MenuState] = new MenuState();
             gameStates[GameStateEnum.PlayingState] = new PlayingState();
-            base.Initialize();
+			ChangeState(GameStateEnum.MenuState);
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+			MapLineTexture = Content.Load<Texture2D>("pongMapLine");
 
-            // Loading of the assets.
-            Paddle.LoadContent(Content);
+			Paddle.LoadContent(Content);
             Ball.LoadContent(Content);
             Button.LoadContent(Content);
             Label.LoadContent(Content);
-            MapLineTexture = Content.Load<Texture2D>("pongMapLine");
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,7 +68,6 @@ namespace Pong
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			gameStates[activeState].Update(delta);
-			base.Update(gameTime);
 		}
 
         protected override void Draw(GameTime gameTime)
@@ -84,7 +78,12 @@ namespace Pong
             spriteBatch.Begin();
             gameStates[activeState].Draw(spriteBatch);
             spriteBatch.End();
-            base.Draw(gameTime);
         }
-    }
+
+		public void ChangeState(GameStateEnum state)
+		{
+			activeState = state;
+			gameStates[state].Initialize();
+		}
+	}
 }
