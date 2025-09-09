@@ -5,6 +5,10 @@ namespace StarPong.Source.Framework
 	public class Rect2
 	{
 		public static Rect2 Zero = new Rect2(0, 0, 0, 0);
+		public static bool IsIntervalOverlapping(float a, float b, float x, float y)
+		{
+			return (a <= x && x <= b) || (a <= y && y <= b) || (x <= a && a <= y) || (x <= b && b <= y);
+		}
 
 		public float X, Y, Width, Height;
 
@@ -40,8 +44,8 @@ namespace StarPong.Source.Framework
 		}
 		public bool IsOverlapping(Rect2 other)
 		{
-			return ContainsPoint(other.GetTL()) || ContainsPoint(other.GetTR()) || 
-				ContainsPoint(other.GetBR()) || ContainsPoint(other.GetBR());
+			return IsIntervalOverlapping(X, X + Width, other.X, other.X + other.Width)
+				&& IsIntervalOverlapping(Y, Y + Height, other.Y, other.Y + other.Height);
 		}
 
 		public Vector2 GetTL() => new Vector2(X, Y);
@@ -51,7 +55,7 @@ namespace StarPong.Source.Framework
 
 		public override string ToString()
 		{
-			return $"{X},{Y}+{Width},{Height}";
+			return $"[{(int)X}:{(int)Y}+{(int)Width}:{(int)Height}]";
 		}
 	}
 }

@@ -16,10 +16,10 @@ namespace StarPong.Source.GameStates
 
 		public override void Initialize()
 		{
-			uiLayer.Add(new Label("STAR-Pong", Color.Gray, new Vector2(Engine.Instance.ScreenWidth / 2.0f + 4, Engine.Instance.ScreenHeight / 3.0f + 4)));
-			uiLayer.Add(new Label("STAR-Pong", Color.Blue, new Vector2(Engine.Instance.ScreenWidth / 2.0f, Engine.Instance.ScreenHeight / 3.0f)));
+			uiLayer.Add(new Label("STAR-Pong", Color.Gray, Engine.Instance.GetAnchor(0, -0.2f, 4, 4)));
+			uiLayer.Add(new Label("STAR-Pong", Color.Blue, Engine.Instance.GetAnchor(0, -0.2f, 0, 0)));
 
-			Button playButton = new Button("Play", Color.Black, new Vector2(Engine.Instance.ScreenWidth / 2.0f, Engine.Instance.ScreenHeight / 2.0f));
+			Button playButton = new Button("Play", Color.Black, Engine.Instance.GetAnchor(0, 0));
 			playButton.Pressed += _OnPlayPressed;
 			uiLayer.Add(playButton);
 		}

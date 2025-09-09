@@ -25,7 +25,7 @@ namespace StarPong.Source.Framework
 				{
 					CollisionObject coll1 = objects[i];
 					CollisionObject coll2 = objects[j];
-					if (coll1.IsColliding(coll2))
+					if (coll1.IsOverlapping(coll2))
 					{
 						coll1.OnCollision(Vector2.Zero, Vector2.Zero, coll2);
 						coll2.OnCollision(Vector2.Zero, Vector2.Zero, coll1);

@@ -85,5 +85,10 @@ namespace StarPong
 			activeState = state;
 			gameStates[state].Initialize();
 		}
+
+        public Vector2 GetAnchor(float xs, float ys, float xo = 0, float yo = 0)
+        {
+            return new Vector2(ScreenWidth * (xs + 1) / 2 + xo, ScreenHeight * (ys + 1) / 2 + yo);
+        }
 	}
 }

@@ -15,10 +15,10 @@ namespace StarPong.Source.Framework
 		public Vector2 Velocity = Vector2.Zero;
 
 		public virtual void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other) { }
-		public bool IsColliding(CollisionObject other)
-		{
-			return CollisionRect.Translated(Position).IsOverlapping(other.CollisionRect.Translated(other.Position));
-		}
+
+		public bool IsOverlapping(CollisionObject other) => IsOverlapping(other.GetBoundingRect());
+		public bool IsOverlapping(Rect2 rect) => GetBoundingRect().IsOverlapping(rect);
+		public Rect2 GetBoundingRect() => CollisionRect.Translated(Position);
 
 		public bool IsMouseHovering()
 		{

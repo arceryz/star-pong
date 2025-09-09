@@ -8,7 +8,6 @@ namespace StarPong.Source
 {
 	public class Ball: CollisionObject
 	{
-		public delegate void PaddleGoalHit(bool side);
 		static Texture2D ballTexture;
 
 		// Parameters.
