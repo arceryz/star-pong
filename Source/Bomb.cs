@@ -6,20 +6,19 @@ using StarPong.Source.Framework;
 
 namespace StarPong.Source
 {
-	public class Ball: CollisionObject
+	public class Bomb: CollisionObject
 	{
 		static Texture2D ballTex;
-
-		// Parameters.
-		const float initialVelocitySpread = 45.0f;
-		const float ballSpeed = 200.0f;
 
 		public static void LoadContent(ContentManager content)
 		{
 			ballTex = content.Load<Texture2D>("bal");
 		}
 
-		public Ball()
+		const float initialVelocitySpread = 45.0f;
+		const float ballSpeed = 200.0f;
+
+		public Bomb()
 		{
 			Reset();
 			CollisionRect = new Rect2(ballTex.Bounds);
@@ -63,9 +62,13 @@ namespace StarPong.Source
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			if (other is Player)
+			if (other is Shield)
 			{
 				Velocity.X *= -1;
+			}
+			if (other is Mothership)
+			{
+				Reset();
 			}
 		}
 	}

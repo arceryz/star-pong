@@ -10,41 +10,39 @@ using StarPong.Source.Framework;
 
 namespace StarPong.Source.GameStates
 {
-	public class MenuState: GameState
+	public class EndState: GameState
 	{
-		GameObjectList bgLayer;
 		GameObjectList uiLayer;
 
 		public override void Initialize()
 		{
 			uiLayer = new();
-			bgLayer = new();
 
-			// UI
-			uiLayer.Add(new Label("STAR-Pong", Color.Gray, Engine.Instance.GetAnchor(0, -0.2f, 4, 4)));
-			uiLayer.Add(new Label("STAR-Pong", Color.Blue, Engine.Instance.GetAnchor(0, -0.2f, 0, 0)));
-
-			Button playButton = new Button("Play", Color.White, Engine.Instance.GetAnchor(0, 0));
-			playButton.Pressed += _OnPlayPressed;
+			Button playButton = new Button("Play again", Color.White, Engine.Instance.GetAnchor(0, 0, 0, -50));
+			playButton.Pressed += _OnPlayAgainPressed;
 			uiLayer.Add(playButton);
 
-			// BG
-			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Stars, 100.0f));
+			Button backButton = new Button("Back", Color.White, Engine.Instance.GetAnchor(0, 0, 0, 50));
+			backButton.Pressed += _OnBackPressed;
+			uiLayer.Add(backButton);
 		}
 
 		public override void Update(float delta)
 		{
-			bgLayer.Update(delta);
 			uiLayer.Update(delta);
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			bgLayer.Draw(batch);
 			uiLayer.Draw(batch);
 		}
 
-		public void _OnPlayPressed()
+		public void _OnBackPressed()
+		{
+			Engine.Instance.ChangeState(Engine.GameStateEnum.MenuState);
+		}
+
+		public void _OnPlayAgainPressed()
 		{
 			Engine.Instance.ChangeState(Engine.GameStateEnum.PlayingState);
 		}

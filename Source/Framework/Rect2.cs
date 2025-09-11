@@ -38,14 +38,26 @@ namespace StarPong.Source.Framework
 			return new Rect2(X - Width / 2, Y - Height / 2, Width, Height);
 		}
 
+		public Vector2 Center()
+		{
+			return new Vector2(X + Width / 2, Y + Height / 2);
+		}
+
 		public bool ContainsPoint(Vector2 point)
 		{
 			return X <= point.X && point.X <= X + Width && Y <= point.Y && point.Y <= Y + Height;
 		}
+
 		public bool IsOverlapping(Rect2 other)
 		{
 			return IsIntervalOverlapping(X, X + Width, other.X, other.X + other.Width)
 				&& IsIntervalOverlapping(Y, Y + Height, other.Y, other.Y + other.Height);
+		}
+
+		public Rect2 Scaled(float xs, float ys)
+		{
+			Vector2 center = Center();
+			return new Rect2(center.X - Width * xs / 2, center.Y - Height * ys / 2, Width * xs, Height * ys);
 		}
 
 		public Vector2 GetTL() => new Vector2(X, Y);

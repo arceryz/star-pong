@@ -29,7 +29,7 @@ namespace StarPong.Source.Framework
 		public override void Draw(SpriteBatch batch)
 		{
 			Vector2 size = font.MeasureString(Text);
-			batch.DrawString(font, Text, Position - 0.5f * size, Color);
+			batch.DrawString(font, Text, Position - 0.5f * size, Color, 0, Vector2.Zero, 1.0f, SpriteEffects.None, 1);
 		}
 	}
 }

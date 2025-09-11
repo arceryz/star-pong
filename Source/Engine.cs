@@ -13,18 +13,21 @@ namespace StarPong
     public class Engine : Game
     {
         public static Engine Instance;
-		public static Texture2D MapLineTexture;
 
 		public int ScreenWidth = 1280;
         public int ScreenHeight = 720;
 
         public float Time = 0;
+        public bool EnableDebugDraw = false;
+
+        public Input input = new();
 
 		// Game states.
 		public enum GameStateEnum
 		{
 			MenuState,
 			PlayingState,
+            EndState,
 		}
         GameStateEnum activeState;
         Dictionary<GameStateEnum, GameState> gameStates = new();
@@ -49,23 +52,32 @@ namespace StarPong
 			base.Initialize();
 			gameStates[GameStateEnum.MenuState] = new MenuState();
             gameStates[GameStateEnum.PlayingState] = new PlayingState();
+            gameStates[GameStateEnum.EndState] = new EndState();
 			ChangeState(GameStateEnum.MenuState);
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-			MapLineTexture = Content.Load<Texture2D>("pongMapLine");
 
 			Player.LoadContent(Content);
             Mothership.LoadContent(Content);
-            Ball.LoadContent(Content);
+            Bomb.LoadContent(Content);
             Button.LoadContent(Content);
             Label.LoadContent(Content);
+            Bullet.LoadContent(Content);
+            Shield.LoadContent(Content);
+            ParallaxLayer.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
         {
+            input.Update();
+            if (Input.IsKeyPressed(Keys.Z))
+            {
+                EnableDebugDraw = !EnableDebugDraw;
+            }
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             Time = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -76,12 +88,20 @@ namespace StarPong
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             // Drawing of the game.
             spriteBatch.Begin();
             gameStates[activeState].Draw(spriteBatch);
             spriteBatch.End();
+        }
+
+        public void DebugDrawRect(Rect2 rect, Color color)
+        {
+            if (EnableDebugDraw)
+            {
+                Primitives2D.DrawRectangle(spriteBatch, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), color);
+            }
         }
 
 		public void ChangeState(GameStateEnum state)

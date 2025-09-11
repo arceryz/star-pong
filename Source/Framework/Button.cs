@@ -8,14 +8,12 @@ namespace StarPong.Source.Framework
 {
 	public class Button: CollisionObject
 	{
-		static Texture2D buttonGlossDepth;
-		static Texture2D buttonGloss;
+		static Texture2D selectionArrowsTex;
 		static SpriteFont font;
 
 		public static void LoadContent(ContentManager content)
 		{
-			buttonGloss = content.Load<Texture2D>("button_rectangle_gloss");
-			buttonGlossDepth = content.Load<Texture2D>("button_rectangle_depth_gloss");
+			selectionArrowsTex = content.Load<Texture2D>("UI/Selection_Arrows");
 			font = content.Load<SpriteFont>("button_font");
 		}
 
@@ -28,7 +26,7 @@ namespace StarPong.Source.Framework
 			Text = _text;	
 			Position = _position;
 			Color = _color;
-			CollisionRect = new Rect2(buttonGloss.Bounds).Centered();
+			CollisionRect = new Rect2(selectionArrowsTex.Bounds).Centered();
 		}
 
 		public override void Update(float delta)
@@ -54,8 +52,10 @@ namespace StarPong.Source.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			Texture2D tex = isPressed ? buttonGloss : buttonGlossDepth;
-			batch.Draw(tex, Position - new Vector2(buttonGloss.Width, buttonGloss.Height) * 0.5f, Color.White);
+			if (IsMouseHovering())
+			{
+				batch.Draw(selectionArrowsTex, Utility.CenterToTex(Position, selectionArrowsTex), Color.White);
+			}
 
 			Vector2 size = font.MeasureString(Text);
 			batch.DrawString(font, Text, Position - 0.5f * size, Color);

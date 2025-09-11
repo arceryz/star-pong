@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.Numerics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarPong.Source.Framework
 {
@@ -21,6 +21,11 @@ namespace StarPong.Source.Framework
 		public static int RandInt32()
 		{
 			return (int)(RNG.NextInt64() % Int32.MaxValue);
+		}
+
+		public static Vector2 CenterToTex(Vector2 vec, Texture2D tex)
+		{
+			return new Vector2(vec.X - tex.Bounds.Width * 0.5f, vec.Y - tex.Bounds.Height * 0.5f);
 		}
 	}
 }

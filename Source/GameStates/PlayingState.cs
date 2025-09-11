@@ -13,75 +13,70 @@ namespace StarPong.Source.GameStates
 {
 	public class PlayingState: GameState
 	{
-		// Game elements
-		List<CollisionObject> collideObjects;
-		List<GameObject> uiObjects;
-		Ball ball;
-		Label scoreLabel;
+		GameObjectList shipLayer;
+		GameObjectList uiLayer;
+		GameObjectList bgLayer;
+		GameObjectList bulletLayer;
 
-		// Score
-		Rect2 blueGoal;
-		Rect2 redGoal;
-		int scoreBlue;
-		int scoreRed;
+		// This is the ball.
+		Bomb bomb;
+		Mothership blueMother;
+		Mothership redMother;
+		Player bluePlayer;
+		Player redPlayer;
 
 		public override void Initialize()
 		{
-			uiObjects = new();
-			scoreLabel = new Label("", Color.Black, Engine.Instance.GetAnchor(0, -1, 0, 32));
-			SetScoreText();
-			uiObjects.Add(scoreLabel);
+			shipLayer = new();
+			bulletLayer = new();
+			uiLayer = new();
+			bgLayer = new();
 
-			collideObjects = new();
-			collideObjects.Add(new Mothership(Team.Blue));
-			collideObjects.Add(new Mothership(Team.Red));
-			collideObjects.Add(new Player(Team.Blue));
-			collideObjects.Add(new Player(Team.Red));
+			// Background
+			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Stars, 100.0f));
+			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Asteroids_Mid, 150.0f));
+			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Asteroids_Close, 200.0f));
 
-			ball = new Ball();
-			ball.Reset();
-			collideObjects.Add(ball);
+			// Game
+			blueMother = new Mothership(Team.Blue);
+			blueMother.Destroyed += () => OnMothershipDestroyed(blueMother);
+			shipLayer.Add(blueMother);
 
-			scoreBlue = 0;
-			scoreRed = 0;
+			redMother = new Mothership(Team.Red);
+			redMother.Destroyed += () => OnMothershipDestroyed(redMother);
+			shipLayer.Add(redMother);
 
-			int goalWidth = 300;
-			blueGoal = new Rect2(-goalWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
-			redGoal = new Rect2(Engine.Instance.ScreenWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
+			bluePlayer = new Player(Team.Blue, bulletLayer, shipLayer);
+			shipLayer.Add(bluePlayer);
+
+			redPlayer = new Player(Team.Red, bulletLayer, shipLayer);
+			shipLayer.Add(redPlayer);
+
+			bomb = new Bomb();
+			bomb.Reset();
+			bulletLayer.Add(bomb);
 		}
 
 		public override void Update(float delta)
 		{
-			foreach (GameObject obj in collideObjects) obj.Update(delta);
-			foreach (GameObject obj in uiObjects) obj.Update(delta);
-			HandleCollisions(collideObjects);
-
-			if (ball.IsOverlapping(blueGoal)) ScorePoint(Team.Red);
-			if (ball.IsOverlapping(redGoal)) ScorePoint(Team.Blue);
+			bgLayer.Update(delta);
+			shipLayer.Update(delta);
+			bulletLayer.Update(delta);
+			shipLayer.CollideWith(bulletLayer);
+			bulletLayer.CollideWith(bulletLayer);
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			// Map elements.
-			batch.Draw(Engine.MapLineTexture, 
-				new Vector2(Engine.Instance.ScreenWidth / 2.0f - Engine.MapLineTexture.Width * 0.5f, 0), Color.White);
-
-			// Game elements.
-			foreach (GameObject obj in collideObjects) obj.Draw(batch);
-			foreach (GameObject obj in uiObjects) obj.Draw(batch);
+			bgLayer.Draw(batch);
+			shipLayer.Draw(batch);
+			bulletLayer.Draw(batch);
+			uiLayer.Draw(batch);
 		}
 
-		public void ScorePoint(Team side)
+		public void OnMothershipDestroyed(Mothership ship)
 		{
-			if (side == Team.Blue) scoreBlue++;
-			else if (side == Team.Red) scoreRed++;
-			ball.Reset();
-			SetScoreText();
-		}
-
-		public void SetScoreText()
-		{
-			scoreLabel.Text = $"{scoreBlue}  {scoreRed}";
+			Engine.Instance.ChangeState(Engine.GameStateEnum.EndState);
 		}
 	}
 }
