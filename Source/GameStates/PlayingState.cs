@@ -20,10 +20,10 @@ namespace StarPong.Source.GameStates
 		Label scoreLabel;
 
 		// Score
-		Rect2 leftGoal;
-		Rect2 rightGoal;
-		int scoreLeft;
-		int scoreRight;
+		Rect2 blueGoal;
+		Rect2 redGoal;
+		int scoreBlue;
+		int scoreRed;
 
 		public override void Initialize()
 		{
@@ -33,19 +33,21 @@ namespace StarPong.Source.GameStates
 			uiObjects.Add(scoreLabel);
 
 			collideObjects = new();
-			collideObjects.Add(new Paddle(Paddle.Side.Left));
-			collideObjects.Add(new Paddle(Paddle.Side.Right));
+			collideObjects.Add(new Mothership(Team.Blue));
+			collideObjects.Add(new Mothership(Team.Red));
+			collideObjects.Add(new Player(Team.Blue));
+			collideObjects.Add(new Player(Team.Red));
 
 			ball = new Ball();
 			ball.Reset();
 			collideObjects.Add(ball);
 
-			scoreLeft = 0;
-			scoreRight = 0;
+			scoreBlue = 0;
+			scoreRed = 0;
 
 			int goalWidth = 300;
-			leftGoal = new Rect2(-goalWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
-			rightGoal = new Rect2(Engine.Instance.ScreenWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
+			blueGoal = new Rect2(-goalWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
+			redGoal = new Rect2(Engine.Instance.ScreenWidth, 0, goalWidth, Engine.Instance.ScreenHeight);
 		}
 
 		public override void Update(float delta)
@@ -54,8 +56,8 @@ namespace StarPong.Source.GameStates
 			foreach (GameObject obj in uiObjects) obj.Update(delta);
 			HandleCollisions(collideObjects);
 
-			if (ball.IsOverlapping(leftGoal)) ScorePoint(Paddle.Side.Right);
-			if (ball.IsOverlapping(rightGoal)) ScorePoint(Paddle.Side.Left);
+			if (ball.IsOverlapping(blueGoal)) ScorePoint(Team.Red);
+			if (ball.IsOverlapping(redGoal)) ScorePoint(Team.Blue);
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -69,17 +71,17 @@ namespace StarPong.Source.GameStates
 			foreach (GameObject obj in uiObjects) obj.Draw(batch);
 		}
 
-		public void ScorePoint(Paddle.Side side)
+		public void ScorePoint(Team side)
 		{
-			if (side == Paddle.Side.Right) scoreRight++;
-			else if (side == Paddle.Side.Left) scoreLeft++;
+			if (side == Team.Blue) scoreBlue++;
+			else if (side == Team.Red) scoreRed++;
 			ball.Reset();
 			SetScoreText();
 		}
 
 		public void SetScoreText()
 		{
-			scoreLabel.Text = $"{scoreLeft} - {scoreRight}";
+			scoreLabel.Text = $"{scoreBlue}  {scoreRed}";
 		}
 	}
 }

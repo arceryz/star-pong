@@ -8,7 +8,7 @@ namespace StarPong.Source
 {
 	public class Ball: CollisionObject
 	{
-		static Texture2D ballTexture;
+		static Texture2D ballTex;
 
 		// Parameters.
 		const float initialVelocitySpread = 45.0f;
@@ -16,13 +16,13 @@ namespace StarPong.Source
 
 		public static void LoadContent(ContentManager content)
 		{
-			ballTexture = content.Load<Texture2D>("bal");
+			ballTex = content.Load<Texture2D>("bal");
 		}
 
 		public Ball()
 		{
 			Reset();
-			CollisionRect = new Rect2(ballTexture.Bounds);
+			CollisionRect = new Rect2(ballTex.Bounds);
 		}
 
 		public override void Update(float delta)
@@ -35,16 +35,16 @@ namespace StarPong.Source
 				Position.Y = 0;
 				Velocity.Y *= -1;
 			}
-			if (Position.Y > Engine.Instance.ScreenHeight - ballTexture.Height)
+			if (Position.Y > Engine.Instance.ScreenHeight - ballTex.Height)
 			{
 				Velocity.Y *= -1;
-				Position.Y = Engine.Instance.ScreenHeight - ballTexture.Height;
+				Position.Y = Engine.Instance.ScreenHeight - ballTex.Height;
 			}
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			batch.Draw(ballTexture, Position, Color.White);
+			batch.Draw(ballTex, Position, Color.White);
 		}
 
 		public void Reset()
@@ -63,7 +63,7 @@ namespace StarPong.Source
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			if (other is Paddle)
+			if (other is Player)
 			{
 				Velocity.X *= -1;
 			}

@@ -17,5 +17,10 @@ namespace StarPong.Source.Framework
 		{
 			return 0 == RNG.Next(0, 2);
 		}
+
+		public static int RandInt32()
+		{
+			return (int)(RNG.NextInt64() % Int32.MaxValue);
+		}
 	}
 }

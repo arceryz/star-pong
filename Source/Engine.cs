@@ -18,6 +18,8 @@ namespace StarPong
 		public int ScreenWidth = 1280;
         public int ScreenHeight = 720;
 
+        public float Time = 0;
+
 		// Game states.
 		public enum GameStateEnum
 		{
@@ -55,7 +57,8 @@ namespace StarPong
             spriteBatch = new SpriteBatch(GraphicsDevice);
 			MapLineTexture = Content.Load<Texture2D>("pongMapLine");
 
-			Paddle.LoadContent(Content);
+			Player.LoadContent(Content);
+            Mothership.LoadContent(Content);
             Ball.LoadContent(Content);
             Button.LoadContent(Content);
             Label.LoadContent(Content);
@@ -65,6 +68,7 @@ namespace StarPong
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            Time = (float)gameTime.TotalGameTime.TotalSeconds;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			gameStates[activeState].Update(delta);
