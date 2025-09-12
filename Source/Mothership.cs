@@ -40,9 +40,8 @@ namespace StarPong.Source
 		public Team Side;
 		Texture2D shipTexture;
 		FastNoiseLite noise;
-		GameObjectList uiList;
 
-		public Mothership(Team _side, GameObjectList _uiList)
+		public Mothership(Team _side)
 		{
 			Side = _side;
 			shipTexture = Side == Team.Blue ? motherBlueTex : motherRedTex;
@@ -52,7 +51,6 @@ namespace StarPong.Source
 			noise.SetFrequency(0.25f);
 
 			CollisionRect = new Rect2(shipTexture.Bounds).Scaled(0.3f, 1.0f);
-			uiList = _uiList;
  		}
 
 		public override void Update(float delta)
@@ -105,23 +103,6 @@ namespace StarPong.Source
 				hullStatus = HullStatus.Critical;
 				// Critical to damaged.
 			}
-
-			// Spawn flicker numbers to indicate damage for each of the hull states.
-			Vector2 dmgDirection = new Vector2(Side == Team.Blue ? 1.0f: -1.0f, 0) * Utility.RandRange(300, 500);
-			dmgDirection.Rotate(Utility.RandRange(-MathF.PI / 4, MathF.PI / 4));
-
-			Color[] pal = FlickerNumber.GreyPal;
-			float interval = 0.05f;
-			if (hullStatus == HullStatus.Critical)
-			{
-				pal = FlickerNumber.CriticalPal;
-				interval *= 0.5f;
-			}
-			else if (hullStatus == HullStatus.Damaged) pal = FlickerNumber.YellowPal;
-
-			FlickerNumber fl = new(HullPoints.ToString(), interval, 1.0f, dmgDirection, 5.0f, pal);
-			fl.Position = pos;
-			uiList.Add(fl);
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

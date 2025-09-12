@@ -40,11 +40,11 @@ namespace StarPong.Source.GameStates
 			// UI
 
 			// Game
-			blueMother = new Mothership(Team.Blue, uiLayer);
+			blueMother = new Mothership(Team.Blue);
 			blueMother.Destroyed += () => OnMothershipDestroyed(blueMother);
 			shipLayer.Add(blueMother);
 
-			redMother = new Mothership(Team.Red, uiLayer);
+			redMother = new Mothership(Team.Red);
 			redMother.Destroyed += () => OnMothershipDestroyed(redMother);
 			shipLayer.Add(redMother);
 

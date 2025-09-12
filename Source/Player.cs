@@ -65,10 +65,14 @@ namespace StarPong.Source
         int hullPoints = 3;
         GameObjectList flickerList;
 
+        FireFX fire;
+
         public Shield Shield;
 
         public Player(Team _side, GameObjectList _bulletList, GameObjectList _shieldList, GameObjectList _flickerList)
         {
+            fire = new FireFX();
+
             bulletList = _bulletList;
             Side = _side;
             flickerList = _flickerList;
@@ -142,6 +146,9 @@ namespace StarPong.Source
             else Shield.Position += new Vector2(-shieldDistance, shipTexture.Height / 2);
 
 			Shield.Update(delta);
+
+            fire.Position = Position;
+            fire.Update(delta);
         }
 
         public override void Draw(SpriteBatch batch)
@@ -149,6 +156,8 @@ namespace StarPong.Source
             SpriteEffects eff = Side == Team.Blue ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             batch.Draw(shipTexture, Position, null, Color.White, 0, Vector2.Zero, 1.0f, eff, 0);
             Shield.Draw(batch);
+
+            fire.Draw(batch);
         }
 
         public void StartDestruction()
@@ -164,14 +173,6 @@ namespace StarPong.Source
                 StartDestruction();
                 return;
             }
-
-			Vector2 dmgDirection = new Vector2(Side == Team.Blue ? 1.0f : -1.0f, 0) * Utility.RandRange(200, 300);
-			dmgDirection.Rotate(Utility.RandRange(-MathF.PI / 4, MathF.PI / 4));
-
-			FlickerNumber fl = new(hullPoints.ToString(), 0.05f, 1.0f, dmgDirection, 5.0f, FlickerNumber.GreenPal);
-            fl.Font = FlickerNumber.SmallPixelFont;
-			fl.Position = pos;
-            flickerList.Add(fl);
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

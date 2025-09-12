@@ -67,7 +67,7 @@ namespace StarPong
             Bullet.LoadContent(Content);
             Shield.LoadContent(Content);
             ParallaxLayer.LoadContent(Content);
-            FlickerNumber.LoadContent(Content);
+            FireFX.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
