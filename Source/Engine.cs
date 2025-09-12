@@ -6,7 +6,6 @@ using StarPong.Source;
 using StarPong.Source.GameStates;
 using StarPong.Source.Framework;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace StarPong
 {
@@ -68,6 +67,7 @@ namespace StarPong
             Bullet.LoadContent(Content);
             Shield.LoadContent(Content);
             ParallaxLayer.LoadContent(Content);
+            FlickerNumber.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)

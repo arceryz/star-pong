@@ -62,14 +62,17 @@ namespace StarPong.Source
 
         GameObjectList bulletList;
         float shootCooldown = 0;
-        int health = 3;
+        int hullPoints = 3;
+        GameObjectList flickerList;
 
         public Shield Shield;
 
-        public Player(Team _side, GameObjectList _bulletList, GameObjectList _shieldList)
+        public Player(Team _side, GameObjectList _bulletList, GameObjectList _shieldList, GameObjectList _flickerList)
         {
             bulletList = _bulletList;
             Side = _side;
+            flickerList = _flickerList;
+
             if (Side == Team.Blue)
             {
                 shipTexture = shipBlueTex;
@@ -148,14 +151,28 @@ namespace StarPong.Source
             Shield.Draw(batch);
         }
 
-        public void TakeDamage(int dmg)
+        public void StartDestruction()
         {
-            health -= 1;
-            if (health <= 0)
-            {
-                Debug.WriteLine("Player died");
-            }
+            return;
         }
+
+        public void TakeDamage(int dmg, Vector2 pos)
+        {
+            hullPoints -= 1;
+            if (hullPoints <= 0)
+            {
+                StartDestruction();
+                return;
+            }
+
+			Vector2 dmgDirection = new Vector2(Side == Team.Blue ? 1.0f : -1.0f, 0) * Utility.RandRange(200, 300);
+			dmgDirection.Rotate(Utility.RandRange(-MathF.PI / 4, MathF.PI / 4));
+
+			FlickerNumber fl = new(hullPoints.ToString(), 0.05f, 1.0f, dmgDirection, 5.0f, FlickerNumber.GreenPal);
+            fl.Font = FlickerNumber.SmallPixelFont;
+			fl.Position = pos;
+            flickerList.Add(fl);
+		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
@@ -163,7 +180,7 @@ namespace StarPong.Source
             {
                 if (bullet.Player != this)
                 {
-                    TakeDamage(1);
+                    TakeDamage(1, pos);
                 }
             }
 		}

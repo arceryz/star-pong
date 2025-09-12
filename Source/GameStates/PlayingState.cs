@@ -37,19 +37,21 @@ namespace StarPong.Source.GameStates
 			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Asteroids_Mid, 150.0f));
 			bgLayer.Add(new ParallaxLayer(ParallaxLayer.Asteroids_Close, 200.0f));
 
+			// UI
+
 			// Game
-			blueMother = new Mothership(Team.Blue);
+			blueMother = new Mothership(Team.Blue, uiLayer);
 			blueMother.Destroyed += () => OnMothershipDestroyed(blueMother);
 			shipLayer.Add(blueMother);
 
-			redMother = new Mothership(Team.Red);
+			redMother = new Mothership(Team.Red, uiLayer);
 			redMother.Destroyed += () => OnMothershipDestroyed(redMother);
 			shipLayer.Add(redMother);
 
-			bluePlayer = new Player(Team.Blue, bulletLayer, shipLayer);
+			bluePlayer = new Player(Team.Blue, bulletLayer, shipLayer, uiLayer);
 			shipLayer.Add(bluePlayer);
 
-			redPlayer = new Player(Team.Red, bulletLayer, shipLayer);
+			redPlayer = new Player(Team.Red, bulletLayer, shipLayer, uiLayer);
 			shipLayer.Add(redPlayer);
 
 			bomb = new Bomb();
@@ -62,6 +64,7 @@ namespace StarPong.Source.GameStates
 			bgLayer.Update(delta);
 			shipLayer.Update(delta);
 			bulletLayer.Update(delta);
+			uiLayer.Update(delta);
 			shipLayer.CollideWith(bulletLayer);
 			bulletLayer.CollideWith(bulletLayer);
 		}

@@ -27,5 +27,12 @@ namespace StarPong.Source.Framework
 		{
 			return new Vector2(vec.X - tex.Bounds.Width * 0.5f, vec.Y - tex.Bounds.Height * 0.5f);
 		}
+
+		public static Vector2 RandUnit2()
+		{
+			Vector2 vec = new Vector2(1, 0);
+			vec.Rotate(RandRange(0, 2 * MathF.PI));
+			return vec;
+		}
 	}
 }

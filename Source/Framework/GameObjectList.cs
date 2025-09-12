@@ -75,8 +75,8 @@ namespace StarPong.Source.Framework
 						|| obj1 == obj2) continue;
 					if (obj1.GetBoundingRect().IsOverlapping(obj2.GetBoundingRect()))
 					{
-						obj1.OnCollision(Vector2.Zero, Vector2.Zero, obj2);
-						obj2.OnCollision(Vector2.Zero, Vector2.Zero, obj1);
+						obj1.OnCollision(obj2.Position, Vector2.Zero, obj2);
+						obj2.OnCollision(obj1.Position, Vector2.Zero, obj1);
 					}
 				}
 			}

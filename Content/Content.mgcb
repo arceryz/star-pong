@@ -186,6 +186,16 @@
 /processorParam:TextureFormat=Compressed
 /build:title_font.spritefont
 
+#begin UI/Jersey10-Regular.ttf
+/copy:UI/Jersey10-Regular.ttf
+
+#begin UI/Pixel.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:UI/Pixel.spritefont
+
 #begin UI/Selection_Arrows.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -197,4 +207,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Selection_Arrows.png
+
+#begin UI/SmallPixel.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:UI/SmallPixel.spritefont
 

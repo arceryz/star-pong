@@ -53,7 +53,7 @@ namespace StarPong.Source
 		{
 			if ((other is Shield shield && shield.Side != Player.Side) ||
 				(other is Mothership mother && mother.Side != Player.Side) ||
-				(other is Bullet && other != this))
+				(other is Bullet && other != this) || (other is Player plr && plr != Player))
 			{
 				Destroy();
 			}
