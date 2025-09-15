@@ -64,7 +64,7 @@ namespace StarPong.Source.Framework
 		{
 			foreach (float x in slides)
 			{
-				batch.Draw(texture, new Vector2(x, 0), Color.White);
+				DrawTexture(batch, texture, new Vector2(x, 0), Color.White);
 			}
 		}
 	}

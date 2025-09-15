@@ -24,8 +24,6 @@ namespace StarPong.Source.Framework
 		{
 			MouseState ms = Mouse.GetState();
 			Rect2 rect = CollisionRect.Translated(Position);
-			Debug.WriteLine(ms);
-			Debug.WriteLine(rect);
 			return rect.ContainsPoint(new Vector2(ms.Position.X, ms.Position.Y));
 		}
 

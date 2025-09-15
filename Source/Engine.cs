@@ -6,10 +6,18 @@ using StarPong.Source;
 using StarPong.Source.GameStates;
 using StarPong.Source.Framework;
 using System.Collections.Generic;
+using System.Net.Mime;
 
 namespace StarPong
 {
-    public class Engine : Game
+	public enum SceneName
+	{
+		MenuScene,
+		PlayingScene,
+		EndScene,
+	}
+
+	public class Engine : Game
     {
         public static Engine Instance;
 
@@ -19,21 +27,14 @@ namespace StarPong
         public float Time = 0;
         public bool EnableDebugDraw = false;
 
-        public Input input = new();
-
-		// Game states.
-		public enum GameStateEnum
-		{
-			MenuState,
-			PlayingState,
-            EndState,
-		}
-        GameStateEnum activeState;
-        Dictionary<GameStateEnum, GameState> gameStates = new();
+        SceneName activeScene;
+        Dictionary<SceneName, GameObject> scenes = new();
 
         // Internal.
 		GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+		Input input = new();
+        SceneTree sceneTree = new();
 
 		public Engine()
         {
@@ -41,7 +42,6 @@ namespace StarPong
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
-
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -49,25 +49,13 @@ namespace StarPong
         protected override void Initialize()
         {
 			base.Initialize();
-			gameStates[GameStateEnum.MenuState] = new MenuState();
-            gameStates[GameStateEnum.PlayingState] = new PlayingState();
-            gameStates[GameStateEnum.EndState] = new EndState();
-			ChangeState(GameStateEnum.MenuState);
+			scenes[SceneName.MenuScene] = new MenuScene();
+			ChangeScene(SceneName.MenuScene);
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-			Player.LoadContent(Content);
-            Mothership.LoadContent(Content);
-            Bomb.LoadContent(Content);
-            Button.LoadContent(Content);
-            Label.LoadContent(Content);
-            Bullet.LoadContent(Content);
-            Shield.LoadContent(Content);
-            ParallaxLayer.LoadContent(Content);
-            FireFX.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,22 +65,21 @@ namespace StarPong
             {
                 EnableDebugDraw = !EnableDebugDraw;
             }
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Input.IsKeyHeld(Keys.Escape))
+            {
                 Exit();
+            }
+
             Time = (float)gameTime.TotalGameTime.TotalSeconds;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-			gameStates[activeState].Update(delta);
+            sceneTree.Update(delta);
 		}
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            // Drawing of the game.
-            spriteBatch.Begin();
-            gameStates[activeState].Draw(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack);
+            sceneTree.Draw(spriteBatch);
             spriteBatch.End();
         }
 
@@ -104,15 +91,20 @@ namespace StarPong
             }
         }
 
-		public void ChangeState(GameStateEnum state)
+		public void ChangeScene(SceneName scene)
 		{
-			activeState = state;
-			gameStates[state].Initialize();
+			activeScene = scene;
+            sceneTree.SetRoot(scenes[scene]);
 		}
 
         public Vector2 GetAnchor(float xs, float ys, float xo = 0, float yo = 0)
         {
             return new Vector2(ScreenWidth * (xs + 1) / 2 + xo, ScreenHeight * (ys + 1) / 2 + yo);
+        }
+
+        public static T Load<T>(string path)
+        {
+            return Instance.Content.Load<T>(path);
         }
 	}
 }

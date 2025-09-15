@@ -55,7 +55,7 @@ namespace StarPong.Source
 				(other is Mothership mother && mother.Side != Player.Side) ||
 				(other is Bullet && other != this) || (other is Player plr && plr != Player))
 			{
-				Destroy();
+				QueueFree();
 			}
 		}
 	}

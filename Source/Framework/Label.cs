@@ -18,18 +18,18 @@ namespace StarPong.Source.Framework
 		}
 
 		public string Text;
+		Color color;
 
-		public Label(string _text, Color _color, Vector2 _position)
+		public Label(string text, Color color, Vector2 position)
 		{
-			Text = _text;
-			Position = _position;
-			Color = _color;
+			this.Text = text;
+			this.Position = position;
+			this.color = color;
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			Vector2 size = font.MeasureString(Text);
-			batch.DrawString(font, Text, Position - 0.5f * size, Color, 0, Vector2.Zero, 1.0f, SpriteEffects.None, 1);
+			DrawString(batch, font, Text, Position, color);
 		}
 	}
 }

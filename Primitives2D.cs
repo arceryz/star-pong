@@ -405,7 +405,7 @@ public static class Primitives2D
 							Vector2.Zero,
 							new Vector2(length, thickness),
 							SpriteEffects.None,
-							0);
+							999);
 	}
 
 	#endregion

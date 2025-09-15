@@ -10,10 +10,8 @@ using StarPong.Source.Framework;
 
 namespace StarPong.Source.GameStates
 {
-	public class EndState: GameState
+	public class EndState: GameObject
 	{
-		GameObjectList uiLayer;
-
 		public override void Initialize()
 		{
 			uiLayer = new();

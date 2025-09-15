@@ -60,22 +60,17 @@ namespace StarPong.Source
         Texture2D shipTexture;
         Dictionary<InputAction, Keys> inputMapping;
 
-        GameObjectList bulletList;
         float shootCooldown = 0;
         int hullPoints = 3;
-        GameObjectList flickerList;
 
         FireFX fire;
 
         public Shield Shield;
 
-        public Player(Team _side, GameObjectList _bulletList, GameObjectList _shieldList, GameObjectList _flickerList)
+        public Player(Team _side)
         {
             fire = new FireFX();
-
-            bulletList = _bulletList;
             Side = _side;
-            flickerList = _flickerList;
 
             if (Side == Team.Blue)
             {
@@ -90,7 +85,7 @@ namespace StarPong.Source
 
             CollisionRect = new Rect2(shipTexture.Bounds).Scaled(0.7f, 0.6f);
             Shield = new Shield(Side);
-            _shieldList.Add(Shield);
+            AddChild(Shield);
         }
 
         public override void Update(float delta)
@@ -128,7 +123,7 @@ namespace StarPong.Source
                     bulletPos += new Vector2(0, shipTexture.Height / 2);
                 }
 
-                bulletList.Add(new Bullet(bulletPos, bulletDirection, this));
+                AddChild(new Bullet(bulletPos, bulletDirection, this));
 			}
 
 			// Shielding.
