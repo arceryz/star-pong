@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using StarPong.Source;
-using StarPong.Source.GameStates;
-using StarPong.Source.Framework;
-using System.Collections.Generic;
-using System.Net.Mime;
+using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong
 {
@@ -17,24 +17,24 @@ namespace StarPong
 		EndScene,
 	}
 
-	public class Engine : Game
+	public class Engine : Microsoft.Xna.Framework.Game
     {
         public static Engine Instance;
 
-		public int ScreenWidth = 1280;
-        public int ScreenHeight = 720;
+		public static int ScreenWidth = 1280;
+        public static int ScreenHeight = 720;
 
-        public float Time = 0;
-        public bool EnableDebugDraw = false;
+        public static float Time = 0;
+        public static bool EnableDebugDraw = false;
 
-        SceneName activeScene;
-        Dictionary<SceneName, GameObject> scenes = new();
+        public static SceneName ActiveScene { get; private set; }
 
-        // Internal.
+		// Internal.
 		GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 		Input input = new();
         SceneTree sceneTree = new();
+        Physics physics = new();
 
 		public Engine()
         {
@@ -49,18 +49,20 @@ namespace StarPong
         protected override void Initialize()
         {
 			base.Initialize();
-			scenes[SceneName.MenuScene] = new MenuScene();
 			ChangeScene(SceneName.MenuScene);
-        }
+		}
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-        }
+		}
 
         protected override void Update(GameTime gameTime)
         {
-            input.Update();
+			Time = (float)gameTime.TotalGameTime.TotalSeconds;
+			float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+			input.Update();
             if (Input.IsKeyPressed(Keys.Z))
             {
                 EnableDebugDraw = !EnableDebugDraw;
@@ -70,8 +72,7 @@ namespace StarPong
                 Exit();
             }
 
-            Time = (float)gameTime.TotalGameTime.TotalSeconds;
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            physics.Update(delta);
             sceneTree.Update(delta);
 		}
 
@@ -83,23 +84,31 @@ namespace StarPong
             spriteBatch.End();
         }
 
-        public void DebugDrawRect(Rect2 rect, Color color)
+        public static void DebugDrawRect(Rect2 rect, Color color)
         {
             if (EnableDebugDraw)
             {
-                Primitives2D.DrawRectangle(spriteBatch, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), color);
+                Primitives2D.DrawRectangle(Instance.spriteBatch, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), color);
             }
         }
 
-		public void ChangeScene(SceneName scene)
+		public static void ChangeScene(SceneName scene)
 		{
-			activeScene = scene;
-            sceneTree.SetRoot(scenes[scene]);
+            if (SceneTree.Instance.Root != null)
+            {
+                SceneTree.Instance.Root.QueueFree();
+            }
+			ActiveScene = scene;
+
+            GameObject obj = null;
+            if (scene == SceneName.MenuScene) obj = new MenuScene();
+            else if (scene == SceneName.PlayingScene) obj = new PlayingScene();
+            Instance.sceneTree.SetRoot(obj);
 		}
 
-        public Vector2 GetAnchor(float xs, float ys, float xo = 0, float yo = 0)
+        public static Vector2 GetAnchor(float xs, float ys, float xo = 0, float yo = 0)
         {
-            return new Vector2(ScreenWidth * (xs + 1) / 2 + xo, ScreenHeight * (ys + 1) / 2 + yo);
+            return new Vector2(Engine.ScreenWidth * (xs + 1) / 2 + xo, Engine.ScreenHeight * (ys + 1) / 2 + yo);
         }
 
         public static T Load<T>(string path)

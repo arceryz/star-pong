@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	public static class Utility
 	{

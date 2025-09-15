@@ -1,27 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	public class ParallaxLayer: GameObject
 	{
-		public static Texture2D Stars;
-		public static Texture2D Asteroids_Mid;
-		public static Texture2D Asteroids_Close;
-
-		public static void LoadContent(ContentManager content)
-		{
-			Stars = content.Load<Texture2D>("Background/BG_Stars");
-			Asteroids_Mid = content.Load<Texture2D>("Background/BG_Asteroids_Mid");
-			Asteroids_Close = content.Load<Texture2D>("Background/BG_Asteroids_Far");
-		}
-
 		float speed = 1.0f;
 		Texture2D texture;
 
@@ -64,7 +48,7 @@ namespace StarPong.Source.Framework
 		{
 			foreach (float x in slides)
 			{
-				DrawTexture(batch, texture, new Vector2(x, 0), Color.White);
+				DrawTexture(batch, texture, new Vector2(x, 0), Color.White, false, false);
 			}
 		}
 	}

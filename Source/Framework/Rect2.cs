@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	public class Rect2
 	{

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	/// <summary>
 	/// The scene tree manages the game object hierarchy, frees the objects
@@ -17,6 +14,7 @@ namespace StarPong.Source.Framework
 
 		List<GameObject> freeQueue;
 		public GameObject Root { get; private set; }
+		Dictionary<string, List<GameObject>> groups = new();
 
 		public SceneTree()
 		{
@@ -32,7 +30,8 @@ namespace StarPong.Source.Framework
 			}
 			foreach (GameObject obj in freeQueue)
 			{
-				// Delete from parent's list.
+				Debug.WriteLine($"Freeing object {obj}");
+				obj.Parent?.Children.Remove(obj);
 			}
 		}
 
@@ -46,13 +45,43 @@ namespace StarPong.Source.Framework
 
 		public void QueueFree(GameObject obj)
 		{
+			foreach (string group in obj.Groups)
+			{
+				RemoveObjectFromGroup(obj, group);
+			}
 			freeQueue.Add(obj);
 		}
 
 		public void SetRoot(GameObject obj)
 		{
 			Root = obj;
-			Root.Initialize();
+			Root.InitializeHierarchy(this);
+		}
+
+		public void AddObjectToGroup(GameObject obj, string group)
+		{
+			if (!groups.ContainsKey(group))
+			{
+				groups[group] = new();
+			}
+			groups[group].Add(obj);
+		}
+
+		public void RemoveObjectFromGroup(GameObject obj, string group)
+		{
+			if (groups.ContainsKey(group))
+			{
+				groups[group].Remove(obj);
+			}
+		}
+
+		public List<GameObject> GetObjectsInGroup(string group)
+		{
+			if (groups.ContainsKey(group))
+			{
+				return groups[group];
+			}
+			return new();
 		}
 	}
 }

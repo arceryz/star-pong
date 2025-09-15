@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	/// <summary>
 	/// A sprite that can play animations from a spritesheet.
@@ -58,7 +54,7 @@ namespace StarPong.Source.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			batch.Draw(spriteSheet, Position, animation.Frames[frameIndex], Color.White);
+			DrawTexture(batch, spriteSheet, GlobalPosition, Color.White, Flip);
 		}
 
 		public void AddAnimation(string name, int fps, int sliceX, int sliceY, int frameCount)

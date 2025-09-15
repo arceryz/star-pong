@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	public class CollisionObject: GameObject
 	{
@@ -16,6 +10,11 @@ namespace StarPong.Source.Framework
 		public Vector2 Velocity = Vector2.Zero;
 		public Color DebugColor = Color.Lime;
 		public bool CollisionEnabled = true;
+
+		public CollisionObject()
+		{
+			AddToGroup("physics");
+		}
 
 		public virtual void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other) { }
 
@@ -31,8 +30,17 @@ namespace StarPong.Source.Framework
 		{
 			if (CollisionEnabled)
 			{
-				Engine.Instance.DebugDrawRect(GetBoundingRect(), DebugColor);
+				Engine.DebugDrawRect(GetBoundingRect(), DebugColor);
 			}
+		}
+
+		/// <summary>
+		/// Moves the object according to its velocity.
+		/// </summary>
+		/// <param name="delta"></param>
+		public override void Update(float delta)
+		{
+			Position += Velocity * delta;
 		}
 	}
 }

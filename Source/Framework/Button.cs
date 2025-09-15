@@ -1,10 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	public class Button: CollisionObject
 	{
@@ -21,6 +20,7 @@ namespace StarPong.Source.Framework
 		{
 			this.Text = text;
 			this.Font = font;
+			this.SelectionTexture = selectionTexture;
 			this.CollisionRect = new Rect2(selectionTexture.Bounds).Centered();
 		}
 
@@ -49,7 +49,7 @@ namespace StarPong.Source.Framework
 		{
 			if (IsMouseHovering())
 			{
-				DrawTexture(batch, SelectionTexture, Utility.CenterToTex(Position, SelectionTexture), Color.White);
+				DrawTexture(batch, SelectionTexture, GlobalPosition, Color.White);
 			}
 			DrawString(batch, Font, Text, Position, Color);
 		}

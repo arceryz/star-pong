@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Background/BG_Asteroids_Far.png
+#begin Background/BG_Asteroids_Close.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,7 +23,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Background/BG_Asteroids_Far.png
+/build:Background/BG_Asteroids_Close.png
 
 #begin Background/BG_Asteroids_Mid.png
 /importer:TextureImporter
@@ -49,25 +49,6 @@
 /processorParam:TextureFormat=Color
 /build:Background/BG_Stars.png
 
-#begin bal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:bal.png
-
-#begin button_font.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:button_font.spritefont
-
 #begin FX/Fire_Small.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -80,8 +61,17 @@
 /processorParam:TextureFormat=Color
 /build:FX/Fire_Small.png
 
-#begin Kenney Future.ttf
-/copy:Kenney Future.ttf
+#begin Mothership/Bomb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Mothership/Bomb.png
 
 #begin Mothership/Mother_Blue.png
 /importer:TextureImporter
@@ -178,25 +168,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Player/Ship_Red.png
-
-#begin pongMapLine.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:pongMapLine.png
-
-#begin title_font.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:title_font.spritefont
 
 #begin UI/Jersey10-Regular.ttf
 /copy:UI/Jersey10-Regular.ttf
