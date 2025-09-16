@@ -72,14 +72,20 @@ namespace StarPong
                 Exit();
             }
 
+			// 1. Perform physics update.
+			// 2. Update the scene tree, this can cause new objects to be created.
+			// Their global positions are still unevaluated.
+			// 3. Update the transforms so new objects have correct global positions.
 			physics.Update(delta);
 			sceneTree.Update(delta);
+			sceneTree.UpdateTransform();
 		}
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp);
             sceneTree.Draw(spriteBatch);
             spriteBatch.End();
         }

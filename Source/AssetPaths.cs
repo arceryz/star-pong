@@ -13,7 +13,10 @@
 
 			public static string Mothership_Blue = "Mothership/Mother_Blue";
 			public static string Mothership_Red = "Mothership/Mother_Red";
-			public static string Bomb = "Mothership/Bomb";
+
+			public static string Bomb = "Bomb/Bomb";
+			public static string Explosion_Big = "Bomb/Explosion_Big";
+			public static string Explosion_Small = "Bomb/Explosion_Small";
 
 			public static string Player_Blue = "Player/Ship_Blue";
 			public static string Player_Red = "Player/Ship_Red";
@@ -21,6 +24,7 @@
 			public static string Shield_Red = "Player/Shield_Red";
 			public static string Bullet_Blue = "Player/Bullet_Blue";
 			public static string Bullet_Red = "Player/Bullet_Red";
+			public static string MuzzleFlash = "Player/Muzzle_Flash";
 		}
 
 		public static class Font

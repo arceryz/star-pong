@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,34 +12,37 @@ namespace StarPong.Framework
 	{
 		protected class Animation
 		{
+			public bool Loop = true;
 			public int Fps = 0;
 			public Rectangle[] Frames;
 			
-			public Animation(int fps, Rectangle[] sourceRectangles)
+			public Animation(int fps, Rectangle[] sourceRectangles, bool loop)
 			{
+				this.Loop = loop;
 				this.Fps = fps;
 				this.Frames = sourceRectangles;
 			}
 		}
 
 		public string CurrentAnimation { get; private set; } = "";
-
+		public Action AnimationFinished;
 		public Rect2 FrameSize = Rect2.Zero;
+		public int FrameIndex = 0;
+
 		Dictionary<string, Animation> animations = new();
 		Animation animation;
-		int frameIndex = 0;
 		float frameTimer = 0;
 
 		Texture2D spriteSheet;
-		int slicesX;
-		int slicesY;
+		int sliceCountX;
+		int sliceCountY;
 
-		public Sprite(Texture2D spriteSheet, int slicesX, int slicesY)
+		public Sprite(Texture2D spriteSheet, int sliceCountX, int sliceCountY)
 		{
 			this.spriteSheet = spriteSheet;
-			this.slicesX = slicesX;
-			this.slicesY = slicesY;
-			FrameSize = new Rect2(0, 0, spriteSheet.Width / slicesX, spriteSheet.Height / slicesY);
+			this.sliceCountX = sliceCountX;
+			this.sliceCountY = sliceCountY;
+			FrameSize = new Rect2(0, 0, spriteSheet.Width / sliceCountX, spriteSheet.Height / sliceCountY);
 		}
 
 		public override void Update(float delta)
@@ -50,7 +54,12 @@ namespace StarPong.Framework
 			if (frameTimer > 1.0f / animation.Fps)
 			{
 				frameTimer = 0;
-				frameIndex = (frameIndex + 1) % animation.Frames.Length;
+				FrameIndex = (FrameIndex + 1) % animation.Frames.Length;
+				if (FrameIndex == 0 && !animation.Loop)
+				{
+					Stop();
+					AnimationFinished?.Invoke();
+				}
 			}
 		}
 
@@ -58,14 +67,14 @@ namespace StarPong.Framework
 		{
 			if (CurrentAnimation != "")
 			{
-				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[frameIndex], Color.White, Flip);
+				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Color.White, Flip);
 			}
 		}
 
-		public void AddAnimation(string name, int fps, int sliceX, int sliceY, int frameCount)
+		public void AddAnimation(string name, int fps, int sliceX, int sliceY, int frameCount, bool loop=true)
 		{
-			int sw = spriteSheet.Width / slicesX;
-			int sh = spriteSheet.Height / slicesY;
+			int sw = spriteSheet.Width / sliceCountX;
+			int sh = spriteSheet.Height / sliceCountY;
 
 			Rectangle[] rects = new Rectangle[frameCount];
 			for (int i = 0; i < frameCount; i++)
@@ -73,7 +82,7 @@ namespace StarPong.Framework
 				rects[i] = new Rectangle(sw * (sliceX + i), sh * sliceY, sw, sh);
 			}
 
-			Animation anim = new(fps, rects);
+			Animation anim = new(fps, rects, loop);
 			animations[name] = anim;
 		}
 
@@ -81,6 +90,12 @@ namespace StarPong.Framework
 		{
 			CurrentAnimation = name;
 			animation = animations[name];
+		}
+
+		public void Stop()
+		{
+			CurrentAnimation = "";
+			animation = null;
 		}
 	}
 }

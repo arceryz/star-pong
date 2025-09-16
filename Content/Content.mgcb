@@ -49,6 +49,42 @@
 /processorParam:TextureFormat=Color
 /build:Background/BG_Stars.png
 
+#begin Bomb/Bomb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Bomb/Bomb.png
+
+#begin Bomb/Explosion_Big.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Bomb/Explosion_Big.png
+
+#begin Bomb/Explosion_Small.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Bomb/Explosion_Small.png
+
 #begin FX/Fire_Small.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -60,18 +96,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:FX/Fire_Small.png
-
-#begin Mothership/Bomb.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Mothership/Bomb.png
 
 #begin Mothership/Mother_Blue.png
 /importer:TextureImporter
@@ -120,6 +144,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Player/Bullet_Red.png
+
+#begin Player/Muzzle_Flash.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Player/Muzzle_Flash.png
 
 #begin Player/Shield_Blue.png
 /importer:TextureImporter

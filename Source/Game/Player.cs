@@ -46,6 +46,9 @@ namespace StarPong.Game
         Dictionary<InputAction, Keys> inputMapping;
         float shootCooldown = 0;
         Shield shield;
+        Sprite muzzleFlash;
+
+        Vector2 bulletSpawnOrigin = Vector2.Zero;
 
         public Player(Team team)
         {
@@ -69,6 +72,13 @@ namespace StarPong.Game
 			AddChild(shield);
 
             Position.Y = Engine.ScreenHeight / 2.0f;
+            bulletSpawnOrigin = new Vector2(texture.Width - 40, 0);
+
+			muzzleFlash = new Sprite(Engine.Load<Texture2D>(AssetPaths.Texture.MuzzleFlash), 3, 1);
+            muzzleFlash.AddAnimation("flash", 12, 0, 0, 3, false);
+			muzzleFlash.Position = ToGlobalDir(bulletSpawnOrigin);
+            muzzleFlash.DrawLayer = 1;
+            AddChild(muzzleFlash);
 		}
 
         public override void Update(float delta)
@@ -97,8 +107,10 @@ namespace StarPong.Game
                 shootCooldown = shootCooldownTime;
 
                 Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
-                bullet.Position = ToGlobal(new Vector2(texture.Width, 0));
+                bullet.Position = ToGlobal(bulletSpawnOrigin);
                 AddChild(bullet);
+
+                muzzleFlash.Play("flash");
 			}
 
 			// Shielding.

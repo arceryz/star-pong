@@ -17,17 +17,16 @@ namespace StarPong.Game
 
 		public Bomb()
 		{
-			Texture2D bombSheet = Engine.Load<Texture2D>("Mothership/Bomb");
+			Texture2D bombSheet = Engine.Load<Texture2D>(AssetPaths.Texture.Bomb);
 			sprite = new Sprite(bombSheet, 4, 1);
 			sprite.AddAnimation("default", 4, 0, 0, 4);
 			sprite.Play("default");
 			AddChild(sprite);
 
-			CollisionRect = sprite.FrameSize.Centered();
+			CollisionRect = sprite.FrameSize.Centered().Scaled(0.5f, 0.5f);
 
 			// Set the position to the center of the screen.
 			Position = new Vector2(Engine.ScreenWidth / 2.0f, Engine.ScreenHeight / 2.0f);
-			GlobalPosition = Position;
 
 			// Set the velocity to a random angle between +- spread and random direction.
 			float spread = MathHelper.ToRadians(spawnSpread);
@@ -59,12 +58,14 @@ namespace StarPong.Game
 
 		public void Explode()
 		{
+			Explosion explosion = new Explosion(ExplosionType.Big);
+			Parent.AddChild(explosion);
+			explosion.Position = Position;
 			QueueFree();
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			Debug.WriteLine($"Collided with {other}");
 			if (other is Shield)
 			{
 				Velocity.X *= -1;

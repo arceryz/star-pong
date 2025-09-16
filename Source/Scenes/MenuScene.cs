@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Game;
 
 namespace StarPong.Scenes
 {

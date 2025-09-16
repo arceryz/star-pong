@@ -39,6 +39,15 @@ namespace StarPong.Framework
 		#region Hierarchy Methods
 		public void UpdateHierarchy(float delta)
 		{
+			Update(delta);
+			foreach (GameObject child in Children)
+			{
+				child.UpdateHierarchy(delta);
+			}
+		}
+
+		public void UpdateTransformHierarchy()
+		{
 			if (Parent != null && !OverridePosition)
 			{
 				GlobalPosition = Position + Parent.GlobalPosition;
@@ -47,11 +56,9 @@ namespace StarPong.Framework
 			{
 				GlobalPosition = Position;
 			}
-
-			Update(delta);
 			foreach (GameObject child in Children)
 			{
-				child.UpdateHierarchy(delta);
+				child.UpdateTransformHierarchy();
 			}
 		}
 
@@ -116,6 +123,7 @@ namespace StarPong.Framework
 			{
 				child.InitializeHierarchy(Tree);
 			}
+			child.UpdateTransformHierarchy();
 		}
 
 		/// <summary>

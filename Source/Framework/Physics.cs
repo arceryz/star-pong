@@ -31,6 +31,7 @@ namespace StarPong.Framework
 				{
 					CollisionObject cobj1 = objects[i] as CollisionObject;
 					CollisionObject cobj2 = objects[j] as CollisionObject;
+					if (!cobj1.CollisionEnabled || !cobj2.CollisionEnabled) continue;
 
 					bool colliding = cobj1.GetBoundingRect().IsOverlapping(cobj2.GetBoundingRect());
 					bool previouslyColliding = GetCollidingObjects(cobj1).Contains(cobj2);

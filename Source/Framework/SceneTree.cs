@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StarPong.Framework
@@ -22,13 +23,21 @@ namespace StarPong.Framework
 		}
 
 		#region Game Objects
+		public void UpdateTransform()
+		{
+			if (Root != null)
+			{
+				Root.UpdateTransformHierarchy();
+			}
+		}
+
 		public void Update(float delta)
 		{
 			if (Root != null)
 			{
 				Root.UpdateHierarchy(delta);
 			}
-			foreach (GameObject obj in freeQueue)
+			foreach (GameObject obj in freeQueue.ToList())
 			{
 				obj.Parent?.RemoveChild(obj);
 			}
