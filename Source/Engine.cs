@@ -72,8 +72,8 @@ namespace StarPong
                 Exit();
             }
 
-            physics.Update(delta);
-            sceneTree.Update(delta);
+			physics.Update(delta);
+			sceneTree.Update(delta);
 		}
 
         protected override void Draw(GameTime gameTime)

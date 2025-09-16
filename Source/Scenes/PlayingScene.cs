@@ -44,6 +44,10 @@ namespace StarPong.Scenes
 
 			game.AddChild(player1);
 			game.AddChild(player2);
+
+			Bomb bomb = new Bomb();
+			bomb.DrawLayer = 2;
+			game.AddChild(bomb);
 		}
 	}
 }

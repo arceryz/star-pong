@@ -11,8 +11,9 @@ namespace StarPong.Framework
 		public GameObject Parent { get; private set; }
 		public List<GameObject> Children { get; private set; } = new();
 		public List<string> Groups { get; private set; } = new();
-
+		public Guid Id { get; private set; }
 		public SceneTree Tree;
+
 		public bool OverridePosition = false;
 		public Vector2 Position = Vector2.Zero;
 		public Vector2 GlobalPosition = Vector2.Zero;
@@ -22,11 +23,20 @@ namespace StarPong.Framework
 		public int DrawLayer = 0;
 		public bool Flip = false;
 
+		public Action TreeExited;
+
+		public GameObject()
+		{
+			Id = Guid.NewGuid();
+		}
+
+		public virtual void ExitTree() { }
 		public virtual void EnterTree() { }
 		public virtual void Update(float delta) { }
 		public virtual void DebugDraw(SpriteBatch spriteBatch) { }
 		public virtual void Draw(SpriteBatch batch) {}
 
+		#region Hierarchy Methods
 		public void UpdateHierarchy(float delta)
 		{
 			if (Parent != null && !OverridePosition)
@@ -85,16 +95,19 @@ namespace StarPong.Framework
 				}
 			}
 		}
+		#endregion
 
+		#region Scene Tree
 		public void QueueFree()
 		{
 			SceneTree.Instance.QueueFree(this);
-			foreach (GameObject child in Children)
-			{
-				child.QueueFree();
-			}
 		}
 
+		/// <summary>
+		/// Adds an object as a child, and if part of the scene tree, also
+		/// initializes the child by calling EnterTree.
+		/// </summary>
+		/// <param name="child"></param>
 		public void AddChild(GameObject child)
 		{
 			Children.Add(child);
@@ -105,11 +118,29 @@ namespace StarPong.Framework
 			}
 		}
 
+		/// <summary>
+		/// Removes the child from this parent. This will cause it to leave the tree
+		/// and calls the necessary callbacks for cleanup. It will leave any assigned groups.
+		/// </summary>
+		/// <param name="child"></param>
+		public void RemoveChild(GameObject child)
+		{
+			Children.Remove(child);
+			child.TreeExited?.Invoke();
+			foreach (string group in child.Groups)
+			{
+				SceneTree.Instance.RemoveObjectFromGroup(child, group);
+			}
+		}
+
 		public void AddToGroup(string group)
 		{
 			Groups.Add(group);
 		}
 
+		#endregion
+
+		#region Utilities
 		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Color color, bool flip=false, bool center=true)
 		{
 			Vector2 pos = center ? Utility.CenterToTex(position, texture) : position;
@@ -139,5 +170,6 @@ namespace StarPong.Framework
 		{
 			return Flip ? new Vector2(-vec.X, vec.Y) : vec;
 		}
+		#endregion
 	}
 }

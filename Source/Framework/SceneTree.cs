@@ -12,7 +12,7 @@ namespace StarPong.Framework
 	{
 		public static SceneTree Instance;
 
-		List<GameObject> freeQueue;
+		List<GameObject> freeQueue = new();
 		public GameObject Root { get; private set; }
 		Dictionary<string, List<GameObject>> groups = new();
 
@@ -21,18 +21,18 @@ namespace StarPong.Framework
 			Instance = this;
 		}
 
+		#region Game Objects
 		public void Update(float delta)
 		{
-			freeQueue = new();
 			if (Root != null)
 			{
 				Root.UpdateHierarchy(delta);
 			}
 			foreach (GameObject obj in freeQueue)
 			{
-				Debug.WriteLine($"Freeing object {obj}");
-				obj.Parent?.Children.Remove(obj);
+				obj.Parent?.RemoveChild(obj);
 			}
+			freeQueue = new();
 		}
 
 		public void Draw(SpriteBatch batch)
@@ -45,10 +45,6 @@ namespace StarPong.Framework
 
 		public void QueueFree(GameObject obj)
 		{
-			foreach (string group in obj.Groups)
-			{
-				RemoveObjectFromGroup(obj, group);
-			}
 			freeQueue.Add(obj);
 		}
 
@@ -57,7 +53,9 @@ namespace StarPong.Framework
 			Root = obj;
 			Root.InitializeHierarchy(this);
 		}
+		#endregion
 
+		#region Groups
 		public void AddObjectToGroup(GameObject obj, string group)
 		{
 			if (!groups.ContainsKey(group))
@@ -83,5 +81,6 @@ namespace StarPong.Framework
 			}
 			return new();
 		}
+		#endregion
 	}
 }

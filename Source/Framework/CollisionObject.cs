@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -18,7 +19,11 @@ namespace StarPong.Framework
 
 		public virtual void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other) { }
 
-		public Rect2 GetBoundingRect() => CollisionRect.Translated(Position);
+		public Rect2 GetBoundingRect()
+		{
+			return CollisionRect.Translated(GlobalPosition);
+		}
+
 		public bool IsMouseHovering()
 		{
 			MouseState ms = Mouse.GetState();

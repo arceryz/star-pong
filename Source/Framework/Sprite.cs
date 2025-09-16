@@ -21,8 +21,9 @@ namespace StarPong.Framework
 			}
 		}
 
-		public string CurrentAnimation { get; private set; } = "default";
+		public string CurrentAnimation { get; private set; } = "";
 
+		public Rect2 FrameSize = Rect2.Zero;
 		Dictionary<string, Animation> animations = new();
 		Animation animation;
 		int frameIndex = 0;
@@ -37,6 +38,7 @@ namespace StarPong.Framework
 			this.spriteSheet = spriteSheet;
 			this.slicesX = slicesX;
 			this.slicesY = slicesY;
+			FrameSize = new Rect2(0, 0, spriteSheet.Width / slicesX, spriteSheet.Height / slicesY);
 		}
 
 		public override void Update(float delta)
@@ -54,7 +56,10 @@ namespace StarPong.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			DrawTexture(batch, spriteSheet, GlobalPosition, Color.White, Flip);
+			if (CurrentAnimation != "")
+			{
+				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[frameIndex], Color.White, Flip);
+			}
 		}
 
 		public void AddAnimation(string name, int fps, int sliceX, int sliceY, int frameCount)
