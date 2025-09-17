@@ -235,6 +235,42 @@
 /processorParam:TextureFormat=Color
 /build:UI/EnergyPip.png
 
+#begin UI/Gyruss_Bronze.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gyruss_Bronze.png
+
+#begin UI/Gyruss_Gold.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gyruss_Gold.png
+
+#begin UI/Gyruss_Grey.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gyruss_Grey.png
+
 #begin UI/HealthPip.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -246,16 +282,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/HealthPip.png
-
-#begin UI/Jersey10-Regular.ttf
-/copy:UI/Jersey10-Regular.ttf
-
-#begin UI/Pixel.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:UI/Pixel.spritefont
 
 #begin UI/Red_Portrait.png
 /importer:TextureImporter
@@ -280,11 +306,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Selection_Arrows.png
-
-#begin UI/SmallPixel.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:UI/SmallPixel.spritefont
 

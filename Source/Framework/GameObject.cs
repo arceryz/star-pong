@@ -163,11 +163,11 @@ namespace StarPong.Framework
 			batch.Draw(texture, pos, sourceRect, Color.White, 0, Vector2.Zero, 1, eff, GlobalDrawZ);
 		}
 
-		public void DrawString(SpriteBatch batch, SpriteFont font, string text, Vector2 position, Color color, bool centered=true)
-		{
-			Vector2 offset = centered ? 0.5f * font.MeasureString(text) : Vector2.Zero;
-			batch.DrawString(font, text, Position - offset, color, 0, Vector2.Zero, 1.0f, SpriteEffects.None, GlobalDrawZ);
-		}
+		//public void DrawString(SpriteBatch batch, ImageFont font, string text, Vector2 position, Color color, bool centered=true)
+		//{
+		//	Vector2 offset = centered ? 0.5f * font.MeasureString(text) : Vector2.Zero;
+		//	batch.DrawString(font, text, Position - offset, color, 0, Vector2.Zero, 1.0f, SpriteEffects.None, GlobalDrawZ);
+		//}
 
 		public Vector2 ToGlobal(Vector2 pos)
 		{

@@ -10,18 +10,27 @@ namespace StarPong.Framework
 		public Action Pressed;
 
 		public string Text;
-		public Color Color = Color.White;
-		public SpriteFont Font;
+		public ImageFont Font;
 		public Texture2D SelectionTexture;
+		public float FontScale;
+		public float FlickerInterval = 0;
 
+		float flickerTimer = 0;
 		bool isPressed = false;
 
-		public Button(string text, SpriteFont font, Texture2D selectionTexture)
+		public Button(ImageFont font, string text, Texture2D selectionTexture, float fontScale=1)
 		{
+			this.FontScale = fontScale;
 			this.Text = text;
 			this.Font = font;
 			this.SelectionTexture = selectionTexture;
 			this.CollisionRect = new Rect2(selectionTexture.Bounds).Centered();
+		}
+
+		public Button SetFlicker(float interval)
+		{
+			FlickerInterval = interval;
+			return this;
 		}
 
 		public override void Update(float delta)
@@ -43,6 +52,15 @@ namespace StarPong.Framework
 			{
 				isPressed = false;
 			}
+
+			if (FlickerInterval > 0)
+			{
+				flickerTimer += delta;
+				if (flickerTimer > 2 * FlickerInterval)
+				{
+					flickerTimer = 0;
+				}
+			}
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -51,7 +69,10 @@ namespace StarPong.Framework
 			{
 				DrawTexture(batch, SelectionTexture, GlobalPosition, Color.White);
 			}
-			DrawString(batch, Font, Text, Position, Color);
+			if (flickerTimer < FlickerInterval)
+			{
+				Font.DrawString(batch, GlobalPosition, Text, GlobalDrawZ, FontScale);
+			}
 		}
 	}
 }

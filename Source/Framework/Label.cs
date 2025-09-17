@@ -6,18 +6,19 @@ namespace StarPong.Framework
 	public class Label: GameObject
 	{
 		public string Text;
-		public SpriteFont Font;
-		public Color Color = Color.White;
+		public ImageFont Font;
+		public float Scale = 1.0f;
 
-		public Label(string text, SpriteFont font )
+		public Label(ImageFont font, string text="", float scale=1)
 		{
 			this.Text = text;
 			this.Font = font;
+			this.Scale = scale;
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			DrawString(batch, Font, Text, GlobalPosition, Color);
+			Font.DrawString(batch, GlobalPosition, Text, GlobalDrawZ, Scale);
 		}
 	}
 }

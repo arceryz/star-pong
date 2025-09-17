@@ -34,6 +34,9 @@
 		public static class Font
 		{
 			public static string Pixel = "UI/Pixel";
+			public static string Gyruss_Grey = "UI/Gyruss_Grey";
+			public static string Gyruss_Gold = "UI/Gyruss_Gold";
+			public static string Gyruss_Bronze = "UI/Gyruss_Bronze";
 		}
 
 		public static class Song

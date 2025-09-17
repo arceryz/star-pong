@@ -26,27 +26,20 @@ namespace StarPong.Scenes
 			// Game
 			GameObject game = new GameObject();
 			game.DrawLayer = 10;
-			AddChild(game);
 
 			mother1 = new Mothership(Team.Blue);
 			mother2 = new Mothership(Team.Red);
-			game.AddChild(mother1);
-			game.AddChild(mother2);
-
+		
 			player1 = new Player(Team.Blue);
 			player2 = new Player(Team.Red);
 			player1.DrawLayer = 1;
 			player2.DrawLayer = 1;
-			game.AddChild(player1);
-			game.AddChild(player2);
 
 			Bomb bomb = new Bomb();
 			bomb.DrawLayer = 20;
-			game.AddChild(bomb);
 
 			// Background
 			GameObject bg = new GameObject();
-			AddChild(bg);
 
 			ParallaxLayer par1 = new ParallaxLayer(stars, 150.0f);
 			ParallaxLayer par2 = new ParallaxLayer(asteroids2, 250.0f);
@@ -54,23 +47,33 @@ namespace StarPong.Scenes
 			par1.DrawLayer = 1;
 			par2.DrawLayer = 2;
 			par3.DrawLayer = 3;
-			bg.AddChild(par1);
-			bg.AddChild(par2);
-			bg.AddChild(par3);
-
+		
 			// UI
 			GameObject ui = new GameObject();
 			ui.DrawLayer = 30;
-			AddChild(ui);
 
 			info1 = new PlayerInfoBar(player1);
 			info2 = new PlayerInfoBar(player2);
-			ui.AddChild(info1);
-			ui.AddChild(info2);
 
 			// Play music.
 			MediaPlayer.Play(Engine.Load<Song>(AssetPaths.Song.Battle1_Normal));
 			MediaPlayer.IsRepeating = true;
+
+			// Set up hierarchy.
+			AddChild(game);
+				game.AddChild(mother1);
+				game.AddChild(mother2);
+				game.AddChild(player1);
+				game.AddChild(player2);
+				game.AddChild(bomb);
+			AddChild(ui);
+				ui.AddChild(info1);
+				ui.AddChild(info2);
+			AddChild(bg);
+				bg.AddChild(par1);
+				bg.AddChild(par2);
+				bg.AddChild(par3);
+
 		}
 	}
 }
