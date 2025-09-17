@@ -19,12 +19,12 @@ namespace StarPong.Game
 			this.Team = team;
 			if (team == Team.Blue)
 			{
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Bullet_Blue);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Bullet);
 			}
 			else
 			{
 				Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Bullet_Red);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Bullet);
 			}
 
 			Velocity = dir * speed;

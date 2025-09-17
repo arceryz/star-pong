@@ -4,9 +4,6 @@
 	{
 		public static class Texture
 		{
-
-			public static string UI_ButtonSelection = "UI/Selection_Arrows";
-
 			public static string BG_Asteroids_Mid = "Background/BG_Asteroids_Mid";
 			public static string BG_Asteroids_Close = "Background/BG_Asteroids_Close";
 			public static string BG_Stars = "Background/BG_Stars";
@@ -18,18 +15,30 @@
 			public static string Explosion_Big = "Bomb/Explosion_Big";
 			public static string Explosion_Small = "Bomb/Explosion_Small";
 
-			public static string Player_Blue = "Player/Ship_Blue";
-			public static string Player_Red = "Player/Ship_Red";
-			public static string Shield_Blue = "Player/Shield_Blue";
-			public static string Shield_Red = "Player/Shield_Red";
-			public static string Bullet_Blue = "Player/Bullet_Blue";
-			public static string Bullet_Red = "Player/Bullet_Red";
 			public static string MuzzleFlash = "Player/Muzzle_Flash";
+			public static string Blue_Player = "Player/Blue_Ship";
+			public static string Blue_Shield = "Player/Blue_Shield";
+			public static string Blue_Bullet = "Player/Blue_Bullet";
+
+			public static string Red_Player = "Player/Red_Ship";
+			public static string Red_Shield = "Player/Red_Shield";
+			public static string Red_Bullet = "Player/Red_Bullet";
+
+			public static string UI_SelectionArrows = "UI/Selection_Arrows";
+			public static string UI_Red_Portrait = "UI/Red_Portrait";
+			public static string UI_Blue_Portrait = "UI/Blue_Portrait";
+			public static string UI_HealthPip = "UI/HealthPip";
+			public static string UI_EnergyPip = "UI/EnergyPip";
 		}
 
 		public static class Font
 		{
-			public static string UI_Pixel = "UI/Pixel";
+			public static string Pixel = "UI/Pixel";
+		}
+
+		public static class Song
+		{
+			public static string Battle1_Normal = "Music/Battle1_Normal";
 		}
 	}
 }

@@ -19,12 +19,12 @@ namespace StarPong.Game
 			this.Team = team;
 			if (Team == Team.Blue)
 			{
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Shield_Blue);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Shield);
 			}
 			else
 			{
 				Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Shield_Red);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Shield);
 			}
 
 			CollisionRect = new Rect2(texture.Bounds).Centered();

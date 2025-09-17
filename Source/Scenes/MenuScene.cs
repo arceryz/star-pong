@@ -11,8 +11,8 @@ namespace StarPong.Scenes
 		public MenuScene()
 		{
 			// Assets.
-			SpriteFont pixelFont = Engine.Load<SpriteFont>(AssetPaths.Font.UI_Pixel);
-			Texture2D selTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_ButtonSelection);
+			SpriteFont pixelFont = Engine.Load<SpriteFont>(AssetPaths.Font.Pixel);
+			Texture2D selTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_SelectionArrows);
 			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
 
 			// UI belongs to a higher layer than the background.

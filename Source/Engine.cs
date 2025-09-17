@@ -85,7 +85,7 @@ namespace StarPong
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, samplerState: SamplerState.PointClamp);
             sceneTree.Draw(spriteBatch);
             spriteBatch.End();
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,18 +34,32 @@ namespace StarPong.Game
             { InputAction.RaiseShield, Keys.P }
 		};
 
-        const float strafeSpeed = 200.0f;
-        const float horizontalOffset = 125.0f;
-        const float verticalOffset = 10.0f;
-        const float shootCooldownTime = 0.25f;
-        const float shieldDistance = 50.0f;
+        public const float ShootCooldownTime = 0.25f;
+        public const float EnergyRegenCooldownTime = 0.5f;
+        public const float ShieldDistance = 100.0f;
+
+        public const float TotalEnergy = 100;
+        public const float EnergyRegenSec = 30;
+        public const float FastEnergyRegenWaitTime = 1;
+		public const float FastEnergyRegenSec = 60;
+		public const float BulletEnergyCost = 10;
+		public const float ShieldActivateMinEnergy = 20;
+		public const float ShieldActivateEnergyCost = 10;
+        public const float ShieldEnergyCostSec = 30;
 
         public Team Team { get; set; }
         public int Health { get; set; } = 3;
+        public float Energy = 100;
 
-        Texture2D texture;
+		const float strafeSpeed = 200.0f;
+		const float horizontalOffset = 50.0f;
+		const float verticalOffset = 0.0f;
+
+		float shootCooldown = 0;
+		float energyRegenCooldown = 0;
+
+		Texture2D texture;
         Dictionary<InputAction, Keys> inputMapping;
-        float shootCooldown = 0;
         Shield shield;
         Sprite muzzleFlash;
 
@@ -55,24 +70,24 @@ namespace StarPong.Game
             this.Team = team;
 			if (Team == Team.Blue)
             {
-                texture = Engine.Load<Texture2D>(AssetPaths.Texture.Player_Blue);
+                texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Player);
                 inputMapping = inputMappingLeft;
             }
             else
             {
                 Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Player_Red);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Player);
 				inputMapping = inputMappingRight;
             }
 
 			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(0.7f, 0.6f);
 
 			shield = new Shield(Team);
-            shield.Position = ToGlobalDir(new Vector2(shieldDistance, 0));
+            shield.Position = ToGlobalDir(new Vector2(ShieldDistance, 0));
 			AddChild(shield);
 
             Position.Y = Engine.ScreenHeight / 2.0f;
-            bulletSpawnOrigin = new Vector2(texture.Width - 40, 0);
+            bulletSpawnOrigin = new Vector2(texture.Width - 60, 0);
 
 			muzzleFlash = new Sprite(Engine.Load<Texture2D>(AssetPaths.Texture.MuzzleFlash), 3, 1);
             muzzleFlash.AddAnimation("flash", 12, 0, 0, 3, false);
@@ -94,17 +109,19 @@ namespace StarPong.Game
             }
 
             base.Update(delta);
-			float sw = texture.Bounds.Width;
-            float sh = texture.Bounds.Height;
+			float sw = CollisionRect.Width;
+            float sh = CollisionRect.Height;
 
 			Position.Y = MathHelper.Clamp(Position.Y, verticalOffset + sh/2, Engine.ScreenHeight - sh/2 - verticalOffset);
-            Position.X = Team == Team.Blue ? horizontalOffset - sw/2 : Engine.ScreenWidth - horizontalOffset;
+            Position.X = Team == Team.Blue ? horizontalOffset + sw/2 : Engine.ScreenWidth - horizontalOffset - sw/2;
 
             // Shooting.
             if (shootCooldown > 0) shootCooldown -= delta;
-            if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0)
+            if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0 && Energy >= BulletEnergyCost)
             {
-                shootCooldown = shootCooldownTime;
+                Energy -= BulletEnergyCost;
+				shootCooldown = ShootCooldownTime;
+                energyRegenCooldown = EnergyRegenCooldownTime;
 
                 Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
                 bullet.Position = ToGlobal(bulletSpawnOrigin);
@@ -114,15 +131,29 @@ namespace StarPong.Game
 			}
 
 			// Shielding.
-			if (shield.IsActive && Input.IsKeyPressed(inputMapping[InputAction.RaiseShield]))
+			if ((shield.IsActive && Input.IsKeyPressed(inputMapping[InputAction.RaiseShield])) || Energy <= 0)
 			{
 				shield.Deactivate();
 			}
-			else if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield]))
+			else if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield]) && Energy >= ShieldActivateMinEnergy)
             {
-                shield.Activate();
+                Energy -= ShieldActivateEnergyCost;
+				shield.Activate();
             }
-        }
+            if (shield.IsActive)
+            {
+                energyRegenCooldown = EnergyRegenCooldownTime;
+				Energy -= ShieldEnergyCostSec * delta;
+            }
+
+            // Energy regen.
+            energyRegenCooldown -= delta;
+            if (energyRegenCooldown < 0)
+            {
+                Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec: EnergyRegenSec) * delta;
+                Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
+            }
+		}
 
         public override void Draw(SpriteBatch batch)
         {

@@ -59,6 +59,7 @@ namespace StarPong.Game
 		public void Explode()
 		{
 			Explosion explosion = new Explosion(ExplosionType.Big);
+			explosion.DrawLayer = 3;
 			Parent.AddChild(explosion);
 			explosion.Position = Position;
 			QueueFree();
