@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
@@ -15,6 +16,10 @@ namespace StarPong.Game
 		public bool IsActive { get { return CollisionEnabled; } }
 
 		Sprite sprite;
+		SoundEffectInstance activateSFX;
+		SoundEffectInstance deactivateSFX;
+		SoundEffectInstance runningSFX;
+		SoundEffectInstance deflectSFX;
 
 		public Shield(Team team)
 		{
@@ -40,6 +45,14 @@ namespace StarPong.Game
 
 			CollisionRect = new Rect2(-4, 0, 16, sprite.FrameSize.Width * 1.5f).Centered();
 			CollisionEnabled = false;
+
+			// Create instances to avoid duplicate sounds from occuring.
+			// The regular SoundEffect pools instances internally, not what we want.
+			activateSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Activate).CreateInstance();
+			deactivateSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Deactivate).CreateInstance();
+			runningSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Loop).CreateInstance();
+			runningSFX.IsLooped = true;
+			deflectSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Deflect).CreateInstance();
 		}
 
 		public void Activate()
@@ -47,17 +60,24 @@ namespace StarPong.Game
 			CollisionEnabled = true;
 			Visible = true;
 			sprite.Play("activate");
+			activateSFX.Play();
 		}
 
 		public void Deactivate()
 		{
 			CollisionEnabled = false;
 			sprite.Play("deactivate");
+			deactivateSFX.Play();
+			runningSFX.Stop();
 		}
 
 		public void OnAnimationFinished()
 		{
-			if (sprite.CurrentAnimation == "activate") sprite.Play("running");
+			if (sprite.CurrentAnimation == "activate")
+			{
+				sprite.Play("running");
+				runningSFX.Play();
+			}
 			if (sprite.CurrentAnimation == "deactivate") Visible = false;
 		}
 
@@ -66,6 +86,11 @@ namespace StarPong.Game
 			if (other is IDamageable dmg && dmg.Team != Team && other is Bullet)
 			{
 				BulletHit?.Invoke();
+			}
+			if (other is Bomb bomb)
+			{
+				bomb.Velocity.X *= -1;
+				deflectSFX.Play();
 			}
 		}
 	}

@@ -53,6 +53,17 @@
 			public static string Battle1_Normal = "Music/Battle1_Normal";
 		}
 
+		public static class Sounds
+		{
+			public static string Bullet_Fired = "SFX/Bullet_Fired";
+			public static string Bullet_Impact = "SFX/Bullet_Impact";
+			public static string Explosion = "SFX/Explosion";
+			public static string Shield_Activate = "SFX/Shield_Activate";
+			public static string Shield_Deactivate = "SFX/Shield_Deactivate";
+			public static string Shield_Deflect = "SFX/Shield_Deflect";
+			public static string Shield_Loop = "SFX/Shield_Loop";
+		}
+
 		public static class Shaders
 		{
 			public static string CRT = "Shaders/CRT";

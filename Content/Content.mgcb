@@ -233,6 +233,48 @@
 /processorParam:TextureFormat=Color
 /build:Player/Red_Ship.png
 
+#begin SFX/Bullet_Fired.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Bullet_Fired.wav
+
+#begin SFX/Bullet_Impact.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Bullet_Impact.wav
+
+#begin SFX/Explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Explosion.wav
+
+#begin SFX/Shield_Activate.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Shield_Activate.wav
+
+#begin SFX/Shield_Deactivate.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Shield_Deactivate.wav
+
+#begin SFX/Shield_Deflect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Shield_Deflect.wav
+
+#begin SFX/Shield_Loop.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Shield_Loop.wav
+
 #begin Shaders/CRT.fx
 /importer:EffectImporter
 /processor:EffectProcessor

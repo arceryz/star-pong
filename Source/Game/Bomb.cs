@@ -23,7 +23,7 @@ namespace StarPong.Game
 			sprite.Play("default");
 			AddChild(sprite);
 
-			CollisionRect = sprite.FrameSize.Centered().Scaled(0.5f, 0.5f);
+			CollisionRect = sprite.FrameSize.Centered().Scaled(0.7f, 0.9f);
 
 			// Set the position to the center of the screen.
 			Position = new Vector2(Engine.GameWidth / 2.0f, Engine.GameHeight / 2.0f);
@@ -46,13 +46,13 @@ namespace StarPong.Game
 
 			if (bounding.Y < 0) // Upper wall
 			{
-				Position.Y = bounding.Height / 2;
+				Position.Y = bounding.Height / 2 + 1;
 				Velocity.Y *= -1;
 			}
 			if (bounding.Y + bounding.Height > Engine.GameHeight)
 			{
 				Velocity.Y *= -1;
-				Position.Y = Engine.GameHeight - bounding.Height / 2;
+				Position.Y = Engine.GameHeight - bounding.Height / 2 - 1;
 			}
 		}
 
@@ -68,10 +68,6 @@ namespace StarPong.Game
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			if (other is Shield)
-			{
-				Velocity.X *= -1;
-			}
 			if (other is Mothership mother)
 			{
 				mother.TakeDamage(100, Position);

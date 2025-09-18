@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
@@ -13,6 +15,8 @@ namespace StarPong.Game
 		public Team Team { get; private set; }
 		public int Health { get; private set; } = 1;
 		Texture2D texture;
+		SoundEffect fireSFX;
+		SoundEffect impactSFX;
 
 		public Bullet(Team team, Vector2 dir)
 		{
@@ -30,6 +34,10 @@ namespace StarPong.Game
 			Velocity = dir * speed;
 			CollisionRect = new Rect2(texture.Bounds).Centered();
 			OverridePosition = true;
+
+			fireSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Fired);
+			fireSFX.Play();
+			impactSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Impact);
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -39,12 +47,22 @@ namespace StarPong.Game
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
+			// When a bullet collides we want the target object to take 1 damage and
+			// to play a sound effect and a screen shake.
+			// We can decide here which objects can collide with this bullet.
 			if (other is IDamageable dmgable && dmgable.Team != Team &&
 				!(other is Bomb))
 			{
 				dmgable.TakeDamage(1, GlobalPosition);
-				QueueFree();
 				Engine.AddCameraShake(5);
+				impactSFX.Play();
+
+				ExplosionFX explosion = new ExplosionFX(ExplosionType.Small);
+				explosion.OverridePosition = true;
+				explosion.Position = GlobalPosition;
+				Parent.AddChild(explosion);
+
+				QueueFree();
 			}
 		}
 	}

@@ -44,6 +44,7 @@ namespace StarPong.Scenes
 			ScoreUI scoreui = new ScoreUI(mother1, mother2);
 
 			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle1_Normal));
+			MediaPlayer.Volume = 0.5f;
 			MediaPlayer.IsRepeating = true;
 
 
