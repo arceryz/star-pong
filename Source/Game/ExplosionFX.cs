@@ -17,13 +17,13 @@ namespace StarPong.Game
 		{
 			if (type == ExplosionType.Big)
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.ExplosionFX_Big);
+				Texture2D tex = Engine.Load<Texture2D>(Assets.Textures.ExplosionFX_Big);
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 			}
 			else if (type == ExplosionType.Small)
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.ExplosionFX_Small);
+				Texture2D tex = Engine.Load<Texture2D>(Assets.Textures.ExplosionFX_Small);
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 			}

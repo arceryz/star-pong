@@ -17,7 +17,7 @@ namespace StarPong.Game
 
 		public Bomb()
 		{
-			Texture2D bombSheet = Engine.Load<Texture2D>(AssetPaths.Texture.Bomb);
+			Texture2D bombSheet = Engine.Load<Texture2D>(Assets.Textures.Bomb);
 			sprite = new Sprite(bombSheet, 4, 1);
 			sprite.AddAnimation("default", 4, 0, 0, 4);
 			sprite.Play("default");
@@ -62,6 +62,7 @@ namespace StarPong.Game
 			explosion.DrawLayer = 3;
 			Parent.AddChild(explosion);
 			explosion.Position = Position;
+			Engine.AddCameraShake(200);
 			QueueFree();
 		}
 

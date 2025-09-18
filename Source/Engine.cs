@@ -30,6 +30,10 @@ namespace StarPong
 		public static Dictionary<string, Object> CustomAssets = new();
         public static Rect2 Viewport = Rect2.Zero;
 
+		const float cameraShakeMax = 30;
+		const float cameraShakeFalloff = 5;
+        static float cameraShake = 0;
+
 		// Internal.
 		GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -38,6 +42,7 @@ namespace StarPong
         Physics physics = new();
         DrawSorter drawSorter = new();
         RenderTarget2D renderTarget;
+        Effect crtEffect;
 
         #region Core
         public Engine()
@@ -64,10 +69,11 @@ namespace StarPong
             spriteBatch = new SpriteBatch(GraphicsDevice);
 			renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
-			DebugFont = Load<SpriteFont>(AssetPaths.Font.Debug_Kobe_TTF);
-            CustomAssets[AssetPaths.Font.Gyruss_Gold] = new ImageFont(AssetPaths.Font.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
-            CustomAssets[AssetPaths.Font.Gyruss_Grey] = new ImageFont(AssetPaths.Font.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
-			CustomAssets[AssetPaths.Font.Gyruss_Bronze] = new ImageFont(AssetPaths.Font.Gyruss_Bronze, "abcdefghijklmnopqrstuvwxyz0123456789-");
+            crtEffect = Load<Effect>(Assets.Shaders.CRT);
+			DebugFont = Load<SpriteFont>(Assets.Fonts.Debug_Kobe_TTF);
+            CustomAssets[Assets.Fonts.Gyruss_Gold] = new ImageFont(Assets.Fonts.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
+            CustomAssets[Assets.Fonts.Gyruss_Grey] = new ImageFont(Assets.Fonts.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
+			CustomAssets[Assets.Fonts.Gyruss_Bronze] = new ImageFont(Assets.Fonts.Gyruss_Bronze, "abcdefghijklmnopqrstuvwxyz0123456789-");
 		}
 
         protected override void Update(GameTime gameTime)
@@ -84,10 +90,13 @@ namespace StarPong
 			physics.Update(delta);
 			sceneTree.Update(delta);
 			sceneTree.UpdateTransform();
+
+            cameraShake *= MathHelper.Max(1.0f - cameraShakeFalloff*delta, 0);
 		}
 
         protected override void Draw(GameTime gameTime)
         {
+
 			// First we render to the render target we created,
 			// then we scale this to the screen properly later.
 			ComputeViewport();
@@ -100,18 +109,27 @@ namespace StarPong
 			drawSorter.ResetLayers();
             sceneTree.QueueDrawObjects();
 			drawSorter.DrawLayers(spriteBatch);
-            if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
-            if (EnableTreeDraw) sceneTree.DebugDrawTree(spriteBatch);
-            spriteBatch.DrawString(DebugFont, "Press (Z) to toggle debug shapes | Press (T) to toggle tree view | Press (Esc) to quit",
-                GetAnchor(-1, 1, 10, -23), Color.DarkGray with { A = 50 });
             spriteBatch.End();
+
+			// Set up the CRT effect.
+			crtEffect.Parameters["Time"]?.SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+            crtEffect.Parameters["Shake"]?.SetValue(Utility.RandUnit2() * MathHelper.Min(cameraShakeMax, cameraShake) * 0.001f);
 
 			// Rescale the render target to the desired screen size.
 			// This will maintain aspect ratio and add black bars if needed.
 			GraphicsDevice.SetRenderTarget(null);
 			GraphicsDevice.Clear(Color.Black);
-			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, effect: crtEffect);
 			spriteBatch.Draw(renderTarget, Viewport.ToRectangle(), Color.White);
+			spriteBatch.End();
+
+            // Make sure that debug drawing and other visualisations end up on top.
+            // They dont have to be affected by the CRT effect.
+			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+			if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
+			if (EnableTreeDraw) sceneTree.DebugDrawTree(spriteBatch);
+			if (ActiveScene == SceneName.MenuScene) spriteBatch.DrawString(DebugFont, "Press (Z) to toggle debug shapes | Press (T) to toggle tree view | Press (Esc) to quit",
+				GetAnchor(-1, 1, 10, -23), Color.DarkGray with { A = 50 });
 			spriteBatch.End();
 		}
 		#endregion
@@ -175,6 +193,12 @@ namespace StarPong
 			int vpY = (int)((windowHeight - vpHeight) / 2);
 			Viewport = new Rect2(vpX, vpY, vpWidth, vpHeight);
 		}
+
+        public static void AddCameraShake(float strength)
+        {
+            Engine.cameraShake += strength;
+        }
+
         #endregion
     }
 }

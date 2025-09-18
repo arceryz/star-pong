@@ -15,9 +15,9 @@ namespace StarPong.Scenes
 			//***********************************************//
 			// Assets
 			//***********************************************//
-			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
-			Texture2D asteroids1 = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Asteroids_Close);
-			Texture2D asteroids2 = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Asteroids_Mid);
+			Texture2D stars = Engine.Load<Texture2D>(Assets.Textures.BG_Stars);
+			Texture2D asteroids1 = Engine.Load<Texture2D>(Assets.Textures.BG_Asteroids_Close);
+			Texture2D asteroids2 = Engine.Load<Texture2D>(Assets.Textures.BG_Asteroids_Mid);
 
 
 			//***********************************************//
@@ -43,7 +43,7 @@ namespace StarPong.Scenes
 			PlayerUI playerui_2 = new PlayerUI(player2);
 			ScoreUI scoreui = new ScoreUI(mother1, mother2);
 
-			MediaPlayer.Play(Engine.Load<Song>(AssetPaths.Song.Battle1_Normal));
+			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle1_Normal));
 			MediaPlayer.IsRepeating = true;
 
 

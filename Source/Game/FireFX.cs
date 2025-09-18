@@ -18,13 +18,13 @@ namespace StarPong.Game
 		{
 			if (type == FireType.Big)
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.FireFX_Big);
+				Texture2D tex = Engine.Load<Texture2D>(Assets.Textures.FireFX_Big);
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("fire", 4, 0, 0, 4);
 			}
 			else
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.FireFX_Small);
+				Texture2D tex = Engine.Load<Texture2D>(Assets.Textures.FireFX_Small);
 				sprite = new Sprite(tex, 8, 1);
 				sprite.Scale = 2;
 				sprite.AddAnimation("fire", 8, 0, 0, 8);

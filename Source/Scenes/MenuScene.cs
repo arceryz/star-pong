@@ -13,10 +13,10 @@ namespace StarPong.Scenes
 			//***********************************************//
 			// Assets
 			//***********************************************//
-			Texture2D selTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_SelectionArrows);
-			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
-			ImageFont gyrussGold = Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Gold);
-			ImageFont gyrussGrey = Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Grey);
+			Texture2D selTex = Engine.Load<Texture2D>(Assets.Textures.UI_SelectionArrows);
+			Texture2D stars = Engine.Load<Texture2D>(Assets.Textures.BG_Stars);
+			ImageFont gyrussGold = Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Gold);
+			ImageFont gyrussGrey = Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey);
 
 
 			//***********************************************//

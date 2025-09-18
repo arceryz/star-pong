@@ -31,12 +31,12 @@ namespace StarPong.Game
 			this.Team = team;
 			if (team == Team.Blue)
 			{
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Mothership);
+				texture = Engine.Load<Texture2D>(Assets.Textures.Blue_Mothership);
 			}
 			else
 			{
 				Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Mothership);
+				texture = Engine.Load<Texture2D>(Assets.Textures.Red_Mothership);
 			}
 
 			noise = new FastNoiseLite(Utility.RandInt32());
@@ -76,12 +76,15 @@ namespace StarPong.Game
 
 				if (HullStatus == HullStatusEnum.Damaged)
 				{
+					Engine.AddCameraShake(1000);
 				}
 				if (HullStatus == HullStatusEnum.Critical)
 				{
+					Engine.AddCameraShake(1000);
 				}
 				if (HullStatus == HullStatusEnum.Destroyed)
 				{
+					Engine.AddCameraShake(1000);
 					Explode();
 					return;
 				}

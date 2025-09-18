@@ -22,11 +22,11 @@ namespace StarPong.Game
 			Texture2D tex;
 			if (Team == Team.Blue)
 			{
-				tex = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Shield);
+				tex = Engine.Load<Texture2D>(Assets.Textures.Blue_Shield);
 			}
 			else
 			{
-				tex = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Shield);
+				tex = Engine.Load<Texture2D>(Assets.Textures.Red_Shield);
 			}
 
 			sprite = new Sprite(tex, 4, 3);

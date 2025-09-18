@@ -71,13 +71,13 @@ namespace StarPong.Game
             this.Team = team;
 			if (Team == Team.Blue)
             {
-                texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Player);
+                texture = Engine.Load<Texture2D>(Assets.Textures.Blue_Player);
                 inputMapping = inputMappingLeft;
             }
             else
             {
                 Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Player);
+				texture = Engine.Load<Texture2D>(Assets.Textures.Red_Player);
 				inputMapping = inputMappingRight;
             }
 
@@ -91,7 +91,7 @@ namespace StarPong.Game
             Position.Y = Engine.GameHeight / 2.0f;
             bulletSpawnOrigin = new Vector2(texture.Width - 60, 0);
 
-			muzzleFlash = new Sprite(Engine.Load<Texture2D>(AssetPaths.Texture.MuzzleFlash), 3, 1);
+			muzzleFlash = new Sprite(Engine.Load<Texture2D>(Assets.Textures.MuzzleFlash), 3, 1);
             muzzleFlash.AddAnimation("flash", 12, 0, 0, 3, false);
 			muzzleFlash.Position = ToGlobalDir(bulletSpawnOrigin);
             muzzleFlash.DrawLayer = 1;

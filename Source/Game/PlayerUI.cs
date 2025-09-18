@@ -19,16 +19,16 @@ namespace StarPong.Game
 		{
 			if (player.Team == Team.Blue)
 			{
-				portraitTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_Blue_Portrait);
+				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Blue_Portrait);
 				Position = Engine.GetAnchor(0, -1, -hoffset + 2, voffset);
 			}
 			else
 			{
-				portraitTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_Red_Portrait);
+				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Red_Portrait);
 				Position = Engine.GetAnchor(0, -1, hoffset + 2, voffset);
 			}
-			healthPipTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_HealthPip);
-			energyPipTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_EnergyPip);
+			healthPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_HealthPip);
+			energyPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_EnergyPip);
 
 			this.player = player;
 		}

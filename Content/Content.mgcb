@@ -233,6 +233,12 @@
 /processorParam:TextureFormat=Color
 /build:Player/Red_Ship.png
 
+#begin Shaders/CRT.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/CRT.fx
+
 #begin UI/Blue_Portrait.png
 /importer:TextureImporter
 /processor:TextureProcessor

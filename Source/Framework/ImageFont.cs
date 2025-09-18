@@ -26,7 +26,6 @@ namespace StarPong.Framework
 			sheet = Engine.Load<Texture2D>(assetPath);
 			CharacterWidth = sheet.Width / characters.Length;
 			CharacterHeight = sheet.Height;
-			Debug.WriteLine($"Image font size {(float)sheet.Width/ 8}, {CharacterHeight} with {characters.Length}");
 			for (int i = 0; i < characters.Length; i++)
 			{
 				sourceRects[characters[i]] = new Rectangle(i * CharacterWidth, 0, CharacterWidth, CharacterHeight);

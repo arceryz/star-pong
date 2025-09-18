@@ -5,9 +5,9 @@
 	/// in that way, file changes can be made easily by refactoring the variable name in the IDE.
 	/// As a bonus, there is autocomplete for all the asset categories!
 	/// </summary>
-	public static class AssetPaths
+	public static class Assets
 	{
-		public static class Texture
+		public static class Textures
 		{
 			public static string BG_Asteroids_Mid = "Background/BG_Asteroids_Mid";
 			public static string BG_Asteroids_Close = "Background/BG_Asteroids_Close";
@@ -39,7 +39,7 @@
 			public static string FireFX_Small = "FX/Fire_Small";
 		}
 
-		public static class Font
+		public static class Fonts
 		{
 			public static string Pixel = "UI/Pixel";
 			public static string Gyruss_Grey = "UI/Gyruss_Grey";
@@ -48,9 +48,14 @@
 			public static string Debug_Kobe_TTF = "Debug/Kobe";
 		}
 
-		public static class Song
+		public static class Songs
 		{
 			public static string Battle1_Normal = "Music/Battle1_Normal";
+		}
+
+		public static class Shaders
+		{
+			public static string CRT = "Shaders/CRT";
 		}
 	}
 }

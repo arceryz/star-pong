@@ -22,8 +22,8 @@ namespace StarPong.Game
 			this.mother2 = mother2;
 			Position = Engine.GetAnchor(0, -1, 0, 30);
 
-			stageLabel = new Label(Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Gold), "", 4);
-			healthLabel = new Label(Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Grey), "", 2);
+			stageLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Gold), "", 4);
+			healthLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey), "", 2);
 			healthLabel.Position = new Vector2(0, 30);
 
 			AddChild(stageLabel);
