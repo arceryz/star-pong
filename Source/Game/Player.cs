@@ -48,8 +48,8 @@ namespace StarPong.Game
         public const float ShieldEnergyCostSec = 30;
         public const float ShieldBulletAbsorbCost = 10;
 
-        public Team Team { get; set; }
-        public int Health { get; set; } = 3;
+        public Team Team { get; private set; }
+        public int Health { get; private set; } = 3;
         public float Energy = 100;
 
 		const float strafeSpeed = 200.0f;

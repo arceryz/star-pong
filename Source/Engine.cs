@@ -28,6 +28,7 @@ namespace StarPong
         public static bool EnableTreeDraw = false;
         public static SceneName ActiveScene { get; private set; }
         public static SpriteFont DebugFont;
+		public static Dictionary<string, Object> CustomAssets = new();
 
 		// Internal.
 		GraphicsDeviceManager graphics;
@@ -57,6 +58,9 @@ namespace StarPong
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 			DebugFont = Load<SpriteFont>(AssetPaths.Font.Debug_Kobe_TTF);
+            CustomAssets[AssetPaths.Font.Gyruss_Gold] = new ImageFont(AssetPaths.Font.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
+            CustomAssets[AssetPaths.Font.Gyruss_Grey] = new ImageFont(AssetPaths.Font.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
+			CustomAssets[AssetPaths.Font.Gyruss_Bronze] = new ImageFont(AssetPaths.Font.Gyruss_Bronze, "abcdefghijklmnopqrstuvwxyz0123456789-");
 		}
 
         protected override void Update(GameTime gameTime)
@@ -117,9 +121,19 @@ namespace StarPong
             return new Vector2(Engine.ScreenWidth * (xs + 1) / 2 + xo, Engine.ScreenHeight * (ys + 1) / 2 + yo);
         }
 
+        /// <summary>
+        /// Load an asset from the content pipeline or a custom asset loaded by us.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static T Load<T>(string path)
         {
-            return Instance.Content.Load<T>(path);
+            if (CustomAssets.ContainsKey(path))
+            {
+                return (T)CustomAssets[path];
+			}
+			return Instance.Content.Load<T>(path);
         }
 	}
 }

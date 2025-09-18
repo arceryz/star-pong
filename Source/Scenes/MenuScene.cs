@@ -10,13 +10,18 @@ namespace StarPong.Scenes
 	{
 		public MenuScene()
 		{
-			// Assets.
-			ImageFont gyrussGold = new ImageFont(AssetPaths.Font.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
-			ImageFont gyrussGrey = new ImageFont(AssetPaths.Font.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
+			//***********************************************//
+			// Assets
+			//***********************************************//
 			Texture2D selTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_SelectionArrows);
 			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
+			ImageFont gyrussGold = Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Gold);
+			ImageFont gyrussGrey = Engine.Load<ImageFont>(AssetPaths.Font.Gyruss_Grey);
 
-			// Create objects.
+
+			//***********************************************//
+			// Objects
+			//***********************************************//
 			Label titleLabel = new Label(gyrussGold, "star-pong", 6);
 			titleLabel.Position = Engine.GetAnchor(0, -0.3f, 0, 0);
 
@@ -27,7 +32,10 @@ namespace StarPong.Scenes
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 100.0f);
 
-			// Construct scene hierarchy.
+
+			//***********************************************//
+			// Hierarchy
+			//***********************************************//
 			AddChild(bg);
 			AddChild(titleLabel);
 			AddChild(playButton);

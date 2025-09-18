@@ -8,30 +8,28 @@ namespace StarPong.Scenes
 {
 	public class PlayingScene: GameObject
 	{
-		Mothership mother1;
-		Mothership mother2;
-
-		Player player1;
-		Player player2;
-
-		PlayerInfoBar info1;
-		PlayerInfoBar info2;
+		public static float GameRunningTime = 0;
 
 		public PlayingScene()
 		{
+			//***********************************************//
 			// Assets
+			//***********************************************//
 			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
 			Texture2D asteroids1 = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Asteroids_Close);
 			Texture2D asteroids2 = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Asteroids_Mid);
 
-			// Game
+
+			//***********************************************//
+			// Objects
+			//***********************************************//
 			GameObject game = new GameObject();
 
-			mother1 = new Mothership(Team.Blue);
-			mother2 = new Mothership(Team.Red);
+			Mothership mother1 = new Mothership(Team.Blue);
+			Mothership mother2 = new Mothership(Team.Red);
 
-			player1 = new Player(Team.Blue);
-			player2 = new Player(Team.Red);
+			Player player1 = new Player(Team.Blue);
+			Player player2 = new Player(Team.Red);
 		
 			Bomb bomb = new Bomb();
 
@@ -41,16 +39,19 @@ namespace StarPong.Scenes
 			ParallaxLayer bg3 = new ParallaxLayer(asteroids1, 200.0f);
 		
 			// UI
-			info1 = new PlayerInfoBar(player1);
-			info2 = new PlayerInfoBar(player2);
+			PlayerUI playerui_1 = new PlayerUI(player1);
+			PlayerUI playerui_2 = new PlayerUI(player2);
+			ScoreUI scoreui = new ScoreUI(mother1, mother2);
 
-			// Play music.
 			MediaPlayer.Play(Engine.Load<Song>(AssetPaths.Song.Battle1_Normal));
 			MediaPlayer.IsRepeating = true;
 
-			// Set up hierarchy.
+
+			//***********************************************//
+			// Hierarchy
 			// The draw priority is given by the order in this list (farther > earlier) as well as the
 			// individual draw layer that can be set for each object. Currently, all these objects have the same layer=0.
+			//***********************************************//
 			AddChild(bg1);
 			AddChild(bg2);
 			AddChild(bg3);
@@ -62,8 +63,14 @@ namespace StarPong.Scenes
 				game.AddChild(player2);
 				game.AddChild(bomb);
 			
-			AddChild(info1);
-			AddChild(info2);
+			AddChild(playerui_1);
+			AddChild(playerui_2);
+			AddChild(scoreui);
+		}
+
+		public override void Update(float delta)
+		{
+			GameRunningTime += delta;
 		}
 	}
 }

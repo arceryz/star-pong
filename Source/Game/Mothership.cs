@@ -7,21 +7,22 @@ namespace StarPong.Game
 {
 	public class Mothership: CollisionObject, IDamageable
 	{
-		public enum HullStatus
+		public enum HullStatusEnum
 		{
-			Strong,
-			Damaged,
-			Critical
+			Strong = 3,
+			Damaged = 2,
+			Critical = 1,
+			Destroyed = 0
 		}
 
 		const float swayStrength = 50.0f;
 		const float swaySpeed = 1.0f;
 
-		public int Health { get; set; } = 300;
-		public Team Team { get; set; }
+		public int Health { get; private set; } = 100;
+		public Team Team { get; private set; }
 		public Action Exploded;
+		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Strong;
 
-		HullStatus hullStatus = HullStatus.Strong;
 		Texture2D texture;
 		FastNoiseLite noise;
 
@@ -65,22 +66,24 @@ namespace StarPong.Game
 		public void TakeDamage(int dmg, Vector2 loc)
 		{
 			Health -= dmg;
-			if (Health <= 0)
+			while (Health <= 0)
 			{
-				Explode();
-				return;
-			}
+				// Reduce hull status by one and restore health until all damage is resolved.
+				// Just in case >100 dmg is dealt in one tick.
+				if (HullStatus > 0) HullStatus--;
+				Health += 100;
 
-			// Transitions to call explosions.
-			if (Health < 200 && hullStatus == HullStatus.Strong)
-			{
-				hullStatus = HullStatus.Damaged;
-				// Strong to damaged.
-			}
-			if (Health < 100 && hullStatus == HullStatus.Damaged)
-			{
-				hullStatus = HullStatus.Critical;
-				// Critical to damaged.
+				if (HullStatus == HullStatusEnum.Damaged)
+				{
+				}
+				if (HullStatus == HullStatusEnum.Critical)
+				{
+				}
+				if (HullStatus == HullStatusEnum.Destroyed)
+				{
+					Explode();
+					return;
+				}
 			}
 		}
 	}

@@ -11,8 +11,8 @@ namespace StarPong.Game
 
 	internal interface IDamageable
 	{
-		public Team Team { get; set; }
-		public int Health { get; set; }
+		public Team Team { get; }
+		public int Health { get; }
 		public void TakeDamage(int amount, Vector2 where) { }
 	}
 }

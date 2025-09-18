@@ -10,8 +10,8 @@ namespace StarPong.Game
 	{
 		const float speed = 500.0f;
 
-		public Team Team { get; set; }
-		public int Health { get; set; } = 1;
+		public Team Team { get; private set; }
+		public int Health { get; private set; } = 1;
 		Texture2D texture;
 
 		public Bullet(Team team, Vector2 dir)

@@ -11,8 +11,8 @@ namespace StarPong.Game
 		const float spawnSpread = 45.0f;
 		const float speed = 200.0f;
 
-		public Team Team { get; set; } = Team.Neutral;
-		public int Health { get; set; } = 999;
+		public Team Team { get; private set; } = Team.Neutral;
+		public int Health { get; private set; } = 999;
 		Sprite sprite;
 
 		public Bomb()

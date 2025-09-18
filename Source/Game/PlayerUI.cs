@@ -4,9 +4,10 @@ using StarPong.Framework;
 
 namespace StarPong.Game
 {
-	public class PlayerInfoBar: GameObject
+	public class PlayerUI: GameObject
 	{
-		const float offset = 32.0f;
+		const float hoffset = 120;
+		const float voffset = 42;
 		const float energyPipEnergyQuantity = 10;
 
 		Player player;
@@ -14,17 +15,17 @@ namespace StarPong.Game
 		Texture2D healthPipTex;
 		Texture2D energyPipTex;
 
-		public PlayerInfoBar(Player player)
+		public PlayerUI(Player player)
 		{
 			if (player.Team == Team.Blue)
 			{
 				portraitTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_Blue_Portrait);
-				Position = Engine.GetAnchor(-1, -1, offset, offset);
+				Position = Engine.GetAnchor(0, -1, -hoffset + 2, voffset);
 			}
 			else
 			{
 				portraitTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_Red_Portrait);
-				Position = Engine.GetAnchor(1, -1, -offset, offset);
+				Position = Engine.GetAnchor(0, -1, hoffset + 2, voffset);
 			}
 			healthPipTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_HealthPip);
 			energyPipTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_EnergyPip);
@@ -38,7 +39,7 @@ namespace StarPong.Game
 			{
 				// Draw health pips next to each other.
 				// Keep in mind the direction based on team
-				int dir = player.Team == Team.Blue ? 1 : -1;
+				int dir = player.Team == Team.Blue ? -1 : 1;
 				Vector2 healthPipOffset = new Vector2(56 * dir, -14);
 				Vector2 energyPipOffset = healthPipOffset + new Vector2(-18 * dir, 24);
 				for (int i = 0; i < player.Health; i++)

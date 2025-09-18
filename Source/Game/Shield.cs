@@ -9,8 +9,8 @@ namespace StarPong.Game
 	public class Shield: CollisionObject, IDamageable
 	{
 		public Action BulletHit;
-		public Team Team { get; set; }
-		public int Health { get; set; } = 0;
+		public Team Team { get; private set; }
+		public int Health { get; private set; } = 0;
 		public bool IsActive { get { return CollisionEnabled; } }
 		Texture2D texture;
 
