@@ -85,6 +85,28 @@
 /processorParam:TextureFormat=Color
 /build:Bomb/Explosion_Small.png
 
+#begin Debug/Kobe.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Debug/Kobe.spritefont
+
+#begin Debug/Kobe.ttf
+/copy:Debug/Kobe.ttf
+
+#begin FX/Fire_Big.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:FX/Fire_Big.png
+
 #begin FX/Fire_Small.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -97,7 +119,7 @@
 /processorParam:TextureFormat=Color
 /build:FX/Fire_Small.png
 
-#begin Mothership/Mother_Blue.png
+#begin Mothership/Blue_Mother.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,9 +129,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Mothership/Mother_Blue.png
+/build:Mothership/Blue_Mother.png
 
-#begin Mothership/Mother_Red.png
+#begin Mothership/Red_Mother.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,7 +141,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Mothership/Mother_Red.png
+/build:Mothership/Red_Mother.png
 
 #begin Music/Battle1_Normal.ogg
 /importer:OggImporter

@@ -33,7 +33,7 @@ namespace StarPong.Framework
 			}
 		}
 
-		public void DrawString(SpriteBatch batch, Vector2 position, string text, float layer, float scale=1, bool centered=true)
+		public void DrawString(SpriteBatch batch, Vector2 position, string text, float scale=1, bool centered=true)
 		{
 			Vector2 pos = position;
 			if (centered)
@@ -46,7 +46,7 @@ namespace StarPong.Framework
 				if (sourceRects.ContainsKey(c))
 				{
 					Rectangle rect = sourceRects[c];
-					batch.Draw(sheet, pos + new Vector2(CharacterWidth * i, 0) * scale, rect, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, layer);
+					batch.Draw(sheet, pos + new Vector2(CharacterWidth * i, 0) * scale, rect, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
 				}
 			}
 		}

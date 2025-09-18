@@ -16,10 +16,7 @@ namespace StarPong.Scenes
 			Texture2D selTex = Engine.Load<Texture2D>(AssetPaths.Texture.UI_SelectionArrows);
 			Texture2D stars = Engine.Load<Texture2D>(AssetPaths.Texture.BG_Stars);
 
-			// UI belongs to a higher layer than the background.
-			GameObject ui = new GameObject();
-			ui.DrawLayer = 1;
-
+			// Create objects.
 			Label titleLabel = new Label(gyrussGold, "star-pong", 6);
 			titleLabel.Position = Engine.GetAnchor(0, -0.3f, 0, 0);
 
@@ -28,14 +25,12 @@ namespace StarPong.Scenes
 			playButton.Position = Engine.GetAnchor(0, 0);
 			playButton.Pressed += _OnPlayPressed;
 
-			// Background (layer=0).
 			ParallaxLayer bg = new ParallaxLayer(stars, 100.0f);
 
 			// Construct scene hierarchy.
-			AddChild(ui);
-				ui.AddChild(titleLabel);
-				ui.AddChild(playButton);
 			AddChild(bg);
+			AddChild(titleLabel);
+			AddChild(playButton);
 		}
 
 		public void _OnPlayPressed()

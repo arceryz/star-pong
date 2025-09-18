@@ -71,7 +71,7 @@ namespace StarPong.Framework
 			}
 			if (flickerTimer < FlickerInterval)
 			{
-				Font.DrawString(batch, GlobalPosition, Text, GlobalDrawZ, FontScale);
+				Font.DrawString(batch, GlobalPosition, Text, FontScale);
 			}
 		}
 	}

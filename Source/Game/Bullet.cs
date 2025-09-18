@@ -39,7 +39,8 @@ namespace StarPong.Game
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
 		{
-			if (other is IDamageable dmgable && dmgable.Team != Team)
+			if (other is IDamageable dmgable && dmgable.Team != Team &&
+				!(other is Bomb))
 			{
 				dmgable.TakeDamage(1, pos);
 				QueueFree();

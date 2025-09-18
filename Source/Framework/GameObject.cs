@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarPong.Source.Framework;
 
 namespace StarPong.Framework
 {
@@ -18,8 +19,6 @@ namespace StarPong.Framework
 		public Vector2 Position = Vector2.Zero;
 		public Vector2 GlobalPosition = Vector2.Zero;
 		public int GlobalDrawLayer { get; private set; } = 0;
-		// This value must be between 0 and 1, and MonoGame will sort highest on top with FrontToBack.
-		public float GlobalDrawZ => 1.0f - 1.0f / (1.0f + GlobalDrawLayer);
 		public int DrawLayer = 0;
 		public bool Flip = false;
 
@@ -37,6 +36,12 @@ namespace StarPong.Framework
 		public virtual void Draw(SpriteBatch batch) {}
 
 		#region Hierarchy Methods
+		/// <summary>
+		/// Update all objects in this hierarchy. This can create new objects,
+		/// but those are not included in the update.
+		/// Their position will be updated by a subsequent call to UpdateTransformHierarchy().
+		/// </summary>
+		/// <param name="delta"></param>
 		public void UpdateHierarchy(float delta)
 		{
 			Update(delta);
@@ -46,6 +51,9 @@ namespace StarPong.Framework
 			}
 		}
 
+		/// <summary>
+		/// Updates the global transforms of this object and all its children.
+		/// </summary>
 		public void UpdateTransformHierarchy()
 		{
 			if (Parent != null && !OverridePosition)
@@ -62,7 +70,12 @@ namespace StarPong.Framework
 			}
 		}
 
-		public void DrawHierarchy(SpriteBatch batch)
+		/// <summary>
+		/// Queues draw calls for this object and all its children.
+		/// Due to the nature of the draw sorter, later calls are drawn on top,
+		/// but draw layers are still respected.
+		/// </summary>
+		public void QueueDrawHierarchy()
 		{
 			if (Parent != null)
 			{
@@ -72,12 +85,11 @@ namespace StarPong.Framework
 			{
 				GlobalDrawLayer = DrawLayer;
 			}
+			DrawSorter.Instance.QueueDrawObject(this);
 
-			Draw(batch);
-			DebugDraw(batch);
 			foreach (GameObject child in Children)
 			{
-				child.DrawHierarchy(batch);
+				child.QueueDrawHierarchy();
 			}
 		}
 
@@ -153,21 +165,15 @@ namespace StarPong.Framework
 		{
 			Vector2 pos = center ? Utility.CenterToTex(position, texture) : position;
 			SpriteEffects eff = flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			batch.Draw(texture, pos, null, color, 0, Vector2.Zero, 1.0f, eff, GlobalDrawZ);
+			batch.Draw(texture, pos, null, color, 0, Vector2.Zero, 1.0f, eff, 0);
 		}
 
 		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Rectangle sourceRect, Color color, bool flip = false, bool center = true)
 		{
 			Vector2 pos = center ? position - new Vector2(sourceRect.Width, sourceRect.Height) / 2: position;
 			SpriteEffects eff = flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			batch.Draw(texture, pos, sourceRect, Color.White, 0, Vector2.Zero, 1, eff, GlobalDrawZ);
+			batch.Draw(texture, pos, sourceRect, Color.White, 0, Vector2.Zero, 1, eff, 0);
 		}
-
-		//public void DrawString(SpriteBatch batch, ImageFont font, string text, Vector2 position, Color color, bool centered=true)
-		//{
-		//	Vector2 offset = centered ? 0.5f * font.MeasureString(text) : Vector2.Zero;
-		//	batch.DrawString(font, text, Position - offset, color, 0, Vector2.Zero, 1.0f, SpriteEffects.None, GlobalDrawZ);
-		//}
 
 		public Vector2 ToGlobal(Vector2 pos)
 		{

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StarPong.Framework;
 using StarPong.Scenes;
+using StarPong.Source.Framework;
 
 namespace StarPong
 {
@@ -20,14 +21,13 @@ namespace StarPong
 	public class Engine : Microsoft.Xna.Framework.Game
     {
         public static Engine Instance;
-
 		public static int ScreenWidth = 1280;
         public static int ScreenHeight = 720;
-
         public static float Time = 0;
         public static bool EnableDebugDraw = false;
-
+        public static bool EnableTreeDraw = false;
         public static SceneName ActiveScene { get; private set; }
+        public static SpriteFont DebugFont;
 
 		// Internal.
 		GraphicsDeviceManager graphics;
@@ -35,6 +35,7 @@ namespace StarPong
 		Input input = new();
         SceneTree sceneTree = new();
         Physics physics = new();
+        DrawSorter drawSorter = new();
 
 		public Engine()
         {
@@ -55,6 +56,7 @@ namespace StarPong
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+			DebugFont = Load<SpriteFont>(AssetPaths.Font.Debug_Kobe_TTF);
 		}
 
         protected override void Update(GameTime gameTime)
@@ -63,19 +65,10 @@ namespace StarPong
 			float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			input.Update();
-            if (Input.IsKeyPressed(Keys.Z))
-            {
-                EnableDebugDraw = !EnableDebugDraw;
-            }
-            if (Input.IsKeyHeld(Keys.Escape))
-            {
-                Exit();
-            }
+            if (Input.IsKeyPressed(Keys.Z)) EnableDebugDraw = !EnableDebugDraw;
+            if (Input.IsKeyHeld(Keys.Escape)) Exit();
+            if (Input.IsKeyPressed(Keys.T)) EnableTreeDraw = !EnableTreeDraw;
 
-			// 1. Perform physics update.
-			// 2. Update the scene tree, this can cause new objects to be created.
-			// Their global positions are still unevaluated.
-			// 3. Update the transforms so new objects have correct global positions.
 			physics.Update(delta);
 			sceneTree.Update(delta);
 			sceneTree.UpdateTransform();
@@ -85,17 +78,24 @@ namespace StarPong
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, samplerState: SamplerState.PointClamp);
-            sceneTree.Draw(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+
+            // The scene tree will update the draw layers in a hierarchical fashion.
+            // This way, objects will be sorted by both global draw layer and child index.
+			drawSorter.ResetLayers();
+            sceneTree.QueueDrawObjects();
+			drawSorter.DrawLayers(spriteBatch);
+            if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
+            if (EnableTreeDraw) sceneTree.DebugDrawTree(spriteBatch);
+            spriteBatch.DrawString(DebugFont, "Press (Z) to toggle debug shapes | Press (T) to toggle tree view | Press (Esc) to quit",
+                GetAnchor(-1, 1, 10, -23), Color.DarkGray with { A = 50 });
+
             spriteBatch.End();
         }
 
         public static void DebugDrawRect(Rect2 rect, Color color)
         {
-            if (EnableDebugDraw)
-            {
-                Primitives2D.DrawRectangle(Instance.spriteBatch, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), color);
-            }
+            Primitives2D.DrawRectangle(Instance.spriteBatch, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), color);
         }
 
 		public static void ChangeScene(SceneName scene)

@@ -14,7 +14,8 @@ namespace StarPong.Game
 			Critical
 		}
 
-		const float swayStrength = 35.0f;
+		const float swayStrength = 50.0f;
+		const float swaySpeed = 1.0f;
 
 		public int Health { get; set; } = 300;
 		public Team Team { get; set; }
@@ -29,12 +30,12 @@ namespace StarPong.Game
 			this.Team = team;
 			if (team == Team.Blue)
 			{
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Mothership_Blue);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Mothership);
 			}
 			else
 			{
 				Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Mothership_Red);
+				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Mothership);
 			}
 
 			noise = new FastNoiseLite(Utility.RandInt32());
@@ -45,9 +46,10 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
-			Position = Engine.GetAnchor(Flip ? 1.0f : -1.0f, 0);
-			Position.X += noise.GetNoise(Engine.Time, 0) * swayStrength;
-			Position.Y += noise.GetNoise(Engine.Time, 1000) * swayStrength;
+			float sign = Flip ? 1 : -1;
+			Position = Engine.GetAnchor(sign, 0, sign * -35);
+			Position.X += noise.GetNoise(Engine.Time * swaySpeed, 0) * swayStrength;
+			Position.Y += noise.GetNoise(-Engine.Time * swaySpeed, 1000) * swayStrength;
 		}
 
 		public override void Draw(SpriteBatch batch)

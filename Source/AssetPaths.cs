@@ -8,8 +8,8 @@
 			public static string BG_Asteroids_Close = "Background/BG_Asteroids_Close";
 			public static string BG_Stars = "Background/BG_Stars";
 
-			public static string Mothership_Blue = "Mothership/Mother_Blue";
-			public static string Mothership_Red = "Mothership/Mother_Red";
+			public static string Blue_Mothership = "Mothership/Blue_Mother";
+			public static string Red_Mothership = "Mothership/Red_Mother";
 
 			public static string Bomb = "Bomb/Bomb";
 			public static string Explosion_Big = "Bomb/Explosion_Big";
@@ -37,6 +37,7 @@
 			public static string Gyruss_Grey = "UI/Gyruss_Grey";
 			public static string Gyruss_Gold = "UI/Gyruss_Gold";
 			public static string Gyruss_Bronze = "UI/Gyruss_Bronze";
+			public static string Debug_Kobe_TTF = "Debug/Kobe";
 		}
 
 		public static class Song

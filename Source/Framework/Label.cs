@@ -18,7 +18,7 @@ namespace StarPong.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			Font.DrawString(batch, GlobalPosition, Text, GlobalDrawZ, Scale);
+			Font.DrawString(batch, GlobalPosition, Text, Scale);
 		}
 	}
 }

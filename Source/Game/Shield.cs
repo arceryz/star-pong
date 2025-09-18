@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
@@ -7,8 +8,7 @@ namespace StarPong.Game
 {
 	public class Shield: CollisionObject, IDamageable
 	{
-		const int shieldHealth = 3;
-
+		public Action BulletHit;
 		public Team Team { get; set; }
 		public int Health { get; set; } = 0;
 		public bool IsActive { get { return CollisionEnabled; } }
@@ -39,24 +39,22 @@ namespace StarPong.Game
 			}
 		}
 
-		public void TakeDamage(int amount, Vector2 loc)
-		{
-			Health -= amount;
-			if (Health <= 0)
-			{
-				Deactivate();
-			}
-		}
-
 		public void Activate()
 		{
 			CollisionEnabled = true;
-			Health = shieldHealth;
 		}
 
 		public void Deactivate()
 		{
 			CollisionEnabled = false;
+		}
+
+		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)
+		{
+			if (other is IDamageable dmg && dmg.Team != Team && other is Bullet)
+			{
+				BulletHit?.Invoke();
+			}
 		}
 	}
 }

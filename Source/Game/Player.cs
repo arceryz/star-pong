@@ -46,6 +46,7 @@ namespace StarPong.Game
 		public const float ShieldActivateMinEnergy = 20;
 		public const float ShieldActivateEnergyCost = 10;
         public const float ShieldEnergyCostSec = 30;
+        public const float ShieldBulletAbsorbCost = 10;
 
         public Team Team { get; set; }
         public int Health { get; set; } = 3;
@@ -84,6 +85,7 @@ namespace StarPong.Game
 
 			shield = new Shield(Team);
             shield.Position = ToGlobalDir(new Vector2(ShieldDistance, 0));
+            shield.BulletHit += OnShieldBulletHit;
 			AddChild(shield);
 
             Position.Y = Engine.ScreenHeight / 2.0f;
@@ -124,6 +126,7 @@ namespace StarPong.Game
                 energyRegenCooldown = EnergyRegenCooldownTime;
 
                 Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
+                bullet.DrawLayer = 1;
                 bullet.Position = ToGlobal(bulletSpawnOrigin);
                 AddChild(bullet);
 
@@ -151,8 +154,8 @@ namespace StarPong.Game
             if (energyRegenCooldown < 0)
             {
                 Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec: EnergyRegenSec) * delta;
-                Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
             }
+			Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
 		}
 
         public override void Draw(SpriteBatch batch)
@@ -174,5 +177,10 @@ namespace StarPong.Game
                 return;
             }
 		}
+
+        public void OnShieldBulletHit()
+        {
+            Energy -= ShieldBulletAbsorbCost;
+        }
     }
 }
