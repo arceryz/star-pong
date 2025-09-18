@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,41 +13,53 @@ namespace StarPong.Game
 		public Team Team { get; private set; }
 		public int Health { get; private set; } = 0;
 		public bool IsActive { get { return CollisionEnabled; } }
-		Texture2D texture;
+
+		Sprite sprite;
 
 		public Shield(Team team)
 		{
 			this.Team = team;
+			Texture2D tex;
 			if (Team == Team.Blue)
 			{
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Shield);
+				tex = Engine.Load<Texture2D>(AssetPaths.Texture.Blue_Shield);
 			}
 			else
 			{
-				Flip = true;
-				texture = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Shield);
+				tex = Engine.Load<Texture2D>(AssetPaths.Texture.Red_Shield);
 			}
 
-			CollisionRect = new Rect2(texture.Bounds).Centered();
+			sprite = new Sprite(tex, 4, 3);
+			sprite.AddAnimation("activate", 8, 0, 0, 4, false);
+			sprite.AddAnimation("deactivate", 8, 0, 1, 4, false);
+			sprite.AddAnimation("running", 0, 0, 2, 1, true);
+			sprite.RotationDeg = Team == Team.Blue ? 90 : -90;
+			sprite.Scale = 2;
+			sprite.AnimationFinished += OnAnimationFinished;
+			AddChild(sprite);
+
+			CollisionRect = new Rect2(-4, 0, 16, sprite.FrameSize.Width * 1.5f).Centered();
 			CollisionEnabled = false;
-		}
-
-		public override void Draw(SpriteBatch batch)
-		{
-			if (CollisionEnabled)
-			{
-				DrawTexture(batch, texture, GlobalPosition, Color.White, Flip);
-			}
 		}
 
 		public void Activate()
 		{
 			CollisionEnabled = true;
+			Visible = true;
+			sprite.Play("activate");
 		}
 
 		public void Deactivate()
 		{
 			CollisionEnabled = false;
+			sprite.Play("deactivate");
+		}
+
+		public void OnAnimationFinished()
+		{
+			Debug.WriteLine($"Shield animation finished: {sprite.CurrentAnimation}");
+			if (sprite.CurrentAnimation == "activate") sprite.Play("running");
+			if (sprite.CurrentAnimation == "deactivate") Visible = false;
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

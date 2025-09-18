@@ -23,9 +23,9 @@ namespace StarPong.Framework
 			return (int)(RNG.NextInt64() % Int32.MaxValue);
 		}
 
-		public static Vector2 CenterToTex(Vector2 vec, Texture2D tex)
+		public static Vector2 TexCenter(Texture2D tex)
 		{
-			return new Vector2(vec.X - tex.Bounds.Width * 0.5f, vec.Y - tex.Bounds.Height * 0.5f);
+			return new Vector2(tex.Bounds.Width, tex.Bounds.Height) / 2;
 		}
 
 		public static Vector2 RandUnit2()

@@ -18,8 +18,10 @@ namespace StarPong.Framework
 		public bool OverridePosition = false;
 		public Vector2 Position = Vector2.Zero;
 		public Vector2 GlobalPosition = Vector2.Zero;
+
 		public int GlobalDrawLayer { get; private set; } = 0;
 		public int DrawLayer = 0;
+		public bool Visible = true;
 		public bool Flip = false;
 
 		public Action TreeExited;
@@ -85,11 +87,14 @@ namespace StarPong.Framework
 			{
 				GlobalDrawLayer = DrawLayer;
 			}
-			DrawSorter.Instance.QueueDrawObject(this);
-
-			foreach (GameObject child in Children)
+			if (Visible)
 			{
-				child.QueueDrawHierarchy();
+				DrawSorter.Instance.QueueDrawObject(this);
+
+				foreach (GameObject child in Children)
+				{
+					child.QueueDrawHierarchy();
+				}
 			}
 		}
 
@@ -161,18 +166,20 @@ namespace StarPong.Framework
 		#endregion
 
 		#region Utilities
-		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Color color, bool flip=false, bool center=true)
+		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Color color, bool flip=false, bool center=true, float rotDeg=0, float scale=1)
 		{
-			Vector2 pos = center ? Utility.CenterToTex(position, texture) : position;
+			Vector2 texCenter = Utility.TexCenter(texture);
+			Vector2 pos = center ? position - texCenter : position;
 			SpriteEffects eff = flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			batch.Draw(texture, pos, null, color, 0, Vector2.Zero, 1.0f, eff, 0);
+			batch.Draw(texture, pos + texCenter, null, color, MathHelper.ToRadians(rotDeg), texCenter, scale, eff, 0);
 		}
 
-		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Rectangle sourceRect, Color color, bool flip = false, bool center = true)
+		public void DrawTexture(SpriteBatch batch, Texture2D texture, Vector2 position, Rectangle sourceRect, Color color, bool flip = false, bool center = true, float rotDeg=0, float scale=1)
 		{
-			Vector2 pos = center ? position - new Vector2(sourceRect.Width, sourceRect.Height) / 2: position;
+			Vector2 texCenter = new Vector2(sourceRect.Width, sourceRect.Height) / 2;
+			Vector2 pos = center ? position - texCenter: position;
 			SpriteEffects eff = flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			batch.Draw(texture, pos, sourceRect, Color.White, 0, Vector2.Zero, 1, eff, 0);
+			batch.Draw(texture, pos + texCenter, sourceRect, Color.White, MathHelper.ToRadians(rotDeg), texCenter, scale, eff, 0);
 		}
 
 		public Vector2 ToGlobal(Vector2 pos)

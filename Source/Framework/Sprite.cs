@@ -28,6 +28,8 @@ namespace StarPong.Framework
 		public Action AnimationFinished;
 		public Rect2 FrameSize = Rect2.Zero;
 		public int FrameIndex = 0;
+		public float RotationDeg = 0;
+		public float Scale = 1;
 
 		Dictionary<string, Animation> animations = new();
 		Animation animation;
@@ -65,9 +67,9 @@ namespace StarPong.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			if (CurrentAnimation != "")
+			if (animation != null)
 			{
-				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Color.White, Flip);
+				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Color.White, Flip, true, RotationDeg, Scale);
 			}
 		}
 
@@ -90,11 +92,12 @@ namespace StarPong.Framework
 		{
 			CurrentAnimation = name;
 			animation = animations[name];
+			FrameIndex = 0;
+			frameTimer = 0;
 		}
 
 		public void Stop()
 		{
-			CurrentAnimation = "";
 			animation = null;
 		}
 	}
