@@ -9,21 +9,21 @@ namespace StarPong.Game
 		Big
 	}
 
-	public class Explosion: GameObject
+	public class ExplosionFX: GameObject
 	{
 		Sprite sprite;
 
-		public Explosion(ExplosionType type)
+		public ExplosionFX(ExplosionType type)
 		{
 			if (type == ExplosionType.Big)
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.Explosion_Big);
+				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.ExplosionFX_Big);
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 			}
 			else if (type == ExplosionType.Small)
 			{
-				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.Explosion_Small);
+				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.ExplosionFX_Small);
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 			}

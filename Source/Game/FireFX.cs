@@ -4,33 +4,33 @@ using StarPong.Framework;
 
 namespace StarPong.Game
 {
+	public enum FireType
+	{
+		Small,
+		Big
+	}
+
 	public class FireFX: GameObject
 	{
-		static Texture2D fireSmallTex;
-
-		public static void LoadContent(ContentManager content)
-		{
-			fireSmallTex = content.Load<Texture2D>("FX/Fire_Small");
-		}
-
 		Sprite sprite;
 
-		public FireFX()
+		public FireFX(FireType type)
 		{
-			sprite = new Sprite(fireSmallTex, 8, 1);
-			sprite.AddAnimation("fire", 4, 0, 0, 8);
+			if (type == FireType.Big)
+			{
+				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.FireFX_Big);
+				sprite = new Sprite(tex, 4, 1);
+				sprite.AddAnimation("fire", 4, 0, 0, 4);
+			}
+			else
+			{
+				Texture2D tex = Engine.Load<Texture2D>(AssetPaths.Texture.FireFX_Small);
+				sprite = new Sprite(tex, 8, 1);
+				sprite.Scale = 2;
+				sprite.AddAnimation("fire", 8, 0, 0, 8);
+			}
 			sprite.Play("fire");
-		}
-
-		public override void Update(float delta)
-		{
-			sprite.Position = Position;
-			sprite.Update(delta);
-		}
-
-		public override void Draw(SpriteBatch batch)
-		{
-			sprite.Draw(batch);
+			AddChild(sprite);
 		}
 	}
 }

@@ -57,7 +57,6 @@ namespace StarPong.Game
 
 		public void OnAnimationFinished()
 		{
-			Debug.WriteLine($"Shield animation finished: {sprite.CurrentAnimation}");
 			if (sprite.CurrentAnimation == "activate") sprite.Play("running");
 			if (sprite.CurrentAnimation == "deactivate") Visible = false;
 		}

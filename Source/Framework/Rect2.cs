@@ -60,6 +60,16 @@ namespace StarPong.Framework
 			return new Rect2(center.X - Width * xs / 2, center.Y - Height * ys / 2, Width * xs, Height * ys);
 		}
 
+		public Vector2 GetRandomPoint()
+		{
+			return new Vector2(Utility.RandRange(X, X + Width), Utility.RandRange(Y, Y + Height));
+		}
+
+		public Rectangle ToRectangle()
+		{
+			return new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
+		}
+
 		public Vector2 GetTL() => new Vector2(X, Y);
 		public Vector2 GetTR() => new Vector2(X + Width, Y);
 		public Vector2 GetBL() => new Vector2(X, Y + Height);

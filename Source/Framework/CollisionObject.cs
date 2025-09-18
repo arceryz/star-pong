@@ -26,9 +26,9 @@ namespace StarPong.Framework
 
 		public bool IsMouseHovering()
 		{
-			MouseState ms = Mouse.GetState();
+			Vector2 mpos = Input.GetMousePosition();
 			Rect2 rect = CollisionRect.Translated(Position);
-			return rect.ContainsPoint(new Vector2(ms.Position.X, ms.Position.Y));
+			return rect.ContainsPoint(new Vector2(mpos.X, mpos.Y));
 		}
 
 		public override void DebugDraw(SpriteBatch spriteBatch)

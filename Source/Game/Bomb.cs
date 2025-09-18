@@ -26,7 +26,7 @@ namespace StarPong.Game
 			CollisionRect = sprite.FrameSize.Centered().Scaled(0.5f, 0.5f);
 
 			// Set the position to the center of the screen.
-			Position = new Vector2(Engine.ScreenWidth / 2.0f, Engine.ScreenHeight / 2.0f);
+			Position = new Vector2(Engine.GameWidth / 2.0f, Engine.GameHeight / 2.0f);
 
 			// Set the velocity to a random angle between +- spread and random direction.
 			float spread = MathHelper.ToRadians(spawnSpread);
@@ -49,16 +49,16 @@ namespace StarPong.Game
 				Position.Y = bounding.Height / 2;
 				Velocity.Y *= -1;
 			}
-			if (bounding.Y + bounding.Height > Engine.ScreenHeight)
+			if (bounding.Y + bounding.Height > Engine.GameHeight)
 			{
 				Velocity.Y *= -1;
-				Position.Y = Engine.ScreenHeight - bounding.Height / 2;
+				Position.Y = Engine.GameHeight - bounding.Height / 2;
 			}
 		}
 
 		public void Explode()
 		{
-			Explosion explosion = new Explosion(ExplosionType.Big);
+			ExplosionFX explosion = new ExplosionFX(ExplosionType.Big);
 			explosion.DrawLayer = 3;
 			Parent.AddChild(explosion);
 			explosion.Position = Position;

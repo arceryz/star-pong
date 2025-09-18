@@ -1,5 +1,10 @@
 ﻿namespace StarPong
 {
+	/// <summary>
+	/// The only purpose of this class is to assign file paths to variables,
+	/// in that way, file changes can be made easily by refactoring the variable name in the IDE.
+	/// As a bonus, there is autocomplete for all the asset categories!
+	/// </summary>
 	public static class AssetPaths
 	{
 		public static class Texture
@@ -12,8 +17,6 @@
 			public static string Red_Mothership = "Mothership/Red_Mother";
 
 			public static string Bomb = "Bomb/Bomb";
-			public static string Explosion_Big = "Bomb/Explosion_Big";
-			public static string Explosion_Small = "Bomb/Explosion_Small";
 
 			public static string MuzzleFlash = "Player/Muzzle_Flash";
 			public static string Blue_Player = "Player/Blue_Ship";
@@ -29,6 +32,11 @@
 			public static string UI_Blue_Portrait = "UI/Blue_Portrait";
 			public static string UI_HealthPip = "UI/HealthPip";
 			public static string UI_EnergyPip = "UI/EnergyPip";
+
+			public static string ExplosionFX_Big = "FX/Explosion_Big";
+			public static string ExplosionFX_Small = "FX/Explosion_Small";
+			public static string FireFX_Big = "FX/Fire_Big";
+			public static string FireFX_Small = "FX/Fire_Small";
 		}
 
 		public static class Font

@@ -66,6 +66,7 @@ namespace StarPong.Game
 		public void TakeDamage(int dmg, Vector2 loc)
 		{
 			Health -= dmg;
+
 			while (Health <= 0)
 			{
 				// Reduce hull status by one and restore health until all damage is resolved.

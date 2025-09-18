@@ -88,7 +88,7 @@ namespace StarPong.Game
             shield.BulletHit += OnShieldBulletHit;
 			AddChild(shield);
 
-            Position.Y = Engine.ScreenHeight / 2.0f;
+            Position.Y = Engine.GameHeight / 2.0f;
             bulletSpawnOrigin = new Vector2(texture.Width - 60, 0);
 
 			muzzleFlash = new Sprite(Engine.Load<Texture2D>(AssetPaths.Texture.MuzzleFlash), 3, 1);
@@ -114,8 +114,8 @@ namespace StarPong.Game
 			float sw = CollisionRect.Width;
             float sh = CollisionRect.Height;
 
-			Position.Y = MathHelper.Clamp(Position.Y, verticalOffset + sh/2, Engine.ScreenHeight - sh/2 - verticalOffset);
-            Position.X = Team == Team.Blue ? horizontalOffset + sw/2 : Engine.ScreenWidth - horizontalOffset - sw/2;
+			Position.Y = MathHelper.Clamp(Position.Y, verticalOffset + sh/2, Engine.GameHeight - sh/2 - verticalOffset);
+            Position.X = Team == Team.Blue ? horizontalOffset + sw/2 : Engine.GameWidth - horizontalOffset - sw/2;
 
             // Shooting.
             if (shootCooldown > 0) shootCooldown -= delta;
@@ -170,8 +170,14 @@ namespace StarPong.Game
 
         public void TakeDamage(int dmg, Vector2 pos)
         {
+            // Spawn some fire for every hit by a bullet,
+            // helps as an additional health indicator.
+			FireFX fire = new FireFX(FireType.Small);
+            fire.Position = CollisionRect.GetRandomPoint();
+			AddChild(fire);
+
 			Health -= dmg;
-            if (Health <= 0)
+			if (Health <= 0)
             {
                 Explode();
                 return;

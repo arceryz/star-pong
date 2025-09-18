@@ -42,7 +42,7 @@ namespace StarPong.Game
 			if (other is IDamageable dmgable && dmgable.Team != Team &&
 				!(other is Bomb))
 			{
-				dmgable.TakeDamage(1, pos);
+				dmgable.TakeDamage(1, GlobalPosition);
 				QueueFree();
 			}
 		}
