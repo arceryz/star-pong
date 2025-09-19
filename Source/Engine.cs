@@ -42,7 +42,8 @@ namespace StarPong
         Physics physics = new();
         DrawSorter drawSorter = new();
         RenderTarget2D renderTarget;
-        Effect crtEffect;
+		RenderTarget2D effectTarget;
+		Effect crtEffect;
 
         #region Core
         public Engine()
@@ -68,8 +69,9 @@ namespace StarPong
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 			renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight, false, SurfaceFormat.Color, DepthFormat.None);
+			effectTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
-            crtEffect = Load<Effect>(Assets.Shaders.CRT);
+			crtEffect = Load<Effect>(Assets.Shaders.CRT);
 			DebugFont = Load<SpriteFont>(Assets.Fonts.Debug_Kobe_TTF);
             CustomAssets[Assets.Fonts.Gyruss_Gold] = new ImageFont(Assets.Fonts.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
             CustomAssets[Assets.Fonts.Gyruss_Grey] = new ImageFont(Assets.Fonts.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
@@ -96,40 +98,52 @@ namespace StarPong
 
         protected override void Draw(GameTime gameTime)
         {
-
-			// First we render to the render target we created,
-			// then we scale this to the screen properly later.
 			ComputeViewport();
-			GraphicsDevice.Clear(Color.Black);
-            GraphicsDevice.SetRenderTarget(renderTarget);
-            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
 
-            // The scene tree will update the draw layers in a hierarchical fashion.
-            // This way, objects will be sorted by both global draw layer and child index.
+			//***********************************************//
+			// 1. Render the game itself.
+			//***********************************************//
+			GraphicsDevice.SetRenderTarget(renderTarget);
+			GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
 			drawSorter.ResetLayers();
             sceneTree.QueueDrawObjects();
 			drawSorter.DrawLayers(spriteBatch);
-            spriteBatch.End();
-
-			// Set up the CRT effect.
-			crtEffect.Parameters["Time"]?.SetValue((float)gameTime.TotalGameTime.TotalSeconds);
-            crtEffect.Parameters["Shake"]?.SetValue(Utility.RandUnit2() * MathHelper.Min(cameraShakeMax, cameraShake) * 0.001f);
-
-			// Rescale the render target to the desired screen size.
-			// This will maintain aspect ratio and add black bars if needed.
-			GraphicsDevice.SetRenderTarget(null);
-			GraphicsDevice.Clear(Color.Black);
-			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, effect: crtEffect);
-			spriteBatch.Draw(renderTarget, Viewport.ToRectangle(), Color.White);
-			spriteBatch.End();
-
-            // Make sure that debug drawing and other visualisations end up on top.
-            // They dont have to be affected by the CRT effect.
-			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
-			if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
-			if (EnableTreeDraw) sceneTree.DebugDrawTree(spriteBatch);
 			if (ActiveScene == SceneName.MenuScene) spriteBatch.DrawString(DebugFont, "Press (Z) to toggle debug shapes | Press (T) to toggle tree view | Press (Esc) to quit",
 				GetAnchor(-1, 1, 10, -23), Color.DarkGray with { A = 50 });
+			if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
+
+			spriteBatch.End();
+
+			//***********************************************//
+			// 2. Apply the CRT effect.
+
+			// We have to use a seperate render target for the effect to
+			// avoid graphical glitches from reading/writing the same texture.
+			//***********************************************//
+			GraphicsDevice.SetRenderTarget(effectTarget);
+			GraphicsDevice.Clear(Color.Black);
+			crtEffect.Parameters["Time"]?.SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+			crtEffect.Parameters["Shake"]?.SetValue(Utility.RandUnit2() * MathHelper.Min(cameraShakeMax, cameraShake) * 0.001f);
+			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp, effect: crtEffect);
+			spriteBatch.Draw(renderTarget, new Rectangle(0, 0, 1280, 720), Color.White);
+			spriteBatch.End();
+
+			//***********************************************//
+			// 3. Render the debug overlay on top.
+			//***********************************************//
+			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+			GraphicsDevice.SetRenderTarget(effectTarget);
+			if (EnableTreeDraw) sceneTree.DebugDrawTree(spriteBatch);
+			spriteBatch.End();
+
+			//***********************************************//
+			// 4. Draw the render target to the screen.
+			//***********************************************//
+			GraphicsDevice.SetRenderTarget(null);
+			GraphicsDevice.Clear(Color.Black);
+			spriteBatch.Begin(SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+			spriteBatch.Draw(effectTarget, Viewport.ToRectangle(), Color.White);
 			spriteBatch.End();
 		}
 		#endregion
