@@ -46,6 +46,8 @@ namespace StarPong.Game
 			CollisionRect = new Rect2(-4, 0, 16, sprite.FrameSize.Width * 1.5f).Centered();
 			CollisionEnabled = false;
 
+			Debug.WriteLine(CollisionRect.Height);
+
 			// Create instances to avoid duplicate sounds from occuring.
 			// The regular SoundEffect pools instances internally, not what we want.
 			activateSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Activate).CreateInstance();
@@ -87,9 +89,27 @@ namespace StarPong.Game
 			{
 				BulletHit?.Invoke();
 			}
+
+			// For the bomb we will reflect it around a spherical-ish normal.
 			if (other is Bomb bomb)
 			{
-				bomb.Velocity.X *= -1;
+				// Ignore collision if the bomb is behind the shield.
+				if (bomb.Velocity.X > 0 && bomb.GlobalPosition.X > GlobalPosition.X ||
+					bomb.Velocity.X < 0 && bomb.GlobalPosition.X < GlobalPosition.X)
+				{
+					return;
+				}
+
+				Vector2 norm = (bomb.GlobalPosition - GlobalPosition) / CollisionRect.Height;
+
+				// Make the normal flatter by adding extra 1 to the X direction,
+				// also make it more curved near the edges by squaring the Y.
+				norm.X += -2.5f * Utility.Sign(bomb.Velocity.X);
+				norm.Y = MathHelper.Clamp(norm.Y, -1, 1);
+				norm.Y *= Utility.Sign(norm.Y) * norm.Y;
+				norm.Normalize();
+
+				bomb.Velocity = Vector2.Reflect(bomb.Velocity, norm);
 				deflectSFX.Play();
 			}
 		}

@@ -50,7 +50,10 @@
 
 		public static class Songs
 		{
-			public static string Battle1_Normal = "Music/Battle1_Normal";
+			public static string Battle_Normal = "Music/Battle_Normal";
+			public static string Battle_Critical = "Music/Battle_Critical";
+			public static string Menu1 = "Music/Menu1";
+			public static string Menu2 = "Music/Menu2";
 		}
 
 		public static class Sounds

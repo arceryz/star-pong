@@ -9,6 +9,7 @@ namespace StarPong.Scenes
 	public class PlayingScene: GameObject
 	{
 		public static float GameRunningTime = 0;
+		public static bool IsCriticalPhase = false;
 
 		public PlayingScene()
 		{
@@ -27,6 +28,8 @@ namespace StarPong.Scenes
 
 			Mothership mother1 = new Mothership(Team.Blue);
 			Mothership mother2 = new Mothership(Team.Red);
+			mother1.HullStatusChanged += () => OnMotherHullStatusChanged(mother1);
+			mother2.HullStatusChanged += () => OnMotherHullStatusChanged(mother2);
 
 			Player player1 = new Player(Team.Blue);
 			Player player2 = new Player(Team.Red);
@@ -43,7 +46,7 @@ namespace StarPong.Scenes
 			PlayerUI playerui_2 = new PlayerUI(player2);
 			ScoreUI scoreui = new ScoreUI(mother1, mother2);
 
-			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle1_Normal));
+			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle_Normal));
 			MediaPlayer.Volume = 0.5f;
 			MediaPlayer.IsRepeating = true;
 
@@ -72,6 +75,15 @@ namespace StarPong.Scenes
 		public override void Update(float delta)
 		{
 			GameRunningTime += delta;
+		}
+
+		void OnMotherHullStatusChanged(Mothership mother)
+		{
+			if (mother.HullStatus == Mothership.HullStatusEnum.Critical && !IsCriticalPhase)
+			{
+				MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle_Critical));
+				IsCriticalPhase = true;
+			}
 		}
 	}
 }

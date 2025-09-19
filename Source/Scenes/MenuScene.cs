@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
 using StarPong.Game;
 
@@ -32,6 +33,9 @@ namespace StarPong.Scenes
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 100.0f);
 
+			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Menu1));
+			MediaPlayer.Volume = 0.5f;
+			MediaPlayer.IsRepeating = true;
 
 			//***********************************************//
 			// Hierarchy

@@ -34,5 +34,10 @@ namespace StarPong.Framework
 			vec.Rotate(RandRange(0, 2 * MathF.PI));
 			return vec;
 		}
+
+		public static float Sign(float x)
+		{
+			return x > 0 ? 1 : (x < 0 ? -1 : 0);
+		}
 	}
 }

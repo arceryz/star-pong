@@ -21,6 +21,7 @@ namespace StarPong.Game
 		public int Health { get; private set; } = 100;
 		public Team Team { get; private set; }
 		public Action Exploded;
+		public Action HullStatusChanged;
 		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Strong;
 
 		Texture2D texture;
@@ -72,6 +73,7 @@ namespace StarPong.Game
 				// Reduce hull status by one and restore health until all damage is resolved.
 				// Just in case >100 dmg is dealt in one tick.
 				if (HullStatus > 0) HullStatus--;
+				HullStatusChanged?.Invoke();
 				Health += 100;
 
 				if (HullStatus == HullStatusEnum.Damaged)

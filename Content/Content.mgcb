@@ -143,11 +143,29 @@
 /processorParam:TextureFormat=Color
 /build:Mothership/Red_Mother.png
 
-#begin Music/Battle1_Normal.ogg
+#begin Music/Battle_Critical.ogg
 /importer:OggImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Music/Battle1_Normal.ogg
+/build:Music/Battle_Critical.ogg
+
+#begin Music/Battle_Normal.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/Battle_Normal.ogg
+
+#begin Music/Menu1.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/Menu1.ogg
+
+#begin Music/Menu2.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/Menu2.ogg
 
 #begin Player/Blue_Bullet.png
 /importer:TextureImporter

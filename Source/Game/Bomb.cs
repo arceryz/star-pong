@@ -8,12 +8,17 @@ namespace StarPong.Game
 {
 	public class Bomb: CollisionObject, IDamageable
 	{
-		const float spawnSpread = 45.0f;
-		const float speed = 200.0f;
-
 		public Team Team { get; private set; } = Team.Neutral;
 		public int Health { get; private set; } = 999;
+
+		const float spawnSpread = 45.0f;
+		const float speed = 200.0f;
+		const float waitingDuration = 3.0f;
+		const float waitingTickInterval = 0.5f;
+
 		Sprite sprite;
+		Label waitLabel;
+		float waitingTimer = 0;
 
 		public Bomb()
 		{
@@ -24,21 +29,38 @@ namespace StarPong.Game
 			AddChild(sprite);
 
 			CollisionRect = sprite.FrameSize.Centered().Scaled(0.7f, 0.9f);
+			Position = Engine.GetAnchor(0, 0);
 
-			// Set the position to the center of the screen.
-			Position = new Vector2(Engine.GameWidth / 2.0f, Engine.GameHeight / 2.0f);
-
-			// Set the velocity to a random angle between +- spread and random direction.
-			float spread = MathHelper.ToRadians(spawnSpread);
-			float rotateAngle = Utility.RandRange(-spread, spread);
-
-			Velocity = new Vector2(speed, 0.0f);
-			Velocity.Rotate(rotateAngle);
-			Velocity *= Utility.RandBool() ? -1.0f : 1.0f;
+			waitLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "3", 4);
+			waitLabel.Position = new Vector2(0, -sprite.FrameSize.Height);
+			AddChild(waitLabel);
 		}
 
 		public override void Update(float delta)
 		{
+			if (waitingTimer < waitingDuration)
+			{
+				waitingTimer += delta;
+				sprite.Visible = (int)(waitingTimer / waitingTickInterval) % 2 == 0;
+				waitLabel.Text = $"{waitingDuration - (int)waitingTimer}";
+
+				if (waitingTimer > waitingDuration)
+				{
+					waitLabel.Visible = false;
+					sprite.Visible = true;
+
+					// Set the velocity to a random angle between +- spread and random direction.
+					float spread = MathHelper.ToRadians(spawnSpread);
+					float rotateAngle = Utility.RandRange(-spread, spread);
+
+					Velocity = new Vector2(speed, 0.0f);
+					//Velocity.Rotate(rotateAngle);
+					//Velocity *= Utility.RandBool() ? -1.0f : 1.0f;
+				}
+				return;
+			}
+
+			// Apply movement.
 			base.Update(delta);
 
 			// Handle reflection and reset when out of bounds on either side.
