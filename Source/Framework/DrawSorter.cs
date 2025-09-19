@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
 
-namespace StarPong.Source.Framework
+namespace StarPong.Framework
 {
 	/// <summary>
 	/// This class is responsible for sorting the draw calls made by game objects.

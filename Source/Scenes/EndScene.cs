@@ -1,12 +1,14 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
+using StarPong.Game;
 
 namespace StarPong.Scenes
 {
-	public class MenuScene: GameObject
+	public class EndScene: GameObject
 	{
-		public MenuScene() { }
+		public EndScene() { }
 
 		public override void EnterTree()
 		{
@@ -22,17 +24,24 @@ namespace StarPong.Scenes
 			//***********************************************//
 			// Objects
 			//***********************************************//
-			Label titleLabel = new Label(gyrussGold, "star-pong", 6);
-			titleLabel.Position = Engine.GetAnchor(0, -0.3f, 0, 0);
+			Team winner = PlayingScene.LastDamagedTeam == Team.Blue ? Team.Red : Team.Blue;
+			Label titleLabel = new Label(gyrussGold, $"{winner.ToString().ToLower()} wins", 6);
+			titleLabel.Position = Engine.GetAnchor(0, -0.5f, 0, 0);
 
-			Button playButton = new Button(gyrussGrey, "click here to play", selTex, 2)
-				.SetFlicker(0.5f);
-			playButton.Position = Engine.GetAnchor(0, 0);
+			Label scoreLabel = new Label(gyrussGold, $"{PlayingScene.FinalScore1} - {PlayingScene.FinalScore2}", 4);
+			scoreLabel.Position = titleLabel.Position + new Vector2(0, 75);
+
+			Button playButton = new Button(gyrussGrey, "play again", selTex, 2);
 			playButton.Pressed += () => Engine.ChangeScene(SceneName.PlayingScene);
+			playButton.Position = Engine.GetAnchor(0, 0);
+
+			Button returnButton = new Button(gyrussGrey, "return", selTex, 2);
+			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
+			returnButton.Position = Engine.GetAnchor(0, 0, 0, 100);
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 100.0f);
 
-			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Menu1));
+			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Menu2));
 			MediaPlayer.Volume = 0.5f;
 			MediaPlayer.IsRepeating = true;
 
@@ -41,7 +50,9 @@ namespace StarPong.Scenes
 			//***********************************************//
 			AddChild(bg);
 			AddChild(titleLabel);
+			AddChild(scoreLabel);
 			AddChild(playButton);
+			AddChild(returnButton);
 		}
 	}
 }

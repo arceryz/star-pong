@@ -1,17 +1,32 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
 using StarPong.Game;
-using System.Diagnostics;
 
 namespace StarPong.Scenes
 {
 	public class PlayingScene: GameObject
 	{
-		public static float GameRunningTime = 0;
-		public static bool IsCriticalPhase = false;
+		public static float GameRunningTime;
+		public static bool IsCriticalPhase;
+		public static bool IsGameFinished;
+		public static int FinalScore1;
+		public static int FinalScore2;
+		public static Team LastDamagedTeam;
 
-		public PlayingScene()
+		Mothership mother1;
+		Mothership mother2;
+
+		public PlayingScene() 
+		{
+			GameRunningTime = 0;
+			IsCriticalPhase = false;
+			IsGameFinished = false;
+			LastDamagedTeam = Team.Neutral;
+		}
+
+		public override void EnterTree()
 		{
 			//***********************************************//
 			// Assets
@@ -26,8 +41,8 @@ namespace StarPong.Scenes
 			//***********************************************//
 			GameObject game = new GameObject();
 
-			Mothership mother1 = new Mothership(Team.Blue);
-			Mothership mother2 = new Mothership(Team.Red);
+			mother1 = new Mothership(Team.Blue);
+			mother2 = new Mothership(Team.Red);
 			mother1.HullStatusChanged += () => OnMotherHullStatusChanged(mother1);
 			mother2.HullStatusChanged += () => OnMotherHullStatusChanged(mother2);
 
@@ -79,11 +94,32 @@ namespace StarPong.Scenes
 
 		void OnMotherHullStatusChanged(Mothership mother)
 		{
+			if (IsGameFinished)
+			{
+				return;
+			}
+
+			LastDamagedTeam = mother.Team;
 			if (mother.HullStatus == Mothership.HullStatusEnum.Critical && !IsCriticalPhase)
 			{
 				MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle_Critical));
 				IsCriticalPhase = true;
 			}
+
+			// Finish the game.
+			if (mother.HullStatus == Mothership.HullStatusEnum.Destroyed)
+			{
+				mother.Exploded += OnMotherExploded;
+				IsGameFinished = true;
+				FinalScore1 = mother1.GetTotalHealth();
+				FinalScore2 = mother2.GetTotalHealth();
+				MediaPlayer.Stop();
+			}
+		}
+
+		void OnMotherExploded()
+		{
+			Engine.ChangeScene(SceneName.EndScene);
 		}
 	}
 }

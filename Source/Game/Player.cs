@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -117,8 +116,14 @@ namespace StarPong.Game
 			Position.Y = MathHelper.Clamp(Position.Y, verticalOffset + sh/2, Engine.GameHeight - sh/2 - verticalOffset);
             Position.X = Team == Team.Blue ? horizontalOffset + sw/2 : Engine.GameWidth - horizontalOffset - sw/2;
 
-            // Shooting.
-            if (shootCooldown > 0) shootCooldown -= delta;
+            // Prevent other functions when the game is finished.
+			if (PlayingScene.IsGameFinished)
+            {
+                return;
+            }
+
+			// Shooting.
+			if (shootCooldown > 0) shootCooldown -= delta;
             if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0 && Energy >= BulletEnergyCost)
             {
                 Energy -= BulletEnergyCost;

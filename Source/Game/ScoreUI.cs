@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -32,6 +33,11 @@ namespace StarPong.Game
 
 		public override void Draw(SpriteBatch batch)
 		{
+			if (PlayingScene.IsGameFinished)
+			{
+				stageLabel.Visible = false;
+				healthLabel.Visible = false;
+			}
 			stageLabel.Text = $"{(int)mother1.HullStatus} - {(int)mother2.HullStatus}";
 			healthLabel.Text = $"{mother1.Health} - {mother2.Health}";
 		} 

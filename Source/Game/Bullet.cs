@@ -1,10 +1,8 @@
-﻿using System;
-using System.Reflection.Metadata;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -53,8 +51,11 @@ namespace StarPong.Game
 			if (other is IDamageable dmgable && dmgable.Team != Team &&
 				!(other is Bomb))
 			{
-				dmgable.TakeDamage(1, GlobalPosition);
-				Engine.AddCameraShake(5);
+				int dmg = 1;
+				if (other is Mothership) dmg = 3;
+				if (PlayingScene.IsGameFinished) dmg = 0;
+
+				dmgable.TakeDamage(dmg, GlobalPosition);
 				impactSFX.Play();
 
 				ExplosionFX explosion = new ExplosionFX(ExplosionType.Small);

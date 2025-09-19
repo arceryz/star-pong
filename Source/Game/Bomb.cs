@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -13,6 +12,7 @@ namespace StarPong.Game
 
 		const float spawnSpread = 45.0f;
 		const float speed = 200.0f;
+		const float criticalSpeed = 250.0f;
 		const float waitingDuration = 3.0f;
 		const float waitingTickInterval = 0.5f;
 
@@ -29,11 +29,12 @@ namespace StarPong.Game
 			AddChild(sprite);
 
 			CollisionRect = sprite.FrameSize.Centered().Scaled(0.7f, 0.9f);
-			Position = Engine.GetAnchor(0, 0);
 
 			waitLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "3", 4);
 			waitLabel.Position = new Vector2(0, -sprite.FrameSize.Height);
 			AddChild(waitLabel);
+
+			Reset();
 		}
 
 		public override void Update(float delta)
@@ -53,9 +54,15 @@ namespace StarPong.Game
 					float spread = MathHelper.ToRadians(spawnSpread);
 					float rotateAngle = Utility.RandRange(-spread, spread);
 
-					Velocity = new Vector2(speed, 0.0f);
-					//Velocity.Rotate(rotateAngle);
-					//Velocity *= Utility.RandBool() ? -1.0f : 1.0f;
+					Velocity = new Vector2(PlayingScene.IsCriticalPhase ? criticalSpeed: speed, 0.0f);
+					Velocity.Rotate(rotateAngle);
+
+					float dir = 0;
+					if (PlayingScene.LastDamagedTeam == Team.Neutral)
+						dir = Utility.RandBool() ? 1.0f : -1.0f;
+					else
+						dir = PlayingScene.LastDamagedTeam == Team.Blue ? 1.0f : -1.0f;
+					Velocity *= dir;
 				}
 				return;
 			}
@@ -78,14 +85,24 @@ namespace StarPong.Game
 			}
 		}
 
+		public void Reset()
+		{
+			Position = Engine.GetAnchor(0, 0);
+			waitingTimer = 0;
+			waitLabel.Visible = true;
+		}
+
 		public void Explode()
 		{
 			ExplosionFX explosion = new ExplosionFX(ExplosionType.Big);
 			explosion.DrawLayer = 3;
-			Parent.AddChild(explosion);
 			explosion.Position = Position;
-			Engine.AddCameraShake(200);
-			QueueFree();
+			Parent.AddChild(explosion);
+
+			if (!PlayingScene.IsGameFinished)
+				Reset();
+			else
+				QueueFree();
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -35,6 +36,10 @@ namespace StarPong.Game
 
 		public override void Draw(SpriteBatch batch)
 		{
+			if (PlayingScene.IsGameFinished)
+			{
+				return;
+			}
 			if (player.Health == 1 && Engine.Time % 0.1f < 0.05f || player.Health > 1)
 			{
 				// Draw health pips next to each other.

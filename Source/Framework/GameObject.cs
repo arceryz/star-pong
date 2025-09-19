@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarPong.Source.Framework;
 
 namespace StarPong.Framework
 {
@@ -14,6 +13,7 @@ namespace StarPong.Framework
 		public List<string> Groups { get; private set; } = new();
 		public Guid Id { get; private set; }
 		public SceneTree Tree;
+		public bool IsDeleted { get; private set; }
 
 		public bool OverridePosition = false;
 		public Vector2 Position = Vector2.Zero;
@@ -47,7 +47,7 @@ namespace StarPong.Framework
 		public void UpdateHierarchy(float delta)
 		{
 			Update(delta);
-			foreach (GameObject child in Children)
+			foreach (GameObject child in Children.ToList())
 			{
 				child.UpdateHierarchy(delta);
 			}
@@ -66,7 +66,7 @@ namespace StarPong.Framework
 			{
 				GlobalPosition = Position;
 			}
-			foreach (GameObject child in Children)
+			foreach (GameObject child in Children.ToList())
 			{
 				child.UpdateTransformHierarchy();
 			}
@@ -91,7 +91,7 @@ namespace StarPong.Framework
 			{
 				DrawSorter.Instance.QueueDrawObject(this);
 
-				foreach (GameObject child in Children)
+				foreach (GameObject child in Children.ToList())
 				{
 					child.QueueDrawHierarchy();
 				}
@@ -111,7 +111,7 @@ namespace StarPong.Framework
 			}
 			Tree = tree;
 			EnterTree();
-			foreach (GameObject child in Children)
+			foreach (GameObject child in Children.ToList())
 			{
 				if (child.Tree == null)
 				{
@@ -124,6 +124,7 @@ namespace StarPong.Framework
 		#region Scene Tree
 		public void QueueFree()
 		{
+			IsDeleted = true;
 			SceneTree.Instance.QueueFree(this);
 		}
 

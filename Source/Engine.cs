@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StarPong.Framework;
 using StarPong.Scenes;
-using StarPong.Source.Framework;
 
 namespace StarPong
 {
@@ -29,7 +29,8 @@ namespace StarPong
         public static SpriteFont DebugFont;
 		public static Dictionary<string, Object> CustomAssets = new();
         public static Rect2 Viewport = Rect2.Zero;
-
+		public static bool IsTransitioning { get; private set; } = false;
+	
 		const float cameraShakeMax = 30;
 		const float cameraShakeFalloff = 5;
         static float cameraShake = 0;
@@ -157,16 +158,29 @@ namespace StarPong
 
 		public static void ChangeScene(SceneName scene)
 		{
-            if (SceneTree.Instance.Root != null)
-            {
-                SceneTree.Instance.Root.QueueFree();
-            }
-			ActiveScene = scene;
+			if (IsTransitioning) return;
 
             GameObject obj = null;
             if (scene == SceneName.MenuScene) obj = new MenuScene();
-            else if (scene == SceneName.PlayingScene) obj = new PlayingScene();
-            Instance.sceneTree.SetRoot(obj);
+			else if (scene == SceneName.EndScene) obj = new EndScene();
+			else if (scene == SceneName.PlayingScene) obj = new PlayingScene();
+
+			if (SceneTree.Instance.Root != null)
+			{
+				TransitionCover trans = new TransitionCover(Color.Black, 7, 1, 0.2f);
+				trans.Finished += () =>
+				{
+					ActiveScene = scene;
+					SceneTree.Instance.SetRoot(obj);
+					TransitionCover trans2 = new TransitionCover(Color.Black, 4, 0.5f, 0, false);
+					SceneTree.Instance.Root.AddChild(trans2);
+				};
+				SceneTree.Instance.Root.AddChild(trans);
+			}
+			else
+			{
+				SceneTree.Instance.SetRoot(obj);
+			}
 		}
 
         public static Vector2 GetAnchor(float xs, float ys, float xo = 0, float yo = 0)

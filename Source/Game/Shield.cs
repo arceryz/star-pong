@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
 
@@ -45,8 +44,6 @@ namespace StarPong.Game
 
 			CollisionRect = new Rect2(-4, 0, 16, sprite.FrameSize.Width * 1.5f).Centered();
 			CollisionEnabled = false;
-
-			Debug.WriteLine(CollisionRect.Height);
 
 			// Create instances to avoid duplicate sounds from occuring.
 			// The regular SoundEffect pools instances internally, not what we want.

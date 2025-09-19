@@ -8,6 +8,11 @@ namespace StarPong.Framework
 	{
 		public static Random RNG = new();
 
+		public static float Rand01()
+		{
+			return RNG.NextSingle();
+		}
+
 		public static float RandRange(float from, float to)
 		{
 			return from + (to - from) * (float)RNG.NextSingle();

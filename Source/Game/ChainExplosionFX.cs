@@ -1,0 +1,62 @@
+﻿using StarPong.Framework;
+
+namespace StarPong.Game
+{
+	/// <summary>
+	/// This explosion combines the single explosion and applies it many
+	/// times across a region for a chain effect.
+	/// </summary>
+	public class ChainExplosionFX: GameObject
+	{
+		Rect2 target;
+		float timer = 0;
+		float duration = 0;
+		float rate = 0;
+		float spawnTimer = 0;
+		float bigRatio = 0.5f;
+
+		ExplosionFX lastExplosion;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="target">Target rectangle in relative coordinates</param>
+		/// <param name="duration"></param>
+		/// <param name="rate"></param>
+		public ChainExplosionFX(Rect2 target, float duration, float rate, float bigRatio)
+		{
+			this.duration = duration;
+			this.rate = rate;
+			this.target = target;
+			this.bigRatio = bigRatio;
+			Engine.AddCameraShake(bigRatio * 1000);
+		}
+
+		public override void Update(float delta)
+		{
+			timer += delta;
+			if (timer < duration)
+			{
+				spawnTimer += delta;
+				if (spawnTimer > rate)
+				{
+					spawnTimer = 0;
+
+					ExplosionType type = Utility.Rand01() < bigRatio ? ExplosionType.Big : ExplosionType.Small;
+					ExplosionFX exp = new ExplosionFX(type, 3, true);
+					exp.Position = target.GetRandomPoint();
+					AddChild(exp);
+
+					lastExplosion = exp;
+				}
+			}
+			else
+			{
+				if (lastExplosion.IsDeleted)
+				{
+					QueueFree();
+				}
+			}
+		}
+	}
+}

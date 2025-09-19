@@ -15,7 +15,7 @@ namespace StarPong.Game
 		Sprite sprite;
 		int repeatCount;
 
-		public ExplosionFX(ExplosionType type)
+		public ExplosionFX(ExplosionType type, int repeatCount=3, bool allSound=false)
 		{
 			if (type == ExplosionType.Big)
 			{
@@ -23,10 +23,7 @@ namespace StarPong.Game
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 				sprite.Scale = 2;
-				repeatCount = 3;
-
-				SoundEffect sfx = Engine.Load<SoundEffect>(Assets.Sounds.Explosion);
-				sfx.Play();
+				Engine.AddCameraShake(100);
 			}
 			else if (type == ExplosionType.Small)
 			{
@@ -34,9 +31,16 @@ namespace StarPong.Game
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 				sprite.Scale = 1;
-				repeatCount = 3;
+				Engine.AddCameraShake(5);
 			}
 
+			if (allSound || type == ExplosionType.Big)
+			{
+				SoundEffect sfx = Engine.Load<SoundEffect>(Assets.Sounds.Explosion);
+				sfx.Play(0.7f, 0, 0);
+			}
+
+			this.repeatCount = repeatCount;
 			sprite.AnimationFinished += OnAnimationFinished;
 			sprite.Play("explode");
 			AddChild(sprite);

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -22,7 +23,7 @@ namespace StarPong.Game
 		public Team Team { get; private set; }
 		public Action Exploded;
 		public Action HullStatusChanged;
-		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Strong;
+		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Critical;
 
 		Texture2D texture;
 		FastNoiseLite noise;
@@ -48,10 +49,13 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
-			float sign = Flip ? 1 : -1;
-			Position = Engine.GetAnchor(sign, 0, sign * -35);
-			Position.X += noise.GetNoise(Engine.Time * swaySpeed, 0) * swayStrength;
-			Position.Y += noise.GetNoise(-Engine.Time * swaySpeed, 1000) * swayStrength;
+			if (HullStatus != HullStatusEnum.Destroyed)
+			{
+				float sign = Flip ? 1 : -1;
+				Position = Engine.GetAnchor(sign, 0, sign * -35);
+				Position.X += noise.GetNoise(Engine.Time * swaySpeed, 0) * swayStrength;
+				Position.Y += noise.GetNoise(-Engine.Time * swaySpeed, 1000) * swayStrength;
+			}
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -59,37 +63,37 @@ namespace StarPong.Game
 			DrawTexture(batch, texture, GlobalPosition, Color.White, Flip);
 		}
 
-		public void Explode()
+		public int GetTotalHealth()
 		{
-			Exploded?.Invoke();
+			return Health + MathHelper.Max((int)HullStatus-1,0) * 100;
 		}
 
 		public void TakeDamage(int dmg, Vector2 loc)
 		{
 			Health -= dmg;
+			Health = (int)MathF.Max(Health, 0);
 
-			while (Health <= 0)
+			while (Health <= 0 && HullStatus != HullStatusEnum.Destroyed)
 			{
 				// Reduce hull status by one and restore health until all damage is resolved.
 				// Just in case >100 dmg is dealt in one tick.
 				if (HullStatus > 0) HullStatus--;
-				HullStatusChanged?.Invoke();
-				Health += 100;
 
-				if (HullStatus == HullStatusEnum.Damaged)
+				Rect2 rect = CollisionRect.Scaled(1.0f, 0.8f).Translated(ToGlobalDir(new Vector2(100, 0)));
+				if (HullStatus == HullStatusEnum.Damaged || HullStatus == HullStatusEnum.Critical)
 				{
-					Engine.AddCameraShake(1000);
-				}
-				if (HullStatus == HullStatusEnum.Critical)
-				{
-					Engine.AddCameraShake(1000);
+					ChainExplosionFX exp = new ChainExplosionFX((rect), 1f, 0.3f, 0.5f);
+					AddChild(exp);
+					Health += 100;
 				}
 				if (HullStatus == HullStatusEnum.Destroyed)
 				{
-					Engine.AddCameraShake(1000);
-					Explode();
-					return;
+					ChainExplosionFX exp = new ChainExplosionFX(rect, 3.0f, 0.15f, 1.0f);
+					exp.TreeExited += () => Exploded?.Invoke();
+					AddChild(exp);
 				}
+
+				HullStatusChanged?.Invoke();
 			}
 		}
 	}

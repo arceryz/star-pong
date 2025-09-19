@@ -69,7 +69,7 @@ namespace StarPong.Framework
 			{
 				DrawTexture(batch, SelectionTexture, GlobalPosition, Color.White);
 			}
-			if (flickerTimer < FlickerInterval)
+			if (flickerTimer < FlickerInterval || FlickerInterval == 0)
 			{
 				Font.DrawString(batch, GlobalPosition, Text, FontScale);
 			}
