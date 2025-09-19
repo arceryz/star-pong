@@ -62,8 +62,13 @@ namespace StarPong.Framework
 
 		public void SetRoot(GameObject obj)
 		{
+			if (Root != null)
+			{
+				Root.ExitTreeHierarchy();
+			}
 			Root = obj;
-			Root.InitializeHierarchy(this);
+			Root.EnterTreeHierarchy(this);
+
 		}
 		#endregion
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarPong.Game;
 
 namespace StarPong.Framework
 {
@@ -31,6 +32,9 @@ namespace StarPong.Framework
 			Id = Guid.NewGuid();
 		}
 
+		// The core callbacks are only for use by the inherited classes.
+		// The functionality underlying for each game object is in the
+		// hierarchy-class of functions, who also update children.
 		public virtual void ExitTree() { }
 		public virtual void EnterTree() { }
 		public virtual void Update(float delta) { }
@@ -59,13 +63,9 @@ namespace StarPong.Framework
 		public void UpdateTransformHierarchy()
 		{
 			if (Parent != null && !OverridePosition)
-			{
 				GlobalPosition = Position + Parent.GlobalPosition;
-			}
 			else
-			{
 				GlobalPosition = Position;
-			}
 			foreach (GameObject child in Children.ToList())
 			{
 				child.UpdateTransformHierarchy();
@@ -80,13 +80,9 @@ namespace StarPong.Framework
 		public void QueueDrawHierarchy()
 		{
 			if (Parent != null)
-			{
 				GlobalDrawLayer = DrawLayer + Parent.GlobalDrawLayer;
-			}
 			else
-			{
 				GlobalDrawLayer = DrawLayer;
-			}
 			if (Visible)
 			{
 				DrawSorter.Instance.QueueDrawObject(this);
@@ -103,7 +99,7 @@ namespace StarPong.Framework
 		/// Calls EnterTree()
 		/// </summary>
 		/// <param name="tree"></param>
-		public void InitializeHierarchy(SceneTree tree)
+		public void EnterTreeHierarchy(SceneTree tree)
 		{
 			foreach (string group in Groups)
 			{
@@ -115,8 +111,26 @@ namespace StarPong.Framework
 			{
 				if (child.Tree == null)
 				{
-					child.InitializeHierarchy(tree);
+					child.EnterTreeHierarchy(tree);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Notifies the game object and all its children that they left the tree.
+		/// </summary>
+		public void ExitTreeHierarchy()
+		{
+			Tree = null;
+			foreach (string group in Groups)
+			{
+				SceneTree.Instance.RemoveObjectFromGroup(this, group);
+			}
+			ExitTree();
+			TreeExited?.Invoke();
+			foreach (GameObject child in Children.ToList())
+			{
+				child.ExitTreeHierarchy();
 			}
 		}
 		#endregion
@@ -139,7 +153,7 @@ namespace StarPong.Framework
 			child.Parent = this;
 			if (Tree != null)
 			{
-				child.InitializeHierarchy(Tree);
+				child.EnterTreeHierarchy(Tree);
 			}
 			child.UpdateTransformHierarchy();
 		}
@@ -152,11 +166,7 @@ namespace StarPong.Framework
 		public void RemoveChild(GameObject child)
 		{
 			Children.Remove(child);
-			child.TreeExited?.Invoke();
-			foreach (string group in child.Groups)
-			{
-				SceneTree.Instance.RemoveObjectFromGroup(child, group);
-			}
+			child.ExitTreeHierarchy();
 		}
 
 		public void AddToGroup(string group)

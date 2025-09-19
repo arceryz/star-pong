@@ -1,4 +1,5 @@
-﻿using StarPong.Framework;
+﻿using System.Diagnostics;
+using StarPong.Framework;
 
 namespace StarPong.Game
 {
@@ -54,6 +55,7 @@ namespace StarPong.Game
 			{
 				if (lastExplosion.IsDeleted)
 				{
+					Debug.WriteLine("Chain explosion finished");
 					QueueFree();
 				}
 			}

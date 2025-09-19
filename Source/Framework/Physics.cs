@@ -22,6 +22,7 @@ namespace StarPong.Framework
 		public void Update(float delta)
 		{
 			List<GameObject> objects = SceneTree.Instance.GetObjectsInGroup("physics");
+			Debug.WriteLine(objects.Count);
 
 			// Very inefficient collision scheme that does not take into account the
 			// local position, nor sorting with a quadtree.

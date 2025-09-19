@@ -171,9 +171,9 @@ namespace StarPong
 				trans.Finished += () =>
 				{
 					ActiveScene = scene;
-					SceneTree.Instance.SetRoot(obj);
 					TransitionCover trans2 = new TransitionCover(Color.Black, 4, 0.5f, 0, false);
-					SceneTree.Instance.Root.AddChild(trans2);
+					obj.AddChild(trans2);
+					SceneTree.Instance.SetRoot(obj);
 				};
 				SceneTree.Instance.Root.AddChild(trans);
 			}

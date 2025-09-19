@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
@@ -54,6 +55,8 @@ namespace StarPong.Game
 				int dmg = 1;
 				if (other is Mothership) dmg = 3;
 				if (PlayingScene.IsGameFinished) dmg = 0;
+
+				Debug.WriteLine($"Dealing {dmg} to {other}");
 
 				dmgable.TakeDamage(dmg, GlobalPosition);
 				impactSFX.Play();

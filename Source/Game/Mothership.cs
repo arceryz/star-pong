@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
@@ -45,6 +46,8 @@ namespace StarPong.Game
 			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 			noise.SetFrequency(0.25f);
 			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(0.3f, 1.0f);
+
+			Debug.WriteLine($"Team {Team} spawned with Health={Health} and status {HullStatus}");
  		}
 
 		public override void Update(float delta)
@@ -65,14 +68,12 @@ namespace StarPong.Game
 
 		public int GetTotalHealth()
 		{
-			return Health + MathHelper.Max((int)HullStatus-1,0) * 100;
+			return MathHelper.Max(Health, 0) + MathHelper.Max((int)HullStatus-1,0) * 100;
 		}
 
 		public void TakeDamage(int dmg, Vector2 loc)
 		{
 			Health -= dmg;
-			Health = (int)MathF.Max(Health, 0);
-
 			while (Health <= 0 && HullStatus != HullStatusEnum.Destroyed)
 			{
 				// Reduce hull status by one and restore health until all damage is resolved.
