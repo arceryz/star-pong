@@ -24,7 +24,7 @@ namespace StarPong.Game
 		public Team Team { get; private set; }
 		public Action Exploded;
 		public Action HullStatusChanged;
-		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Critical;
+		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Strong;
 
 		Texture2D texture;
 		FastNoiseLite noise;

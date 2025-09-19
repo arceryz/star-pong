@@ -31,7 +31,7 @@ namespace StarPong.Game
 			}
 
 			Velocity = dir * speed;
-			CollisionRect = new Rect2(texture.Bounds).Centered();
+			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(2.0f, 2.0f);
 			OverridePosition = true;
 
 			fireSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Fired);
