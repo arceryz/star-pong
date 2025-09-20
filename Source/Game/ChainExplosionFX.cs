@@ -66,7 +66,6 @@ namespace StarPong.Game
 			{
 				if (lastExplosion.IsDeleted)
 				{
-					Debug.WriteLine("Chain explosion finished");
 					QueueFree();
 				}
 			}

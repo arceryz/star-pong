@@ -89,7 +89,7 @@ namespace StarPong.Scenes
 
 		public override void Update(float delta)
 		{
-			GameRunningTime += delta;
+			if (!IsGameFinished) GameRunningTime += delta;
 		}
 
 		void OnMotherHullStatusChanged(Mothership mother)
@@ -102,6 +102,7 @@ namespace StarPong.Scenes
 			LastDamagedTeam = mother.Team;
 			if (mother.HullStatus == Mothership.HullStatusEnum.Critical && !IsCriticalPhase)
 			{
+				MediaPlayer.Stop();
 				MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle_Critical));
 				IsCriticalPhase = true;
 			}

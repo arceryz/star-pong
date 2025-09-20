@@ -56,8 +56,6 @@ namespace StarPong.Game
 				if (other is Mothership) dmg = 3;
 				if (PlayingScene.IsGameFinished) dmg = 0;
 
-				Debug.WriteLine($"Dealing {dmg} to {other}");
-
 				dmgable.TakeDamage(dmg, GlobalPosition);
 				impactSFX.Play();
 

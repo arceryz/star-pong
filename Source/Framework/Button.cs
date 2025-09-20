@@ -11,20 +11,26 @@ namespace StarPong.Framework
 
 		public string Text;
 		public ImageFont Font;
-		public Texture2D SelectionTexture;
 		public float FontScale;
 		public float FlickerInterval = 0;
 
+		Sprite selector;
 		float flickerTimer = 0;
 		bool isPressed = false;
 
-		public Button(ImageFont font, string text, Texture2D selectionTexture, float fontScale=1)
+		public Button(ImageFont font, string text, float fontScale=1)
 		{
 			this.FontScale = fontScale;
 			this.Text = text;
 			this.Font = font;
-			this.SelectionTexture = selectionTexture;
-			this.CollisionRect = new Rect2(selectionTexture.Bounds).Centered();
+
+			selector = new Sprite(Engine.Load<Texture2D>(Assets.Textures.UI_SelectionArrows), 5, 1);
+			selector.Scale = 4;
+			selector.AddAnimation("default", 10, 0, 0, 5, true);
+			selector.Play("default");
+			AddChild(this.selector);
+
+			CollisionRect = selector.FrameSize.Centered().Scaled(selector.Scale, selector.Scale);
 		}
 
 		public Button SetFlicker(float interval)
@@ -65,10 +71,7 @@ namespace StarPong.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
-			if (IsMouseHovering())
-			{
-				DrawTexture(batch, SelectionTexture, GlobalPosition, Color.White);
-			}
+			selector.Visible = IsMouseHovering();
 			if (flickerTimer < FlickerInterval || FlickerInterval == 0)
 			{
 				Font.DrawString(batch, GlobalPosition, Text, FontScale);

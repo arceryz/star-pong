@@ -46,8 +46,6 @@ namespace StarPong.Game
 			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 			noise.SetFrequency(0.25f);
 			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(0.3f, 1.0f);
-
-			Debug.WriteLine($"Team {Team} spawned with Health={Health} and status {HullStatus}");
  		}
 
 		public override void Update(float delta)

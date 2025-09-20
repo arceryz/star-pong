@@ -31,7 +31,6 @@ namespace StarPong.Framework
 					Keys nextKey = keys[currentIndex];
 					if (Input.IsKeyPressed(nextKey))
 					{
-						Debug.WriteLine($"Advancing to {currentIndex} = {nextKey}");
 						currentIndex++;
 						if (currentIndex == keys.Length)
 						{

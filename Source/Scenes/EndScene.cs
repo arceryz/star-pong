@@ -15,7 +15,6 @@ namespace StarPong.Scenes
 			//***********************************************//
 			// Assets
 			//***********************************************//
-			Texture2D selTex = Engine.Load<Texture2D>(Assets.Textures.UI_SelectionArrows);
 			Texture2D stars = Engine.Load<Texture2D>(Assets.Textures.BG_Stars);
 			ImageFont gyrussGold = Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Gold);
 			ImageFont gyrussGrey = Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey);
@@ -31,11 +30,11 @@ namespace StarPong.Scenes
 			Label scoreLabel = new Label(gyrussGold, $"{PlayingScene.FinalScore1} - {PlayingScene.FinalScore2}", 4);
 			scoreLabel.Position = titleLabel.Position + new Vector2(0, 75);
 
-			Button playButton = new Button(gyrussGrey, "play again", selTex, 2);
+			Button playButton = new Button(gyrussGrey, "play again", 2);
 			playButton.Pressed += () => Engine.ChangeScene(SceneName.PlayingScene);
 			playButton.Position = Engine.GetAnchor(0, 0);
 
-			Button returnButton = new Button(gyrussGrey, "return", selTex, 2);
+			Button returnButton = new Button(gyrussGrey, "return", 2);
 			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
 			returnButton.Position = Engine.GetAnchor(0, 0, 0, 100);
 
