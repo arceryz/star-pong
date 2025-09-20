@@ -7,26 +7,33 @@ namespace StarPong.Game
 {
 	public class PlayerUI: GameObject
 	{
-		const float hoffset = 120;
-		const float voffset = 42;
-		const float energyPipEnergyQuantity = 10;
+		public const float RespawnLabelOffset = 85;
+		public const float HOffset = 120;
+		public const float VOffset = 42;
+		public const float EnergyPipEnergyQuantity = 10;
 
 		Player player;
 		Texture2D portraitTex;
 		Texture2D healthPipTex;
 		Texture2D energyPipTex;
+		Label respawnLabel;
 
 		public PlayerUI(Player player)
 		{
+			respawnLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "", 4);
+			AddChild(respawnLabel);
+
 			if (player.Team == Team.Blue)
 			{
 				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Blue_Portrait);
-				Position = Engine.GetAnchor(0, -1, -hoffset + 2, voffset);
+				Position = Engine.GetAnchor(0, -1, -HOffset + 2, VOffset);
+				respawnLabel.Position = new Vector2(-RespawnLabelOffset, 0);
 			}
 			else
 			{
 				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Red_Portrait);
-				Position = Engine.GetAnchor(0, -1, hoffset + 2, voffset);
+				Position = Engine.GetAnchor(0, -1, HOffset + 2, VOffset);
+				respawnLabel.Position = new Vector2(RespawnLabelOffset, 0);
 			}
 			healthPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_HealthPip);
 			energyPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_EnergyPip);
@@ -51,7 +58,7 @@ namespace StarPong.Game
 				{
 					DrawTexture(batch, healthPipTex, GlobalPosition + healthPipOffset + new Vector2(i * 30 * dir, 0), Color.White, dir == -1, true);
 				}
-				for (int i = 0; i < player.Energy / energyPipEnergyQuantity; i++)
+				for (int i = 0; i < player.Energy / EnergyPipEnergyQuantity; i++)
 				{
 					DrawTexture(batch, energyPipTex, GlobalPosition + energyPipOffset + new Vector2(i * 8 * dir, 0), Color.White, false, true);
 				}
@@ -62,7 +69,17 @@ namespace StarPong.Game
 			if (player.Health <= 0)
 			{
 				DrawTexture(batch, portraitTex, GlobalPosition, Color.Gray, false);
+				respawnLabel.Text = $"{3-(int)player.RespawnWaitTimer}";
+				respawnLabel.Visible = true;
 			}
+
+			if (player.State == Player.StateEnum.RespawnWait)
+			{
+				respawnLabel.Text = $"{3 - (int)player.RespawnWaitTimer}";
+				respawnLabel.Visible = true;
+			}
+			else respawnLabel.Visible = false;
+
 		}
 	}
 }

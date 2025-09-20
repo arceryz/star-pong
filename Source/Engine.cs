@@ -172,8 +172,8 @@ namespace StarPong
 				{
 					ActiveScene = scene;
 					TransitionCover trans2 = new TransitionCover(Color.Black, 4, 0.5f, 0, false);
-					obj.AddChild(trans2);
 					SceneTree.Instance.SetRoot(obj);
+					obj.AddChild(trans2);
 				};
 				SceneTree.Instance.Root.AddChild(trans);
 			}

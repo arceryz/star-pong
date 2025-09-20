@@ -54,6 +54,11 @@ namespace StarPong.Game
 			deflectSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Deflect).CreateInstance();
 		}
 
+		public override void ExitTree()
+		{
+			runningSFX.Stop();
+		}
+
 		public void Activate()
 		{
 			CollisionEnabled = true;

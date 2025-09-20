@@ -16,6 +16,7 @@ namespace StarPong.Game
 
 		Label stageLabel;
 		Label healthLabel;
+		Label timeLabel;
 
 		public ScoreUI(Mothership mother1, Mothership mother2)
 		{
@@ -27,8 +28,13 @@ namespace StarPong.Game
 			healthLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey), "", 2);
 			healthLabel.Position = new Vector2(0, 30);
 
+			timeLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "", 4);
+			timeLabel.OverridePosition = true;
+			timeLabel.Position = Engine.GetAnchor(0, 1, 0, -30);
+
 			AddChild(stageLabel);
 			AddChild(healthLabel);
+			AddChild(timeLabel);
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -40,6 +46,7 @@ namespace StarPong.Game
 			}
 			stageLabel.Text = $"{(int)mother1.HullStatus} - {(int)mother2.HullStatus}";
 			healthLabel.Text = $"{mother1.Health} - {mother2.Health}";
+			timeLabel.Text = $"{(int)PlayingScene.GameRunningTime}";
 		} 
 	}
 }

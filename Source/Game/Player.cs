@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,6 +11,14 @@ namespace StarPong.Game
 {
 	public class Player: CollisionObject, IDamageable
     {
+        public enum StateEnum
+        {
+            Playing,
+			Exploding,
+			RespawnWait,
+            Spawning
+        }
+
 		public enum InputAction
         {
             MoveUp,
@@ -17,7 +27,9 @@ namespace StarPong.Game
             RaiseShield,
         }
 
-        static Dictionary<InputAction, Keys> inputMappingLeft = new()
+		#region Settings
+
+		static Dictionary<InputAction, Keys> inputMappingLeft = new()
         {
             { InputAction.MoveUp, Keys.W },
             { InputAction.MoveDown, Keys.S },
@@ -37,7 +49,12 @@ namespace StarPong.Game
         public const float EnergyRegenCooldownTime = 0.5f;
         public const float ShieldDistance = 100.0f;
 
-        public const float TotalEnergy = 100;
+		public const float SpawningFlickerInterval = 0.05f;
+        public const float RespawnWaitTime = 3.0f;
+		public const float SpawnTime = 1.0f;
+		public const float SpawnDistance = 100.0f;
+
+		public const float TotalEnergy = 100;
         public const float EnergyRegenSec = 30;
         public const float FastEnergyRegenWaitTime = 1;
 		public const float FastEnergyRegenSec = 60;
@@ -47,27 +64,34 @@ namespace StarPong.Game
         public const float ShieldEnergyCostSec = 30;
         public const float ShieldBulletAbsorbCost = 10;
 
-        public Team Team { get; private set; }
+		public const float StrafeSpeed = 200.0f;
+		public const float HorizontalOffset = 100.0f;
+		public const float VerticalOffset = 0.0f;
+
+		#endregion
+
+		public Team Team { get; private set; }
         public int Health { get; private set; } = 3;
         public float Energy = 100;
+        public float RespawnWaitTimer { get; private set; } = 0;
+		public StateEnum State { get; private set; } = StateEnum.Playing;
+		public int DeathCount { get; private set; } = 0;
 
-		const float strafeSpeed = 200.0f;
-		const float horizontalOffset = 50.0f;
-		const float verticalOffset = 0.0f;
-
+		float spawnFlickerTimer = 0;
+		float spawnTimer = 0;
 		float shootCooldown = 0;
 		float energyRegenCooldown = 0;
+		Vector2 bulletSpawnOrigin = Vector2.Zero;
+		Dictionary<InputAction, Keys> inputMapping;
 
-		Texture2D texture;
-        Dictionary<InputAction, Keys> inputMapping;
         Shield shield;
         Sprite muzzleFlash;
-
-        Vector2 bulletSpawnOrigin = Vector2.Zero;
+        Sprite ship;
 
         public Player(Team team)
         {
             this.Team = team;
+            Texture2D texture;
 			if (Team == Team.Blue)
             {
                 texture = Engine.Load<Texture2D>(Assets.Textures.Blue_Player);
@@ -80,62 +104,100 @@ namespace StarPong.Game
 				inputMapping = inputMappingRight;
             }
 
-			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(0.7f, 0.6f);
+            ship = new Sprite(texture, 1, 1);
+            ship.AddAnimation("fly_straight", 0, 0, 0, 1);
+            ship.Play("fly_straight");
+            ship.Flip = Flip;
+            AddChild(ship);
 
 			shield = new Shield(Team);
             shield.Position = ToGlobalDir(new Vector2(ShieldDistance, 0));
             shield.BulletHit += OnShieldBulletHit;
 			AddChild(shield);
 
-            Position.Y = Engine.GameHeight / 2.0f;
-            bulletSpawnOrigin = new Vector2(texture.Width - 60, 0);
+			bulletSpawnOrigin = new Vector2(ship.FrameSize.Width - 60, 0);
+			CollisionRect = ship.FrameSize.Centered().Scaled(0.7f, 0.6f);
 
 			muzzleFlash = new Sprite(Engine.Load<Texture2D>(Assets.Textures.MuzzleFlash), 3, 1);
             muzzleFlash.AddAnimation("flash", 12, 0, 0, 3, false);
 			muzzleFlash.Position = ToGlobalDir(bulletSpawnOrigin);
             muzzleFlash.DrawLayer = 1;
             AddChild(muzzleFlash);
+
+			StartSpawning();
 		}
 
-        public override void Update(float delta)
+		#region Update
+		public override void Update(float delta)
         {
-            Velocity = Vector2.Zero;
+			if (State == StateEnum.Playing)
+			{
+				UpdateMovement(delta);
+				if (!PlayingScene.IsGameFinished) UpdateCombat(delta);
+			}
+			else if (State == StateEnum.RespawnWait)
+			{
+				RespawnWaitTimer += delta;
+				if (RespawnWaitTimer > RespawnWaitTime) StartSpawning();
+			}
+			else if (State == StateEnum.Spawning)
+			{
+				UpdateMovement(delta);
+
+				if (DeathCount > 0) spawnFlickerTimer += delta;
+				if (spawnFlickerTimer > SpawningFlickerInterval)
+				{
+					spawnFlickerTimer = 0;
+					Visible = !Visible;
+				}
+
+				spawnTimer += delta;
+				if (spawnTimer > SpawnTime) StartPlaying();
+			}
+		}
+
+        public void UpdateMovement(float delta)
+        {
+			Velocity = Vector2.Zero;
 			if (Input.IsKeyHeld(inputMapping[InputAction.MoveUp]))
-            {
-                Velocity = new Vector2(0, -strafeSpeed);
-            }
-            else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown]))
-            {
-                Velocity = new Vector2(0, +strafeSpeed);
-            }
+			{
+				Velocity = new Vector2(0, -StrafeSpeed);
+			}
+			else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown]))
+			{
+				Velocity = new Vector2(0, +StrafeSpeed);
+			}
 
-            base.Update(delta);
+			base.Update(delta);
 			float sw = CollisionRect.Width;
-            float sh = CollisionRect.Height;
+			float sh = CollisionRect.Height;
 
-			Position.Y = MathHelper.Clamp(Position.Y, verticalOffset + sh/2, Engine.GameHeight - sh/2 - verticalOffset);
-            Position.X = Team == Team.Blue ? horizontalOffset + sw/2 : Engine.GameWidth - horizontalOffset - sw/2;
+			Position.Y = MathHelper.Clamp(Position.Y, VerticalOffset + sh / 2, Engine.GameHeight - sh / 2 - VerticalOffset);
+			float targetX = Team == Team.Blue ? HorizontalOffset + sw / 2 : Engine.GameWidth - HorizontalOffset - sw / 2;
+			if (State != StateEnum.Spawning) Position.X = targetX;
+			else
+			{
+				float startX = Team == Team.Blue ? -SpawnDistance : Engine.GameWidth + SpawnDistance;
+				Position.X = MathHelper.Lerp(startX, targetX, spawnTimer / SpawnTime);
+			}
+		}
 
-            // Prevent other functions when the game is finished.
-			if (PlayingScene.IsGameFinished)
-            {
-                return;
-            }
-
+        public void UpdateCombat(float delta)
+        {
 			// Shooting.
 			if (shootCooldown > 0) shootCooldown -= delta;
-            if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0 && Energy >= BulletEnergyCost)
-            {
-                Energy -= BulletEnergyCost;
+			if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0 && Energy >= BulletEnergyCost)
+			{
+				Energy -= BulletEnergyCost;
 				shootCooldown = ShootCooldownTime;
-                energyRegenCooldown = EnergyRegenCooldownTime;
+				energyRegenCooldown = EnergyRegenCooldownTime;
 
-                Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
-                bullet.DrawLayer = 1;
-                bullet.Position = ToGlobal(bulletSpawnOrigin);
-                AddChild(bullet);
+				Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
+				bullet.DrawLayer = 1;
+				bullet.Position = ToGlobal(bulletSpawnOrigin);
+				AddChild(bullet);
 
-                muzzleFlash.Play("flash");
+				muzzleFlash.Play("flash");
 			}
 
 			// Shielding.
@@ -144,37 +206,73 @@ namespace StarPong.Game
 				shield.Deactivate();
 			}
 			else if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield]) && Energy >= ShieldActivateMinEnergy)
-            {
-                Energy -= ShieldActivateEnergyCost;
+			{
+				Energy -= ShieldActivateEnergyCost;
 				shield.Activate();
-            }
-            if (shield.IsActive)
-            {
-                energyRegenCooldown = EnergyRegenCooldownTime;
+			}
+			if (shield.IsActive)
+			{
+				energyRegenCooldown = EnergyRegenCooldownTime;
 				Energy -= ShieldEnergyCostSec * delta;
-            }
+			}
 
-            // Energy regen.
-            energyRegenCooldown -= delta;
-            if (energyRegenCooldown < 0)
-            {
-                Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec: EnergyRegenSec) * delta;
-            }
+			// Energy regen.
+			energyRegenCooldown -= delta;
+			if (energyRegenCooldown < 0)
+			{
+				Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;
+			}
 			Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
 		}
+		#endregion
 
-        public override void Draw(SpriteBatch batch)
+		#region State Transitions
+		public void StartPlaying()
+		{
+			State = StateEnum.Playing;
+			Visible = true;
+		}
+
+		public void StartSpawning()
+		{
+			Visible = true;
+			CollisionEnabled = true;
+			spawnTimer = 0;
+			spawnFlickerTimer = 0;
+			State = StateEnum.Spawning;
+			Health = 3;
+			foreach (GameObject child in Children)
+			{
+				if (child is FireFX) child.QueueFree();
+			}
+
+			Position.Y = Engine.GameHeight / 2;
+			UpdateMovement(0);
+		}
+
+		public void StartRespawnWait()
+		{
+			Visible = false;
+			RespawnWaitTimer = 0;
+			State = StateEnum.RespawnWait;
+			CollisionEnabled = false;
+		}
+
+		public void StartExploding()
         {
-            DrawTexture(batch, texture, GlobalPosition, Color.White, Flip);
+            ChainExplosionFX exp = new ChainExplosionFX(CollisionRect, 1.0f, 0.25f, 0);
+			exp.TreeExited += () => StartRespawnWait();
+            AddChild(exp);
+            State = StateEnum.Exploding;
+			DeathCount++;
         }
+#endregion
 
-        public void Explode()
+		#region Damage
+		public void TakeDamage(int dmg, Vector2 pos)
         {
-            return;
-        }
+			if (State != StateEnum.Playing) return;
 
-        public void TakeDamage(int dmg, Vector2 pos)
-        {
             // Spawn some fire for every hit by a bullet,
             // helps as an additional health indicator.
 			FireFX fire = new FireFX(FireType.Small);
@@ -184,7 +282,7 @@ namespace StarPong.Game
 			Health -= dmg;
 			if (Health <= 0)
             {
-                Explode();
+				StartExploding();
                 return;
             }
 		}
@@ -193,5 +291,6 @@ namespace StarPong.Game
         {
             Energy -= ShieldBulletAbsorbCost;
         }
-    }
+		#endregion
+	}
 }

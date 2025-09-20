@@ -19,7 +19,7 @@ namespace StarPong.Game
 			{
 				Texture2D tex = Engine.Load<Texture2D>(Assets.Textures.FireFX_Big);
 				sprite = new Sprite(tex, 4, 1);
-				sprite.AddAnimation("fire", 4, 0, 0, 4);
+				sprite.AddAnimation("fire", 16, 0, 0, 4);
 			}
 			else
 			{

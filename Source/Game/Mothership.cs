@@ -83,13 +83,13 @@ namespace StarPong.Game
 				Rect2 rect = CollisionRect.Scaled(1.0f, 0.8f).Translated(ToGlobalDir(new Vector2(100, 0)));
 				if (HullStatus == HullStatusEnum.Damaged || HullStatus == HullStatusEnum.Critical)
 				{
-					ChainExplosionFX exp = new ChainExplosionFX((rect), 1f, 0.3f, 0.5f);
+					ChainExplosionFX exp = new ChainExplosionFX(rect, 1.5f, 0.3f, 0.5f, true);
 					AddChild(exp);
 					Health += 100;
 				}
 				if (HullStatus == HullStatusEnum.Destroyed)
 				{
-					ChainExplosionFX exp = new ChainExplosionFX(rect, 3.0f, 0.15f, 1.0f);
+					ChainExplosionFX exp = new ChainExplosionFX(rect, 3.0f, 0.15f, 1.0f, true);
 					exp.TreeExited += () => Exploded?.Invoke();
 					AddChild(exp);
 				}
