@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Background/BG_Asteroids_Close.png
+#begin Background/Asteroids.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Background/BG_Asteroids_Close.png
+/build:Background/Asteroids.png
 
-#begin Background/BG_Asteroids_Mid.png
+#begin Background/Planets.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Background/BG_Asteroids_Mid.png
+/build:Background/Planets.png
 
-#begin Background/BG_Stars.png
+#begin Background/Stars.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,7 +47,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Background/BG_Stars.png
+/build:Background/Stars.png
 
 #begin Bomb/Bomb.png
 /importer:TextureImporter

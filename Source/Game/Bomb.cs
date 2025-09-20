@@ -24,7 +24,7 @@ namespace StarPong.Game
 		{
 			Texture2D bombSheet = Engine.Load<Texture2D>(Assets.Textures.Bomb);
 			sprite = new Sprite(bombSheet, 4, 1);
-			sprite.AddAnimation("default", 4, 0, 0, 4);
+			sprite.AddAnimation("default", 8, 0, 0, 4);
 			sprite.Play("default");
 			AddChild(sprite);
 

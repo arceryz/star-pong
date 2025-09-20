@@ -9,9 +9,9 @@
 	{
 		public static class Textures
 		{
-			public static string BG_Asteroids_Mid = "Background/BG_Asteroids_Mid";
-			public static string BG_Asteroids_Close = "Background/BG_Asteroids_Close";
-			public static string BG_Stars = "Background/BG_Stars";
+			public static string BG_Planets = "Background/Planets";
+			public static string BG_Asteroids = "Background/Asteroids";
+			public static string BG_Stars = "Background/Stars";
 
 			public static string Blue_Mothership = "Mothership/Blue_Mother";
 			public static string Red_Mothership = "Mothership/Red_Mother";

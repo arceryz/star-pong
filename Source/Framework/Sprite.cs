@@ -92,12 +92,15 @@ namespace StarPong.Framework
 			animations[name] = anim;
 		}
 
-		public void Play(string name)
+		public void Play(string name, bool restart=true)
 		{
-			CurrentAnimation = name;
-			animation = animations[name];
-			FrameIndex = 0;
-			frameTimer = 0;
+			if (CurrentAnimation != name || restart)
+			{
+				CurrentAnimation = name;
+				animation = animations[name];
+				FrameIndex = 0;
+				frameTimer = 0;
+			}
 		}
 
 		public void Stop()

@@ -81,6 +81,7 @@ namespace StarPong.Game
 		float spawnTimer = 0;
 		float shootCooldown = 0;
 		float energyRegenCooldown = 0;
+		float moveDirection = 0;
 		Vector2 bulletSpawnOrigin = Vector2.Zero;
 		Dictionary<InputAction, Keys> inputMapping;
 
@@ -101,13 +102,18 @@ namespace StarPong.Game
             {
                 Flip = true;
 				texture = Engine.Load<Texture2D>(Assets.Textures.Red_Player);
-				inputMapping = inputMappingRight;
+
+				// Use a bot for team red if the setting is enabled.
+				// Bot is used when input mapping is not set.
+				if (!SettingsScene.BotEnabled) inputMapping = inputMappingRight;
             }
 
-            ship = new Sprite(texture, 1, 1);
-            ship.AddAnimation("fly_straight", 0, 0, 0, 1);
-            ship.Play("fly_straight");
-            ship.Flip = Flip;
+            ship = new Sprite(texture, 3, 3);
+			ship.RotationDeg = Flip ? -90 : 90;
+			ship.AddAnimation(Flip ? "fly_down": "fly_up", 9, 0, 0, 3);
+			ship.AddAnimation(Flip ? "fly_up": "fly_down", 9, 0, 1, 3);
+			ship.AddAnimation("fly_forward", 0, 0, 2, 1, false);
+			ship.Play("fly_forward");
             AddChild(ship);
 
 			shield = new Shield(Team);
@@ -132,6 +138,9 @@ namespace StarPong.Game
         {
 			if (State == StateEnum.Playing)
 			{
+				if (inputMapping != null) PlayerControlUpdate();
+				else BotControlUpdate();
+
 				UpdateMovement(delta);
 				if (!PlayingScene.IsGameFinished) UpdateCombat(delta);
 			}
@@ -156,17 +165,9 @@ namespace StarPong.Game
 			}
 		}
 
-        public void UpdateMovement(float delta)
+        void UpdateMovement(float delta)
         {
-			Velocity = Vector2.Zero;
-			if (Input.IsKeyHeld(inputMapping[InputAction.MoveUp]))
-			{
-				Velocity = new Vector2(0, -StrafeSpeed);
-			}
-			else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown]))
-			{
-				Velocity = new Vector2(0, +StrafeSpeed);
-			}
+			Velocity = new Vector2(0, moveDirection * StrafeSpeed);
 
 			base.Update(delta);
 			float sw = CollisionRect.Width;
@@ -180,13 +181,40 @@ namespace StarPong.Game
 				float startX = Team == Team.Blue ? -SpawnDistance : Engine.GameWidth + SpawnDistance;
 				Position.X = MathHelper.Lerp(startX, targetX, spawnTimer / SpawnTime);
 			}
-		}
 
-        public void UpdateCombat(float delta)
+			if (moveDirection > 0) ship.Play("fly_down", false);
+			else if (moveDirection == 0) ship.Play("fly_forward", false);
+			else if (moveDirection < 0) ship.Play("fly_up", false);
+		}
+		
+        void UpdateCombat(float delta)
         {
 			// Shooting.
 			if (shootCooldown > 0) shootCooldown -= delta;
-			if (Input.IsKeyHeld(inputMapping[InputAction.Shoot]) && shootCooldown <= 0 && Energy >= BulletEnergyCost)
+
+			// Shielding.
+			if (shield.IsActive)
+			{
+				energyRegenCooldown = EnergyRegenCooldownTime;
+				Energy -= ShieldEnergyCostSec * delta;
+				if (Energy <= 0) shield.Deactivate();
+			}
+
+			// Energy regen.
+			energyRegenCooldown -= delta;
+			if (energyRegenCooldown < 0)
+			{
+				Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;
+			}
+			Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
+		}
+		#endregion
+
+		#region Controls and Bot
+
+		void Shoot()
+		{
+			if (shootCooldown <= 0 && Energy >= BulletEnergyCost)
 			{
 				Energy -= BulletEnergyCost;
 				shootCooldown = ShootCooldownTime;
@@ -199,30 +227,34 @@ namespace StarPong.Game
 
 				muzzleFlash.Play("flash");
 			}
+		}
 
-			// Shielding.
-			if ((shield.IsActive && Input.IsKeyPressed(inputMapping[InputAction.RaiseShield])) || Energy <= 0)
+		void ToggleShield()
+		{
+			if (shield.IsActive)
 			{
 				shield.Deactivate();
 			}
-			else if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield]) && Energy >= ShieldActivateMinEnergy)
+			else if (Energy >= ShieldActivateMinEnergy)
 			{
 				Energy -= ShieldActivateEnergyCost;
 				shield.Activate();
 			}
-			if (shield.IsActive)
-			{
-				energyRegenCooldown = EnergyRegenCooldownTime;
-				Energy -= ShieldEnergyCostSec * delta;
-			}
+		}
 
-			// Energy regen.
-			energyRegenCooldown -= delta;
-			if (energyRegenCooldown < 0)
-			{
-				Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;
-			}
-			Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
+		void PlayerControlUpdate()
+		{
+			if (Input.IsKeyHeld(inputMapping[InputAction.MoveUp])) moveDirection = -1;
+			else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown])) moveDirection = 1;
+			else moveDirection = 0;
+
+			if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield])) ToggleShield();
+			if (Input.IsKeyPressed(inputMapping[InputAction.Shoot])) Shoot();
+		}
+
+		void BotControlUpdate()
+		{
+
 		}
 		#endregion
 

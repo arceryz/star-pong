@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
 using StarPong.Scenes;
 
@@ -16,6 +17,7 @@ namespace StarPong
 		PlayingScene,
 		EndScene,
 		SecretScene,
+		SettingsScene,
 	}
 
 	public class Engine : Microsoft.Xna.Framework.Game
@@ -67,6 +69,8 @@ namespace StarPong
 			ChangeScene(SceneName.MenuScene);
 
 			Input.AddAction("toggle_secret", [Keys.B, Keys.E, Keys.A, Keys.U]);
+			MediaPlayer.Volume = 0.5f;
+			MediaPlayer.IsRepeating = true;
 		}
 
         protected override void LoadContent()
@@ -91,7 +95,8 @@ namespace StarPong
             if (Input.IsKeyPressed(Keys.Z)) EnableDebugDraw = !EnableDebugDraw;
             if (Input.IsKeyHeld(Keys.Escape)) Exit();
             if (Input.IsKeyPressed(Keys.T)) EnableTreeDraw = !EnableTreeDraw;
-            if (Input.IsKeyPressed(Keys.F)) graphics.ToggleFullScreen();
+			if (Input.IsKeyPressed(Keys.F)) graphics.ToggleFullScreen();
+			if (Input.IsKeyPressed(Keys.R) && Input.IsKeyHeld(Keys.LeftShift)) Engine.ChangeScene(SceneName.MenuScene);
 
 			physics.Update(delta);
 			sceneTree.Update(delta);
@@ -113,8 +118,6 @@ namespace StarPong
 			drawSorter.ResetLayers();
             sceneTree.QueueDrawObjects();
 			drawSorter.DrawLayers(spriteBatch);
-			if (ActiveScene == SceneName.MenuScene) spriteBatch.DrawString(DebugFont, "Press (Z) to toggle debug shapes | Press (T) to toggle tree view | Press (Esc) to quit",
-				GetAnchor(-1, 1, 10, -23), Color.DarkGray with { A = 50 });
 			if (EnableDebugDraw) drawSorter.DebugDrawLayers(spriteBatch);
 
 			spriteBatch.End();
@@ -168,6 +171,7 @@ namespace StarPong
 			else if (scene == SceneName.EndScene) obj = new EndScene();
 			else if (scene == SceneName.PlayingScene) obj = new PlayingScene();
 			else if (scene == SceneName.SecretScene) obj = new SecretScene();
+			else if (scene == SceneName.SettingsScene) obj = new SettingsScene();
 
 			if (SceneTree.Instance.Root != null)
 			{

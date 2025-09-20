@@ -13,13 +13,14 @@ namespace StarPong.Game
 
 		public Team Team { get; private set; }
 		public int Health { get; private set; } = 1;
-		Texture2D texture;
+		Sprite sprite;
 		SoundEffect fireSFX;
 		SoundEffect impactSFX;
 
 		public Bullet(Team team, Vector2 dir)
 		{
 			this.Team = team;
+			Texture2D texture;
 			if (team == Team.Blue)
 			{
 				texture = Engine.Load<Texture2D>(Assets.Textures.Blue_Bullet);
@@ -30,18 +31,19 @@ namespace StarPong.Game
 				texture = Engine.Load<Texture2D>(Assets.Textures.Red_Bullet);
 			}
 
+			sprite = new Sprite(texture, 3, 1);
+			sprite.RotationDeg = Flip ? -90 : 90;
+			sprite.AddAnimation("default", 9, 0, 0, 3);
+			sprite.Play("default");
+			AddChild(sprite);
+
 			Velocity = dir * speed;
-			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(2.0f, 2.0f);
+			CollisionRect = new Rect2(0, 0, 24, 24).Centered();
 			OverridePosition = true;
 
 			fireSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Fired);
 			fireSFX.Play();
 			impactSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Impact);
-		}
-
-		public override void Draw(SpriteBatch batch)
-		{
-			DrawTexture(batch, texture, GlobalPosition, Color.White, Flip);
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

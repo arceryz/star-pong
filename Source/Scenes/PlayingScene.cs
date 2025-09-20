@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
@@ -32,8 +33,8 @@ namespace StarPong.Scenes
 			// Assets
 			//***********************************************//
 			Texture2D stars = Engine.Load<Texture2D>(Assets.Textures.BG_Stars);
-			Texture2D asteroids1 = Engine.Load<Texture2D>(Assets.Textures.BG_Asteroids_Close);
-			Texture2D asteroids2 = Engine.Load<Texture2D>(Assets.Textures.BG_Asteroids_Mid);
+			Texture2D asteroids = Engine.Load<Texture2D>(Assets.Textures.BG_Asteroids);
+			Texture2D planets = Engine.Load<Texture2D>(Assets.Textures.BG_Planets);
 
 
 			//***********************************************//
@@ -52,9 +53,9 @@ namespace StarPong.Scenes
 			Bomb bomb = new Bomb();
 
 			// Background
-			ParallaxLayer bg1 = new ParallaxLayer(stars, 150.0f);
-			ParallaxLayer bg2 = new ParallaxLayer(asteroids2, 250.0f);
-			ParallaxLayer bg3 = new ParallaxLayer(asteroids1, 200.0f);
+			ParallaxLayer bg1 = new ParallaxLayer(stars, 50.0f);
+			ParallaxLayer bg2 = new ParallaxLayer(planets, 150.0f);
+			ParallaxLayer bg3 = new ParallaxLayer(asteroids, 300.0f);
 		
 			// UI
 			PlayerUI playerui_1 = new PlayerUI(player1);
@@ -62,8 +63,6 @@ namespace StarPong.Scenes
 			ScoreUI scoreui = new ScoreUI(mother1, mother2);
 
 			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Battle_Normal));
-			MediaPlayer.Volume = 0.5f;
-			MediaPlayer.IsRepeating = true;
 
 
 			//***********************************************//

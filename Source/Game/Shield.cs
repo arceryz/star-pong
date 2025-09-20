@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -54,9 +55,9 @@ namespace StarPong.Game
 			deflectSFX = Engine.Load<SoundEffect>(Assets.Sounds.Shield_Deflect).CreateInstance();
 		}
 
-		public override void ExitTree()
+		public override void Update(float delta)
 		{
-			runningSFX.Stop();
+			if (PlayingScene.IsGameFinished && Visible) Deactivate();
 		}
 
 		public void Activate()
@@ -107,7 +108,7 @@ namespace StarPong.Game
 				// Make the normal flatter by adding extra 1 to the X direction,
 				// also make it more curved near the edges by squaring the Y.
 				norm.X += -2.5f * Utility.Sign(bomb.Velocity.X);
-				norm.Y = MathHelper.Clamp(norm.Y, -1, 1);
+				norm.Y = MathHelper.Clamp(norm.Y, -0.7f, 0.7f);
 				norm.Y *= Utility.Sign(norm.Y) * norm.Y;
 				norm.Normalize();
 

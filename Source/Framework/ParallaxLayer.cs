@@ -8,6 +8,7 @@ namespace StarPong.Framework
 	{
 		float speed = 1.0f;
 		Texture2D texture;
+		public Color Color = Color.White;
 
 		int[] slides = new int[2];
 		float stepAccumulator = 0;
@@ -48,7 +49,7 @@ namespace StarPong.Framework
 		{
 			foreach (float x in slides)
 			{
-				DrawTexture(batch, texture, new Vector2(x, 0), Color.White, false, false);
+				DrawTexture(batch, texture, new Vector2(x, 0), Color, false, false);
 			}
 		}
 	}

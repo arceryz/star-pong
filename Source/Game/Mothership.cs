@@ -71,6 +71,7 @@ namespace StarPong.Game
 
 		public void TakeDamage(int dmg, Vector2 loc)
 		{
+			if (PlayingScene.IsGameFinished) return;
 			Health -= dmg;
 			while (Health <= 0 && HullStatus != HullStatusEnum.Destroyed)
 			{
