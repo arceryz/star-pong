@@ -90,11 +90,11 @@ namespace StarPong.Framework
 			}
 		}
 
-		public List<GameObject> GetObjectsInGroup(string group)
+		public static List<GameObject> GetObjectsInGroup(string group)
 		{
-			if (groups.ContainsKey(group))
+			if (Instance.groups.ContainsKey(group))
 			{
-				return groups[group];
+				return Instance.groups[group];
 			}
 			return new();
 		}

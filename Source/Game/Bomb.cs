@@ -9,6 +9,7 @@ namespace StarPong.Game
 	{
 		public Team Team { get; private set; } = Team.Neutral;
 		public int Health { get; private set; } = 999;
+		public bool IsActive = false;
 
 		const float spawnSpread = 45.0f;
 		const float speed = 200.0f;
@@ -34,6 +35,7 @@ namespace StarPong.Game
 			waitLabel.Position = new Vector2(0, -sprite.FrameSize.Height);
 			AddChild(waitLabel);
 
+			AddToGroup("bomb");
 			Reset();
 		}
 
@@ -41,6 +43,8 @@ namespace StarPong.Game
 		{
 			if (waitingTimer < waitingDuration)
 			{
+				IsActive = false;
+
 				waitingTimer += delta;
 				sprite.Visible = (int)(waitingTimer / waitingTickInterval) % 2 == 0;
 				waitLabel.Text = $"{waitingDuration - (int)waitingTimer}";
@@ -66,6 +70,8 @@ namespace StarPong.Game
 				}
 				return;
 			}
+
+			IsActive = true;
 
 			// Apply movement.
 			base.Update(delta);
@@ -102,7 +108,7 @@ namespace StarPong.Game
 			if (!PlayingScene.IsGameFinished)
 				Reset();
 			else
-				QueueFree();
+				Visible = false;
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

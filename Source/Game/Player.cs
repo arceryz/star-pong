@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Intrinsics.X86;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -130,6 +131,7 @@ namespace StarPong.Game
             muzzleFlash.DrawLayer = 1;
             AddChild(muzzleFlash);
 
+			AddToGroup("players");
 			StartSpawning();
 		}
 
@@ -138,8 +140,8 @@ namespace StarPong.Game
         {
 			if (State == StateEnum.Playing)
 			{
-				if (inputMapping != null) PlayerControlUpdate();
-				else BotControlUpdate();
+				if (inputMapping != null) PlayerControlUpdate(delta);
+				else BotControlUpdate(delta);
 
 				UpdateMovement(delta);
 				if (!PlayingScene.IsGameFinished) UpdateCombat(delta);
@@ -212,7 +214,7 @@ namespace StarPong.Game
 
 		#region Controls and Bot
 
-		void Shoot()
+		bool Shoot()
 		{
 			if (shootCooldown <= 0 && Energy >= BulletEnergyCost)
 			{
@@ -226,7 +228,9 @@ namespace StarPong.Game
 				AddChild(bullet);
 
 				muzzleFlash.Play("flash");
+				return true;
 			}
+			return false;
 		}
 
 		void ToggleShield()
@@ -242,7 +246,7 @@ namespace StarPong.Game
 			}
 		}
 
-		void PlayerControlUpdate()
+		void PlayerControlUpdate(float delta)
 		{
 			if (Input.IsKeyHeld(inputMapping[InputAction.MoveUp])) moveDirection = -1;
 			else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown])) moveDirection = 1;
@@ -252,9 +256,123 @@ namespace StarPong.Game
 			if (Input.IsKeyPressed(inputMapping[InputAction.Shoot])) Shoot();
 		}
 
-		void BotControlUpdate()
+		// BOT SETTINGS
+		const float botMoveStartDist = 30;
+		const float botMoveEndDist = 2;
+		const float botShootingDist = 30;
+		const float botFrenzyMoveDelayMax = 0.5f;
+		const float botShootingDelayMax = 0.5f;
+
+		float botShootingTimer = 0;
+		float botShootingDelay = 0;
+		float botFrenzyMoveDelay = 0;
+		float botFrenzyTimer = 0;
+		float botTargetOffset = 0;
+		bool botIsMoving = false;
+		bool botFrenzyMovement = false;
+
+		void BotControlUpdate(float delta)
 		{
 
+			Bomb bomb = (Bomb)SceneTree.GetObjectsInGroup("bomb")[0];
+
+			List<GameObject> players = SceneTree.GetObjectsInGroup("players");
+			Player enemyPlayer = (Player)(players[0] == this ? players[1] : players[0]);
+
+			// Computation of blackboard values.
+			//
+			// This value gives the X for which we must really start dealing
+			// with the bomb (moving towards it, toggling shield).
+			float bombCriticalX = shield.GlobalPosition.X - 100;
+
+			// If bomb proximity is 1 then the bomb is on our side.
+			// If 0, then on the enemy side and we will shoot.
+			// Also 0 if the bomb is moving away from us.
+			float bombProximity = MathHelper.Clamp((bomb.GlobalPosition.X - enemyPlayer.GlobalPosition.X) / (bombCriticalX - enemyPlayer.GlobalPosition.X), 0, 1);
+			if (!bomb.IsActive || bomb.Velocity.X < 0) bombProximity = 0;
+
+			float selfY = GlobalPosition.Y;
+			float bombY = bomb.GlobalPosition.Y;
+			float enemyY = enemyPlayer.GlobalPosition.Y;
+			float enemyDist = MathF.Abs(enemyY - selfY);
+			float targetY = MathHelper.Lerp(enemyY, bombY, bombProximity) + botTargetOffset;
+			float targetDist = MathF.Abs(targetY - selfY);
+			float desiredMoveDirection = Utility.Sign(targetY - selfY);
+
+			// Moving behavior.
+			//
+			// Start moving when sufficiently far away and move until close enough.
+			// This prevents micro-movements when there is little change.
+			moveDirection = 0;
+			if (botIsMoving)
+			{
+				moveDirection = desiredMoveDirection;
+				if (targetDist < botMoveEndDist)
+				{
+					botIsMoving = false;
+				}
+			}
+			else
+			{
+				if (botFrenzyMovement)
+				{
+					botFrenzyTimer += delta;
+					if (botFrenzyTimer > botFrenzyMoveDelay)
+					{
+						botFrenzyTimer = 0;
+						botTargetOffset = Utility.Rand01() * 100 * (targetY < selfY ? -1 : 1);
+						botIsMoving = true;
+					}
+				}
+				else
+				{
+					botTargetOffset = 0;
+					if (targetDist > botMoveStartDist)
+					{
+						botIsMoving = true;
+					}
+				}
+			}
+
+			// Shielding behavior.
+			//
+			// Start activating the shield when the proximity is sufficiently high.
+			// Lowering this reduces the efficiency of the bot.
+			if (bombProximity > 0.9)
+			{
+				if (!shield.IsActive) ToggleShield();
+			}
+			else
+			{
+				if (shield.IsActive) ToggleShield();
+			}
+
+			// Shooting behavior.
+			//
+			// If the bomb is not close, we will try shooting the enemy if in range.
+			// Go into frenzy movement when in shooting range.
+			if (bombProximity < 0.8 && enemyDist < botShootingDist)
+			{
+				if (!botFrenzyMovement)
+				{
+					botFrenzyMovement = true;
+					botFrenzyMoveDelay = Utility.Rand01() * botFrenzyMoveDelayMax;
+				}
+
+				botShootingTimer += delta;
+				if (botShootingTimer > botShootingDelay)
+				{
+					if (Shoot())
+					{
+						botShootingTimer = 0;
+						botShootingDelay = Utility.Rand01() * botShootingDelayMax;
+					}
+				}
+			}
+			else
+			{
+				botFrenzyMovement = false;
+			}
 		}
 		#endregion
 
