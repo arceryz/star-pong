@@ -37,6 +37,8 @@
 			public static string ExplosionFX_Small = "FX/Explosion_Small";
 			public static string FireFX_Big = "FX/Fire_Big";
 			public static string FireFX_Small = "FX/Fire_Small";
+
+			public static string Cat = "Debug/Cat";
 		}
 
 		public static class Fonts

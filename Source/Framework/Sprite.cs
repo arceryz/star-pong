@@ -71,6 +71,10 @@ namespace StarPong.Framework
 			{
 				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Color.White, Flip, true, RotationDeg, Scale);
 			}
+			if (sliceCountX == 1 && sliceCountY == 1)
+			{
+				DrawTexture(batch, spriteSheet, GlobalPosition, Color.White, Flip, true, RotationDeg, Scale);
+			}
 		}
 
 		public void AddAnimation(string name, int fps, int sliceX, int sliceY, int frameCount, bool loop=true)

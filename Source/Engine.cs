@@ -15,6 +15,7 @@ namespace StarPong
 		MenuScene,
 		PlayingScene,
 		EndScene,
+		SecretScene,
 	}
 
 	public class Engine : Microsoft.Xna.Framework.Game
@@ -64,6 +65,8 @@ namespace StarPong
         {
 			base.Initialize();
 			ChangeScene(SceneName.MenuScene);
+
+			Input.AddAction("toggle_secret", [Keys.B, Keys.E, Keys.A, Keys.U]);
 		}
 
         protected override void LoadContent()
@@ -161,9 +164,10 @@ namespace StarPong
 			if (IsTransitioning) return;
 
             GameObject obj = null;
-            if (scene == SceneName.MenuScene) obj = new MenuScene();
+			if (scene == SceneName.MenuScene) obj = new MenuScene();
 			else if (scene == SceneName.EndScene) obj = new EndScene();
 			else if (scene == SceneName.PlayingScene) obj = new PlayingScene();
+			else if (scene == SceneName.SecretScene) obj = new SecretScene();
 
 			if (SceneTree.Instance.Root != null)
 			{

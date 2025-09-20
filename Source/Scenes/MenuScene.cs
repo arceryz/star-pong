@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using StarPong.Framework;
 
@@ -7,7 +8,6 @@ namespace StarPong.Scenes
 	public class MenuScene: GameObject
 	{
 		public MenuScene() { }
-
 		public override void EnterTree()
 		{
 			//***********************************************//
@@ -42,6 +42,14 @@ namespace StarPong.Scenes
 			AddChild(bg);
 			AddChild(titleLabel);
 			AddChild(playButton);
+		}
+
+		public override void Update(float delta)
+		{
+			if (Input.IsActionPressed("toggle_secret"))
+			{
+				Engine.ChangeScene(SceneName.SecretScene);
+			}
 		}
 	}
 }
