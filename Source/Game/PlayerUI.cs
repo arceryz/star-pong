@@ -45,6 +45,7 @@ namespace StarPong.Game
 		{
 			if (PlayingScene.IsGameFinished)
 			{
+				respawnLabel.Visible = false;
 				return;
 			}
 			if (player.Health == 1 && Engine.Time % 0.1f < 0.05f || player.Health > 1)

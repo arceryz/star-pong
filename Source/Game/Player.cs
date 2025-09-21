@@ -219,6 +219,8 @@ namespace StarPong.Game
 
 		bool Shoot()
 		{
+			if (PlayingScene.IsGameFinished) return false;
+
 			float turboFactor = SettingsScene.TurboModeEnabled ? 0.5f : 1.0f;
 			if (shootCooldown <= 0 && Energy >= BulletEnergyCost)
 			{
