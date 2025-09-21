@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -21,6 +22,9 @@ namespace StarPong.Framework
 		float flickerTimer = 0;
 		bool isPressed = false;
 
+		SoundEffectInstance clickSFX;
+		SoundEffectInstance hoverSFX;
+
 		public Button(ImageFont font, string text, float fontScale=1)
 		{
 			this.FontScale = fontScale;
@@ -34,6 +38,9 @@ namespace StarPong.Framework
 			AddChild(this.selector);
 
 			CollisionRect = selector.FrameSize.Centered().Scaled(selector.Scale, selector.Scale);
+
+			clickSFX = Engine.Load<SoundEffect>(Assets.Sounds.UI_Button_Click).CreateInstance();
+			hoverSFX = Engine.Load<SoundEffect>(Assets.Sounds.UI_Button_Hover).CreateInstance();
 		}
 
 		public Button SetFlicker(float interval)
@@ -54,6 +61,8 @@ namespace StarPong.Framework
 				if (isPressed && state.LeftButton == ButtonState.Released)
 				{
 					isPressed = false;
+					clickSFX.Stop();
+					clickSFX.Play();
 					Pressed?.Invoke();
 				}
 			}
@@ -74,7 +83,13 @@ namespace StarPong.Framework
 
 		public override void Draw(SpriteBatch batch)
 		{
+			if (!selector.Visible && IsMouseHovering())
+			{
+				hoverSFX.Stop();
+				hoverSFX.Play();
+			}
 			selector.Visible = IsMouseHovering();
+
 			if (flickerTimer < FlickerInterval || FlickerInterval == 0)
 			{
 				Font.DrawString(batch, GlobalPosition, Text, FontScale);

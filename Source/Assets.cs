@@ -67,6 +67,11 @@
 			public static string Shield_Deactivate = "SFX/Shield_Deactivate";
 			public static string Shield_Deflect = "SFX/Shield_Deflect";
 			public static string Shield_Loop = "SFX/Shield_Loop";
+
+			public static string UI_Button_Click = "SFX/Button_Click";
+			public static string UI_Button_Hover = "SFX/Button_Hover";
+			public static string UI_Scene_Transition = "SFX/Scene_Transition";
+			public static string Mother_Alarm = "SFX/Mother_Alarm";
 		}
 
 		public static class Shaders

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
 using StarPong.Scenes;
@@ -30,6 +31,9 @@ namespace StarPong.Game
 		public Action HullStatusChanged;
 		public HullStatusEnum HullStatus { get; private set; } = HullStatusEnum.Strong;
 
+		bool hasAlarmGone = false;
+		float alarmTimer = 0;
+		SoundEffectInstance alarmSFX;
 		Texture2D texture;
 		FastNoiseLite noise;
 
@@ -50,10 +54,22 @@ namespace StarPong.Game
 			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 			noise.SetFrequency(0.25f);
 			CollisionRect = new Rect2(texture.Bounds).Centered().Scaled(0.3f, 1.0f);
- 		}
+
+			alarmSFX = Engine.Load<SoundEffect>(Assets.Sounds.Mother_Alarm).CreateInstance();
+		}
 
 		public override void Update(float delta)
 		{
+			if (HullStatus == HullStatusEnum.Critical)
+			{
+				alarmTimer += delta;
+				if (!hasAlarmGone && alarmTimer > 1.0f)
+				{
+					alarmSFX.Play();
+					hasAlarmGone = true;
+				}
+			}
+
 			if (HullStatus != HullStatusEnum.Destroyed)
 			{
 				float sign = Flip ? 1 : -1;

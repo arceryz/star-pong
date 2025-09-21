@@ -275,11 +275,35 @@
 /processorParam:Quality=Best
 /build:SFX/Bullet_Impact.wav
 
+#begin SFX/Button_Click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Button_Click.wav
+
+#begin SFX/Button_Hover.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Button_Hover.wav
+
 #begin SFX/Explosion.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:SFX/Explosion.wav
+
+#begin SFX/Mother_Alarm.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Mother_Alarm.wav
+
+#begin SFX/Scene_Transition.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SFX/Scene_Transition.wav
 
 #begin SFX/Shield_Activate.wav
 /importer:WavImporter

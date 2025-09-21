@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -52,6 +53,7 @@ namespace StarPong
         RenderTarget2D renderTarget;
 		RenderTarget2D effectTarget;
 		Effect crtEffect;
+		SoundEffectInstance transitionSFX;
 
         #region Core
         public Engine()

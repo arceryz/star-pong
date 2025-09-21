@@ -25,7 +25,7 @@ namespace StarPong.Framework
 		int step = 0;
 		bool fadeIn;
 
-		SoundEffectInstance stepSFX;
+		SoundEffectInstance sfx;
 
 		public TransitionCover(Color color, int stepCount, float duration, float waitTime, bool fadeIn=true)
 		{
@@ -34,8 +34,12 @@ namespace StarPong.Framework
 			this.duration = duration;
 			this.waitTime = waitTime;
 			this.fadeIn = fadeIn;
-			stepSFX = Engine.Load<SoundEffect>(Assets.Sounds.Bullet_Impact).CreateInstance();
-			stepSFX.Volume = 0.3f;
+
+			if (fadeIn)
+			{
+				sfx = Engine.Load<SoundEffect>(Assets.Sounds.UI_Scene_Transition).CreateInstance();
+				sfx.Play();
+			}
 		}
 
 		public override void Update(float delta)
@@ -47,8 +51,6 @@ namespace StarPong.Framework
 				{
 					timer = 0;
 					step++;
-					//stepSFX.Stop();
-					//stepSFX.Play();
 				}
 			}
 			else if (!finished)
