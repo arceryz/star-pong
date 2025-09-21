@@ -1,8 +1,14 @@
 # STAR-PONG
 
+<img align="left" style="width:350px" src="https://github.com/arceryz/star-pong/blob/master/StarPong.gif" width="380px">
+
 STAR-PONG is a 2-player variant of pong where both player must protect their mothership
 from the bomb, while also fighting each other with bullets in space. The game tries to
 be inspired by the arcade era, with sounds, shaders and pixel art to match.
+
+---
+<br>
+<br>
 
 Created by:
 - Timothy van der Valk (Programmer/Creator) [Website](https://timothyvv.nl/) [Github](https://github.com/)
@@ -26,7 +32,8 @@ Created by:
 - Health bars and score display in-game.
 - Tons of explosions and and fire.
 - Screen shake integrated in the CRT-shader post process.
-
+- Debug visualisations for collision boxes (Press `(Z)`) and scene tree (Press `(T)`).
+- Easter egg^^.
 
 This game and all its code, except that in [/External](/External), was written by me from the Monday 8th of September 2025, to Sunday 21st. 
 It is written for the course *Game Programming 1* at the Utrecht University of Applied Sciences. The assignment was to create *Pong*.
@@ -43,8 +50,7 @@ The game uses CRT-effect shader that I wrote myself. It features a barrel distor
 The controls are explained in the game as well. The game is designed for two players to play on the same keyboard.
 The AI opponent takes control of the red team if enabled.
 
-|------|------|------|
-| What | Blue | Red  |
+|   | Blue | Red  |
 |------|------|------|
 | Ship Movement | W/S | Up/Down arrows |
 | Shoot | C | O |
@@ -77,11 +83,11 @@ Building on top of the scene tree, I used a draw sorting system that sorts objec
 This ensures that children always draw on top of parents, but that draw layers are still respected. This is similar to Godot's architecture.
 
 The core of the engine consists of
-- Engine
-- Scene Tree
-- Draw Sorter
-- Physics
-- Input
+- [Engine](/Source/Engine.cs)
+- [Scene Tree](/Source/Framework/SceneTree.cs)
+- [Draw Sorter](/Source/Framework/DrawSorter.cs)
+- [Physics](/Source/Framework/Physics.cs)
+- [Input](/Source/Framework/Input.cs)
 
 Everything else is part of the framework for building actual games (sprites, buttons, labels, fonts etc). No AI was used in the writing of this code.
 All design decisions are made by me, and all of this code is written by me, by hand. I learned a lot about comfortable ways to structure game engine code,
