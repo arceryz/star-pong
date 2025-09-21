@@ -9,8 +9,7 @@ be inspired by the arcade era, with sounds, shaders and pixel art to match.
 [Play on Itch.io](https://timothyvv.itch.io/star-pong) or download from the [Releases](https://github.com/arceryz/star-pong/releases).
 
 ---
-<br>
-<br>
+<br><br>
 
 **Created by**
 - Timothy van der Valk (Programmer/Creator) [LinkedIn](https://www.linkedin.com/in/timothy-van-der-valk-3185ba323/) [Website](https://timothyvv.nl/)
