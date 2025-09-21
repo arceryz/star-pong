@@ -2,6 +2,10 @@
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// A floating-point version of the rectangle class with utilities functions.
+	/// Used primarily as collision rectangles and for collision detection.
+	/// </summary>
 	public class Rect2
 	{
 		public static Rect2 Zero = new Rect2(0, 0, 0, 0);

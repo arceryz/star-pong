@@ -11,6 +11,11 @@ namespace StarPong.Game
 		Big
 	}
 
+	/// <summary>
+	/// A single explosion that can repeat and play sound. Also causes screen shake.
+	/// They explode the moment that the parent adds them, and free automatically.
+	/// Use them when you want to have fun.
+	/// </summary>
 	public class ExplosionFX: GameObject
 	{
 		Sprite sprite;

@@ -9,6 +9,9 @@ namespace StarPong.Game
 		Big
 	}
 
+	/// <summary>
+	/// Fire lingers forever until the parent deletes them.
+	/// </summary>
 	public class FireFX: GameObject
 	{
 		Sprite sprite;

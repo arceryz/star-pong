@@ -7,6 +7,10 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// Bullets fly forward in the color of their team. They collide with each other,
+	/// ships and motherships and deal damage and cause explosions. Fun things.
+	/// </summary>
 	public class Bullet: CollisionObject, IDamageable
 	{
 		const float speed = 500.0f;

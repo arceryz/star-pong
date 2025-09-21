@@ -9,6 +9,10 @@ namespace StarPong.Game
 		Red
 	}
 
+	/// <summary>
+	/// I use this interface to streamline damage handling and prevent
+	/// the same team from hitting itself. Also exposes health and damage functions.
+	/// </summary>
 	internal interface IDamageable
 	{
 		public Team Team { get; }

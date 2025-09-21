@@ -7,6 +7,10 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// Motherships linger on the sides of the screen and serve as objectives to
+	/// destroy and win the game. They explode spectacularly when breaking a stage of hull.
+	/// </summary>
 	public class Mothership: CollisionObject, IDamageable
 	{
 		public enum HullStatusEnum

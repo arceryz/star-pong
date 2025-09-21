@@ -5,6 +5,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// Collision objects extend game objects by adding physics properties,
+	/// the only ones that are implemented are velocity and collision detection.
+	/// Can be extended to collision normals, position information etc.
+	/// </summary>
 	public class CollisionObject: GameObject
 	{
 		public Rect2 CollisionRect = Rect2.Zero;

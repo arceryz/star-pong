@@ -11,6 +11,13 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// The player can shoot, raise and shield and move. It's objective is to protect
+	/// the mothership behind it and take down the enemy mothership and player.
+	/// If no control scheme is provided, a bot will be used instead.
+	/// This bot simply reflects the bomb if it comes close, and spams bullets on the
+	/// enemy if the bomb is no longer a threat.
+	/// </summary>
 	public class Player: CollisionObject, IDamageable
     {
         public enum StateEnum
@@ -429,6 +436,7 @@ namespace StarPong.Game
 
 		public void StartExploding()
         {
+			if (shield.IsActive) ToggleShield();
             ChainExplosionFX exp = new ChainExplosionFX(CollisionRect, 1.0f, 0.25f, 0);
 			exp.TreeExited += () => StartRespawnWait();
             AddChild(exp);

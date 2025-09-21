@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace StarPong.Framework
 {
 	/// <summary>
-	/// A sprite that can play animations from a spritesheet.
+	/// A sprite that can play animations from a spritesheet or display a static texture.
+	/// Has utilities for rotation and scaling.
+	/// Improvement would seperate the spritesheets into a resource object.
 	/// </summary>
 	public class Sprite: GameObject
 	{

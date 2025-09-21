@@ -8,6 +8,9 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// Deflects bullets and bombs. Activation is governed by the player.
+	/// </summary>
 	public class Shield: CollisionObject, IDamageable
 	{
 		public Action BulletHit;

@@ -8,6 +8,7 @@ namespace StarPong.Framework
 	/// <summary>
 	/// Applies collision and overlap detection to objects in the scene tree.
 	/// Only objects in the scene tree (being updated) are tracked.
+	/// Uses a very naive O(n^2) collision detection scheme.
 	/// </summary>
 	public class Physics
 	{

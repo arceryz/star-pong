@@ -6,6 +6,8 @@ namespace StarPong.Game
 	/// <summary>
 	/// This explosion combines the single explosion and applies it many
 	/// times across a region for a chain effect.
+	/// It can also spawn fire effects at the explosion points, which then
+	/// linger on the parent. Used by the mothership to indicate damaged hull.
 	/// </summary>
 	public class ChainExplosionFX: GameObject
 	{

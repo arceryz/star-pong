@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// Labels display a piece of text.
+	/// </summary>
 	public class Label: GameObject
 	{
 		public string Text;

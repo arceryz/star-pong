@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// Utility functions from mathematics and random number generation.
+	/// Simplifies code in other places.
+	/// </summary>
 	public static class Utility
 	{
 		public static Random RNG = new();

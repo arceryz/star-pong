@@ -5,6 +5,11 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// The bomb collides with the border of the screens and deals a ton of damage
+	/// to motherships on contact. It spawns in the middle of the screen and flies
+	/// to the side that has not been hit previously.
+	/// </summary>
 	public class Bomb: CollisionObject, IDamageable
 	{
 		public Team Team { get; private set; } = Team.Neutral;

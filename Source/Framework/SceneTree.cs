@@ -11,6 +11,9 @@ namespace StarPong.Framework
 	/// <summary>
 	/// The scene tree manages the game object hierarchy, frees the objects
 	/// when necessary and facilitates the main game loop.
+	/// It can switch between scenes by switching roots. Children that are then
+	/// no longer referred anywhere will be freed automatically by GC, but they
+	/// can still exist out of the tree if other objects hold references to them.
 	/// </summary>
 	public class SceneTree
 	{

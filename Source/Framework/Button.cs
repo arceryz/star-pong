@@ -1,10 +1,13 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// The button is self-explanatory. It can be clicked and has text from an image font.
+	/// It uses the collision rectangle for mouse hover detection, but is not really a collision object.
+	/// </summary>
 	public class Button: CollisionObject
 	{
 		public Action Pressed;

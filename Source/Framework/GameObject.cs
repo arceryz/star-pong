@@ -7,6 +7,12 @@ using StarPong.Game;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// The game object is the heart of the game. These things can be
+	/// organized in hierarchies, who then inherit relative positions and draw layers.
+	/// Update is called automatically for children, which simplifies code.
+	/// They couple tightly with the scene tree, which manages their lifecycle.
+	/// </summary>
 	public class GameObject
 	{
 		public GameObject Parent { get; private set; }

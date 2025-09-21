@@ -20,6 +20,10 @@ namespace StarPong
 		SettingsScene,
 	}
 
+	/// <summary>
+	/// Manages engine-specific global state for the game, game loop and transition logic.
+	/// Loads custom assets and provides utility functions.
+	/// </summary>
 	public class Engine : Microsoft.Xna.Framework.Game
     {
         public static Engine Instance;

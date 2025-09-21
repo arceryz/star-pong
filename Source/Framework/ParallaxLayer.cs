@@ -4,6 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace StarPong.Framework
 {
+	/// <summary>
+	/// Parallaxlayers simply take a texture of screen height as input, and then slide
+	/// two of these instances horizontally across the screen to the left.
+	/// The speed can be controlled, which gives effects for depth.
+	/// </summary>
 	public class ParallaxLayer: GameObject
 	{
 		float speed = 1.0f;

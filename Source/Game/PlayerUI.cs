@@ -5,6 +5,10 @@ using StarPong.Scenes;
 
 namespace StarPong.Game
 {
+	/// <summary>
+	/// Draws the portrait, health and energy of a player vessel.
+	/// Displays timer when the player is destroyed.
+	/// </summary>
 	public class PlayerUI: GameObject
 	{
 		public const float RespawnLabelOffset = 85;
