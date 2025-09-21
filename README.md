@@ -4,9 +4,10 @@
 
 STAR-PONG is a 2-player variant of pong where both player must protect their mothership
 from the bomb, while also fighting each other with bullets in space. The game tries to
-be inspired by the arcade era, with sounds, shaders and pixel art to match.
+be inspired by the arcade era, with sounds, shaders and pixel art to match. 
 
-[PLAY HERE](https://timothyvv.itch.io/star-pong) or download from the [Releases]()
+[Play on Itch.io](https://timothyvv.itch.io/star-pong) or download from the [Releases](https://github.com/arceryz/star-pong/releases).
+
 ---
 <br>
 <br>
