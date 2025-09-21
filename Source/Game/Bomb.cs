@@ -59,6 +59,8 @@ namespace StarPong.Game
 					float rotateAngle = Utility.RandRange(-spread, spread);
 
 					Velocity = new Vector2(PlayingScene.IsCriticalPhase ? criticalSpeed: speed, 0.0f);
+					if (SettingsScene.TurboModeEnabled)
+						Velocity *= 1.5f;
 					Velocity.Rotate(rotateAngle);
 
 					float dir = 0;

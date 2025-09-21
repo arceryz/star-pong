@@ -53,9 +53,10 @@ namespace StarPong.Scenes
 			Bomb bomb = new Bomb();
 
 			// Background
-			ParallaxLayer bg1 = new ParallaxLayer(stars, 50.0f);
-			ParallaxLayer bg2 = new ParallaxLayer(planets, 150.0f);
-			ParallaxLayer bg3 = new ParallaxLayer(asteroids, 300.0f);
+			float turboFactor = SettingsScene.TurboModeEnabled ? 2.0f : 1.0f;
+			ParallaxLayer bg1 = new ParallaxLayer(stars, 50.0f * turboFactor);
+			ParallaxLayer bg2 = new ParallaxLayer(planets, 150.0f * turboFactor);
+			ParallaxLayer bg3 = new ParallaxLayer(asteroids, 300.0f * turboFactor);
 		
 			// UI
 			PlayerUI playerui_1 = new PlayerUI(player1);

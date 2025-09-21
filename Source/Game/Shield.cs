@@ -57,7 +57,7 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
-			if (PlayingScene.IsGameFinished && Visible) Deactivate();
+			if (PlayingScene.IsGameFinished && CollisionEnabled) Deactivate();
 		}
 
 		public void Activate()

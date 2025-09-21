@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
+using StarPong.Scenes;
 
 namespace StarPong.Game
 {
@@ -31,7 +32,7 @@ namespace StarPong.Game
 				sprite = new Sprite(tex, 4, 1);
 				sprite.AddAnimation("explode", 8, 0, 0, 4, false);
 				sprite.Scale = 1;
-				Engine.AddCameraShake(5);
+				Engine.AddCameraShake(SettingsScene.TurboModeEnabled ? 1: 5);
 			}
 
 			if (allSound || type == ExplosionType.Big)

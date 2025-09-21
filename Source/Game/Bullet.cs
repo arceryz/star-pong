@@ -37,7 +37,7 @@ namespace StarPong.Game
 			sprite.Play("default");
 			AddChild(sprite);
 
-			Velocity = dir * speed;
+			Velocity = dir * speed * (SettingsScene.TurboModeEnabled ? 1.5f: 1.0f);
 			CollisionRect = new Rect2(0, 0, 24, 24).Centered();
 			OverridePosition = true;
 
@@ -55,7 +55,7 @@ namespace StarPong.Game
 				!(other is Bomb))
 			{
 				int dmg = 1;
-				if (other is Mothership) dmg = 3;
+				if (other is Mothership) dmg = SettingsScene.TurboModeEnabled ? 1: 3;
 				if (PlayingScene.IsGameFinished) dmg = 0;
 
 				dmgable.TakeDamage(dmg, GlobalPosition);

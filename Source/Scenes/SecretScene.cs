@@ -24,8 +24,12 @@ namespace StarPong.Scenes
 			catSprite.Position = Engine.GetAnchor(0, 0, 0, -50);
 			catSprite.Scale = 0.25f;
 
+			Label label = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Gold), "created 09-21-25", 4);
+			label.Position = Engine.GetAnchor(0, 0, 0, 200);
+
+
 			Button returnButton = new Button(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey), "love u xxx", 4);
-			returnButton.Position = Engine.GetAnchor(0, 0, 0, 200);
+			returnButton.Position = Engine.GetAnchor(0, 1, 0, -100);
 			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
 
 
@@ -34,6 +38,7 @@ namespace StarPong.Scenes
 			//***********************************************//
 			AddChild(bg);
 			AddChild(catSprite);
+			AddChild(label);
 			AddChild(returnButton);
 		}
 	}

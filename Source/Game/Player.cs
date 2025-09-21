@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,7 +56,6 @@ namespace StarPong.Game
 		public const float SpawnTime = 1.0f;
 		public const float SpawnDistance = 100.0f;
 
-		public const float TotalEnergy = 100;
         public const float EnergyRegenSec = 30;
         public const float FastEnergyRegenWaitTime = 1;
 		public const float FastEnergyRegenSec = 60;
@@ -73,11 +73,13 @@ namespace StarPong.Game
 
 		public Team Team { get; private set; }
         public int Health { get; private set; } = 3;
-        public float Energy = 100;
+        public float Energy = 0;
         public float RespawnWaitTimer { get; private set; } = 0;
 		public StateEnum State { get; private set; } = StateEnum.Playing;
 		public int DeathCount { get; private set; } = 0;
+		public int ShootCount { get; private set; } = 0;
 
+		int maxEnergy = 100;
 		float spawnFlickerTimer = 0;
 		float spawnTimer = 0;
 		float shootCooldown = 0;
@@ -169,7 +171,7 @@ namespace StarPong.Game
 
         void UpdateMovement(float delta)
         {
-			Velocity = new Vector2(0, moveDirection * StrafeSpeed);
+			Velocity = new Vector2(0, moveDirection * StrafeSpeed) * (SettingsScene.TurboModeEnabled ? 1.5f : 1.0f);
 
 			base.Update(delta);
 			float sw = CollisionRect.Width;
@@ -203,12 +205,13 @@ namespace StarPong.Game
 			}
 
 			// Energy regen.
-			energyRegenCooldown -= delta;
+			float turboFactor = SettingsScene.TurboModeEnabled ? 2.0f : 1.0f;
+			energyRegenCooldown -= delta * turboFactor;
 			if (energyRegenCooldown < 0)
 			{
-				Energy += (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;
+				Energy += turboFactor * (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;
 			}
-			Energy = MathHelper.Clamp(Energy, 0, TotalEnergy);
+			Energy = MathHelper.Clamp(Energy, 0, maxEnergy);
 		}
 		#endregion
 
@@ -216,17 +219,26 @@ namespace StarPong.Game
 
 		bool Shoot()
 		{
+			float turboFactor = SettingsScene.TurboModeEnabled ? 0.5f : 1.0f;
 			if (shootCooldown <= 0 && Energy >= BulletEnergyCost)
 			{
 				Energy -= BulletEnergyCost;
-				shootCooldown = ShootCooldownTime;
-				energyRegenCooldown = EnergyRegenCooldownTime;
+				shootCooldown = ShootCooldownTime * turboFactor;
+				energyRegenCooldown = EnergyRegenCooldownTime * turboFactor;
 
 				Bullet bullet = new Bullet(Team, ToGlobalDir(new Vector2(1, 0)));
 				bullet.DrawLayer = 1;
-				bullet.Position = ToGlobal(bulletSpawnOrigin);
+				if (SettingsScene.TurboModeEnabled)
+				{
+					bullet.Position = ToGlobal(bulletSpawnOrigin + new Vector2(0, ShootCount % 2 == 0 ? -15: 15));
+				}
+				else
+				{
+					bullet.Position = ToGlobal(bulletSpawnOrigin);
+				}
 				AddChild(bullet);
 
+				ShootCount++;
 				muzzleFlash.Play("flash");
 				return true;
 			}
@@ -253,13 +265,13 @@ namespace StarPong.Game
 			else moveDirection = 0;
 
 			if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield])) ToggleShield();
-			if (Input.IsKeyPressed(inputMapping[InputAction.Shoot])) Shoot();
+			if (Input.IsKeyHeld(inputMapping[InputAction.Shoot])) Shoot();
 		}
 
 		// BOT SETTINGS
 		const float botMoveStartDist = 30;
 		const float botMoveEndDist = 2;
-		const float botShootingDist = 30;
+		const float botShootingDist = 50;
 		const float botFrenzyMoveDelayMax = 0.5f;
 		const float botShootingDelayMax = 0.5f;
 
@@ -299,6 +311,9 @@ namespace StarPong.Game
 			float targetDist = MathF.Abs(targetY - selfY);
 			float desiredMoveDirection = Utility.Sign(targetY - selfY);
 
+			float turboBulletFactor = SettingsScene.TurboModeEnabled ? 0.2f : 1.0f;
+			float turboFrenzyFactor = SettingsScene.TurboModeEnabled ? 0.2f : 1.0f;
+
 			// Moving behavior.
 			//
 			// Start moving when sufficiently far away and move until close enough.
@@ -320,7 +335,7 @@ namespace StarPong.Game
 					if (botFrenzyTimer > botFrenzyMoveDelay)
 					{
 						botFrenzyTimer = 0;
-						botTargetOffset = Utility.Rand01() * 100 * (targetY < selfY ? -1 : 1);
+						botTargetOffset = Utility.RandRange(-1,1) * 70 * (targetY < selfY ? -1 : 1);
 						botIsMoving = true;
 					}
 				}
@@ -356,7 +371,7 @@ namespace StarPong.Game
 				if (!botFrenzyMovement)
 				{
 					botFrenzyMovement = true;
-					botFrenzyMoveDelay = Utility.Rand01() * botFrenzyMoveDelayMax;
+					botFrenzyMoveDelay = Utility.Rand01() * botFrenzyMoveDelayMax * turboFrenzyFactor;
 				}
 
 				botShootingTimer += delta;
@@ -365,7 +380,7 @@ namespace StarPong.Game
 					if (Shoot())
 					{
 						botShootingTimer = 0;
-						botShootingDelay = Utility.Rand01() * botShootingDelayMax;
+						botShootingDelay = Utility.Rand01() * botShootingDelayMax * turboBulletFactor;
 					}
 				}
 			}
@@ -390,7 +405,9 @@ namespace StarPong.Game
 			spawnTimer = 0;
 			spawnFlickerTimer = 0;
 			State = StateEnum.Spawning;
-			Health = 3;
+			Health = SettingsScene.TurboModeEnabled ? 5 : 3;
+			maxEnergy = SettingsScene.TurboModeEnabled ? 150 : 100;
+			Energy = maxEnergy;
 			foreach (GameObject child in Children)
 			{
 				if (child is FireFX) child.QueueFree();
