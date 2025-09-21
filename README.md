@@ -6,11 +6,12 @@ STAR-PONG is a 2-player variant of pong where both player must protect their mot
 from the bomb, while also fighting each other with bullets in space. The game tries to
 be inspired by the arcade era, with sounds, shaders and pixel art to match.
 
+[PLAY HERE](https://timothyvv.itch.io/star-pong) or download from the [Releases]()
 ---
 <br>
 <br>
 
-Created by:
+**Created by**
 - Timothy van der Valk (Programmer/Creator) [LinkedIn](https://www.linkedin.com/in/timothy-van-der-valk-3185ba323/) [Website](https://timothyvv.nl/)
 - Hunter Short (Music) [LinkedIn](https://www.linkedin.com/in/hunter-short-68708ba4/)
 - Theo Daskalakis (Sound Effects) [LinkedIn](https://www.linkedin.com/in/theo-daskalakis-3259a3328/)
@@ -92,3 +93,9 @@ The core of the engine consists of
 Everything else is part of the framework for building actual games (sprites, buttons, labels, fonts etc). No AI was used in the writing of this code.
 All design decisions are made by me, and all of this code is written by me, by hand. I learned a lot about comfortable ways to structure game engine code,
 dealing with assets and so on. The result is a sturdy framework that can be used for future assignments.
+
+## LICENSE
+
+The source code is licensed under the MIT license. See [LICENSE](/LICENSE) for more information.
+The assets are NOT under the MIT license. Please contact the author of the respective asset for more information.
+The authors are one of the four mentioned at the top from (Art, SFX and Music). Respect their work and do not use it without permission.
