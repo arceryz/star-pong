@@ -11,10 +11,10 @@ be inspired by the arcade era, with sounds, shaders and pixel art to match.
 <br>
 
 Created by:
-- Timothy van der Valk (Programmer/Creator) [Website](https://timothyvv.nl/) [Github](https://github.com/)
+- Timothy van der Valk (Programmer/Creator) [LinkedIn](https://www.linkedin.com/in/timothy-van-der-valk-3185ba323/) [Website](https://timothyvv.nl/)
 - Hunter Short (Music) [LinkedIn](https://www.linkedin.com/in/hunter-short-68708ba4/)
-- Theo (Sound Effects) [link??]
-- Ro (Art) [LinkedIn](https://www.linkedin.com/in/ro-van-der-neut-679a6a380/)
+- Theo Daskalakis (Sound Effects) [LinkedIn](https://www.linkedin.com/in/theo-daskalakis-3259a3328/)
+- Ro van der Neut (Art) [LinkedIn](https://www.linkedin.com/in/ro-van-der-neut-679a6a380/)
 
 ## Features
 
@@ -40,7 +40,7 @@ It is written for the course *Game Programming 1* at the Utrecht University of A
 I decided to collaborate with friends to extend the basic implementation of pong to this.
 
 All of the assets, which includes Music, Sound Effects and Art, we're created specifically for this project in the same time frame or shorter. 
-The only external code I used is the [FastNoise Library](https://github.com/Auburn/FastNoise_CSharp) for the random movement of the mothership,
+The only external code I used is the [FastNoiseLite Library](https://github.com/Auburn/FastNoiseLite) for the random movement of the mothership,
 and the [Primitives2D Library](https://github.com/DoogeJ/MonoGame.Primitives2D) for drawing debug shapes. None of these libraries are critical to the game.
 
 The game uses CRT-effect shader that I wrote myself. It features a barrel distortion, scanline effect, blurring and bar lines effect.
