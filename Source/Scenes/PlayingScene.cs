@@ -56,6 +56,7 @@ namespace StarPong.Scenes
 			float turboFactor = SettingsScene.TurboModeEnabled ? 2.0f : 1.0f;
 			ParallaxLayer bg1 = new ParallaxLayer(stars, 50.0f * turboFactor);
 			ParallaxLayer bg2 = new ParallaxLayer(planets, 150.0f * turboFactor);
+			bg2.Color = Color.Gray;
 			ParallaxLayer bg3 = new ParallaxLayer(asteroids, 300.0f * turboFactor);
 		
 			// UI
@@ -73,7 +74,6 @@ namespace StarPong.Scenes
 			//***********************************************//
 			AddChild(bg1);
 			AddChild(bg2);
-			AddChild(bg3);
 
 			AddChild(game);
 				game.AddChild(mother1);
@@ -81,7 +81,8 @@ namespace StarPong.Scenes
 				game.AddChild(player1);
 				game.AddChild(player2);
 				game.AddChild(bomb);
-			
+			AddChild(bg3);
+
 			AddChild(playerui_1);
 			AddChild(playerui_2);
 			AddChild(scoreui);
