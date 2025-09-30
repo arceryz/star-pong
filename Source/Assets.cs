@@ -47,6 +47,7 @@
 			public static string Gyruss_Grey = "UI/Gyruss_Grey";
 			public static string Gyruss_Gold = "UI/Gyruss_Gold";
 			public static string Gyruss_Bronze = "UI/Gyruss_Bronze";
+			public static string BattleCircuit_Blue = "UI/BattleCircuit_Blue";
 			public static string Debug_Kobe_TTF = "Debug/Kobe";
 		}
 

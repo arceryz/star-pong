@@ -61,7 +61,7 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
-			if (IsActive && !isPowered) deactivate();
+			if (IsActive && (!isPowered || PlayingScene.IsGameFinished)) deactivate();
 			isPowered = false;
 		}
 

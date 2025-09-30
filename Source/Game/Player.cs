@@ -182,7 +182,7 @@ namespace StarPong.Game
 
 			// Energy regen.
 			float turboFactor = SettingsScene.TurboModeEnabled ? 1.5f : 1.0f;
-			energyRegenCooldown -= delta * turboFactor;
+			energyRegenCooldown -= delta;
 			if (energyRegenCooldown < 0)
 			{
 				Energy += turboFactor * (energyRegenCooldown < -FastEnergyRegenWaitTime ? FastEnergyRegenSec : EnergyRegenSec) * delta;

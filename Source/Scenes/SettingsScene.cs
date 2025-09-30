@@ -91,6 +91,7 @@ namespace StarPong.Scenes
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 50.0f);
 
+
 			//***********************************************//
 			// Hierarchy
 			//***********************************************//

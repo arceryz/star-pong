@@ -113,6 +113,7 @@ namespace StarPong
             CustomAssets[Assets.Fonts.Gyruss_Gold] = new ImageFont(Assets.Fonts.Gyruss_Gold, "abcdefghijklmnopqrstuvwxyz0123456789-");
             CustomAssets[Assets.Fonts.Gyruss_Grey] = new ImageFont(Assets.Fonts.Gyruss_Grey, "abcdefghijklmnopqrstuvwxyz0123456789-");
 			CustomAssets[Assets.Fonts.Gyruss_Bronze] = new ImageFont(Assets.Fonts.Gyruss_Bronze, "abcdefghijklmnopqrstuvwxyz0123456789-");
+			CustomAssets[Assets.Fonts.BattleCircuit_Blue] = new ImageFont(Assets.Fonts.BattleCircuit_Blue, "abcdefghijklmnopqrstuvwxyz0123456789");
 		}
 
         protected override void Update(GameTime gameTime)

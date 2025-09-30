@@ -38,11 +38,16 @@ namespace StarPong.Scenes
 			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
 			returnButton.Position = Engine.GetAnchor(0, 0, 0, 100);
 
+			playButton.GrabFocus();
+			playButton.FocusDown = returnButton;
+			returnButton.FocusUp = playButton;
+
 			ParallaxLayer bg = new ParallaxLayer(stars, 100.0f);
 
 			MediaPlayer.Play(Engine.Load<Song>(Assets.Songs.Menu2));
 			MediaPlayer.Volume = 0.5f;
 			MediaPlayer.IsRepeating = true;
+
 
 			//***********************************************//
 			// Hierarchy

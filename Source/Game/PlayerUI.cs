@@ -11,7 +11,6 @@ namespace StarPong.Game
 	/// </summary>
 	public class PlayerUI: GameObject
 	{
-		public const float RespawnLabelOffset = 85;
 		public const float HOffset = 120;
 		public const float VOffset = 42;
 		public const float EnergyPipEnergyQuantity = 10;
@@ -20,24 +19,30 @@ namespace StarPong.Game
 		Texture2D portraitTex;
 		Texture2D healthPipTex;
 		Texture2D energyPipTex;
+		Label noEnergyLabel;
 		Label respawnLabel;
 
 		public PlayerUI(Player player)
 		{
 			respawnLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "", 4);
+			respawnLabel.Position.X = 85;
 			AddChild(respawnLabel);
+
+			noEnergyLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.BattleCircuit_Blue), "low energy", 3);
+			noEnergyLabel.Position = new Vector2(150, 60);
+			AddChild(noEnergyLabel);
 
 			if (player.Team == Team.Blue)
 			{
 				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Blue_Portrait);
 				Position = Engine.GetAnchor(0, -1, -HOffset + 2, VOffset);
-				respawnLabel.Position = new Vector2(-RespawnLabelOffset, 0);
+				respawnLabel.Position.X *= -1;
+				noEnergyLabel.Position.X *= -1;
 			}
 			else
 			{
 				portraitTex = Engine.Load<Texture2D>(Assets.Textures.UI_Red_Portrait);
 				Position = Engine.GetAnchor(0, -1, HOffset + 2, VOffset);
-				respawnLabel.Position = new Vector2(RespawnLabelOffset, 0);
 			}
 			healthPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_HealthPip);
 			energyPipTex = Engine.Load<Texture2D>(Assets.Textures.UI_EnergyPip);
@@ -84,7 +89,7 @@ namespace StarPong.Game
 				respawnLabel.Visible = true;
 			}
 			else respawnLabel.Visible = false;
-
+			noEnergyLabel.Visible = player.Energy <= Player.ShieldActivateMinEnergy && Engine.Time % 0.2f < 0.1f;
 		}
 	}
 }
