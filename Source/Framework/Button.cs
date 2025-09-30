@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,7 @@ namespace StarPong.Framework
 	/// </summary>
 	public class Button: CollisionObject
 	{
+		public static Button FocusedButton = null;
 		public Action Pressed;
 
 		public string Text;
@@ -18,9 +20,13 @@ namespace StarPong.Framework
 		public float FontScale;
 		public float FlickerInterval = 0;
 
+		bool isFocused = false;
 		Sprite selector;
 		float flickerTimer = 0;
-		bool isPressed = false;
+		bool isMouseHovering = false;
+
+		public Button FocusUp = null;
+		public Button FocusDown = null;
 
 		SoundEffectInstance clickSFX;
 		SoundEffectInstance hoverSFX;
@@ -51,24 +57,29 @@ namespace StarPong.Framework
 
 		public override void Update(float delta)
 		{
-			MouseState state = Mouse.GetState();
-			if (IsMouseHovering())
+			if (!isMouseHovering && IsMouseHovering())
 			{
-				if (state.LeftButton == ButtonState.Pressed)
+				isMouseHovering = true;
+				GrabFocus();
+			}
+			if (isMouseHovering && !IsMouseHovering()) isMouseHovering = false;
+
+			if (isFocused)
+			{
+				if (Input.IsActionPressed("ui_down") && FocusDown != null)
 				{
-					isPressed = true;
+					FocusDown.GrabFocus();
 				}
-				if (isPressed && state.LeftButton == ButtonState.Released)
+				else if (Input.IsActionPressed("ui_up") && FocusUp != null)
 				{
-					isPressed = false;
+					FocusUp.GrabFocus();
+				}
+				else if (Input.IsActionPressed("ui_select"))
+				{
 					clickSFX.Stop();
 					clickSFX.Play();
 					Pressed?.Invoke();
 				}
-			}
-			else
-			{
-				isPressed = false;
 			}
 
 			if (FlickerInterval > 0)
@@ -79,21 +90,39 @@ namespace StarPong.Framework
 					flickerTimer = 0;
 				}
 			}
+
+			if (FocusedButton == this)
+			{
+				isFocused = true;
+			}
 		}
 
 		public override void Draw(SpriteBatch batch)
 		{
-			if (!selector.Visible && IsMouseHovering())
+			if (FocusedButton == this)
 			{
-				hoverSFX.Stop();
-				hoverSFX.Play();
+				if (!selector.Visible)
+				{
+					hoverSFX.Stop();
+					hoverSFX.Play();
+				}
+				selector.Visible = true;
 			}
-			selector.Visible = IsMouseHovering();
+			else
+			{
+				selector.Visible = false;
+			}
 
 			if (flickerTimer < FlickerInterval || FlickerInterval == 0)
 			{
 				Font.DrawString(batch, GlobalPosition, Text, FontScale);
 			}
+		}
+
+		public void GrabFocus()
+		{
+			if (FocusedButton != null) FocusedButton.isFocused = false;
+			FocusedButton = this;
 		}
 	}
 }

@@ -31,13 +31,13 @@ namespace StarPong.Game
 		public const float SpawnTime = 1.0f;
 		public const float SpawnDistance = 100.0f;
 
-        public const float EnergyRegenSec = 30;
-        public const float FastEnergyRegenWaitTime = 1;
-		public const float FastEnergyRegenSec = 60;
+        public const float EnergyRegenSec = 40;
+        public const float FastEnergyRegenWaitTime = 0.1f;
+		public const float FastEnergyRegenSec = 80;
 		public const float BulletEnergyCost = 10;
 		public const float ShieldActivateMinEnergy = 20;
 		public const float ShieldActivateEnergyCost = 10;
-        public const float ShieldEnergyCostSec = 30;
+        public const float ShieldEnergyCostSec = 20;
         public const float ShieldBulletAbsorbCost = 10;
 
 		public const float StrafeSpeed = 200.0f;
@@ -181,7 +181,7 @@ namespace StarPong.Game
 			}
 
 			// Energy regen.
-			float turboFactor = SettingsScene.TurboModeEnabled ? 2.0f : 1.0f;
+			float turboFactor = SettingsScene.TurboModeEnabled ? 1.5f : 1.0f;
 			energyRegenCooldown -= delta * turboFactor;
 			if (energyRegenCooldown < 0)
 			{
@@ -383,7 +383,7 @@ namespace StarPong.Game
 			spawnFlickerTimer = 0;
 			State = StateEnum.Spawning;
 			Health = SettingsScene.TurboModeEnabled ? 5 : 3;
-			maxEnergy = SettingsScene.TurboModeEnabled ? 150 : 100;
+			maxEnergy = SettingsScene.TurboModeEnabled ? 150 : 110;
 			Energy = maxEnergy;
 			foreach (GameObject child in Children)
 			{

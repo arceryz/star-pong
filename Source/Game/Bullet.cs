@@ -59,7 +59,7 @@ namespace StarPong.Game
 				!(other is Bomb))
 			{
 				int dmg = 1;
-				if (other is Mothership) dmg = SettingsScene.TurboModeEnabled ? 1: 3;
+				if (other is Mothership) dmg = SettingsScene.TurboModeEnabled ? 2: 4;
 				if (PlayingScene.IsGameFinished) dmg = 0;
 
 				dmgable.TakeDamage(dmg, GlobalPosition);

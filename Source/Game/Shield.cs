@@ -16,7 +16,7 @@ namespace StarPong.Game
 		public Action BulletHit;
 		public Team Team { get; private set; }
 		public int Health { get; private set; } = 0;
-		public bool IsActive { get { return CollisionEnabled; } }
+		public bool IsActive = false;
 		bool isPowered = false;
 
 		Sprite sprite;
@@ -77,6 +77,7 @@ namespace StarPong.Game
 		void activate()
 		{
 			CollisionEnabled = true;
+			IsActive = true;
 			Visible = true;
 			sprite.Play("activate");
 			activateSFX.Play();
@@ -84,7 +85,8 @@ namespace StarPong.Game
 
 		void deactivate()
 		{
-			CollisionEnabled = false;
+			if (sprite.CurrentAnimation == "deactivate") return;
+			IsActive = false;
 			sprite.Play("deactivate");
 			deactivateSFX.Play();
 			runningSFX.Stop();
@@ -97,7 +99,11 @@ namespace StarPong.Game
 				sprite.Play("running");
 				runningSFX.Play();
 			}
-			if (sprite.CurrentAnimation == "deactivate") Visible = false;
+			if (sprite.CurrentAnimation == "deactivate")
+			{
+				Visible = false;
+				CollisionEnabled = false;
+			}
 		}
 
 		public override void OnCollision(Vector2 pos, Vector2 normal, CollisionObject other)

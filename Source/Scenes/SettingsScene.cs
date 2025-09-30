@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -16,6 +17,7 @@ namespace StarPong.Scenes
 	{
 		public static bool BotEnabled = false;
 		public static bool TurboModeEnabled = false;
+		public static bool ShakeDisabled = false;
 
 		Label teamNames;
 		Label control1;
@@ -23,6 +25,7 @@ namespace StarPong.Scenes
 		Label control3;
 		Button botButton;
 		Button turboButton;
+		Button shakeButton;
 
 		public SettingsScene() { }
 
@@ -63,11 +66,28 @@ namespace StarPong.Scenes
 			};
 			turboButton.Position = botButton.Position + new Vector2(0, 65);
 
+			shakeButton = new Button(gyrussGold, "", 2);
+			shakeButton.Position = turboButton.Position + new Vector2(0, 65);
+			shakeButton.Pressed += () =>
+			{
+				ShakeDisabled = !ShakeDisabled;
+				UpdateUI();
+			};
+
 			UpdateUI();
 
 			Button playButton = new Button(gyrussGold, "play", 4);
 			playButton.Position = Engine.GetAnchor(0, 1, 0, -100);
 			playButton.Pressed += () => Engine.ChangeScene(SceneName.PlayingScene);
+			
+			// Set up focus.
+			botButton.FocusDown = turboButton;
+			turboButton.FocusUp = botButton;
+			turboButton.FocusDown = shakeButton;
+			shakeButton.FocusUp = turboButton;
+			shakeButton.FocusDown = playButton;
+			playButton.FocusUp = shakeButton;
+			playButton.GrabFocus();
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 50.0f);
 
@@ -81,6 +101,7 @@ namespace StarPong.Scenes
 			AddChild(control3);
 			AddChild(botButton);
 			AddChild(turboButton);
+			AddChild(shakeButton);
 			AddChild(playButton);
 		}
 		
@@ -104,6 +125,7 @@ namespace StarPong.Scenes
 			}
 
 			turboButton.Text = TurboModeEnabled ? "turbo   enabled " : "turbo   disabled";
+			shakeButton.Text = !ShakeDisabled ?   "shake   enabled " : "shake   disabled";
 		}
 	}
 }

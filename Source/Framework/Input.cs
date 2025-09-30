@@ -68,6 +68,13 @@ namespace StarPong.Framework
 		}
 	}
 
+	public enum MouseButton
+	{
+		Left,
+		Right,
+		Middle,
+	}
+
 	/// <summary>
 	/// This class records key presses within a single frame and keeps
 	/// track of sequences of key presses, called input actions.
@@ -78,8 +85,10 @@ namespace StarPong.Framework
 		static Input Instance;
 
 		const int MaxGamepads = 2;
-		KeyboardState prevState = new();
-		KeyboardState currentState = new();
+		KeyboardState prevKeyState = new();
+		KeyboardState currentKeyState = new();
+		MouseState prevMouseState = new();
+		MouseState currentMouseState = new();
 		GamePadState[] prevGamepadStates = new GamePadState[MaxGamepads];
 		GamePadState[] currentGamepadStates = new GamePadState[MaxGamepads];
 
@@ -93,8 +102,10 @@ namespace StarPong.Framework
 
 		public void Update()
 		{
-			prevState = currentState;
-			currentState = Keyboard.GetState();
+			prevKeyState = currentKeyState;
+			currentKeyState = Keyboard.GetState();
+			prevMouseState = currentMouseState;
+			currentMouseState = Mouse.GetState();
 
 			foreach (InputSequence combination in inputSequences.Values)
 			{
@@ -115,17 +126,17 @@ namespace StarPong.Framework
 		#region Input Queries
 		public static bool IsKeyPressed(Keys key)
 		{
-			return !Instance.prevState.IsKeyDown(key) && Instance.currentState.IsKeyDown(key);
+			return !Instance.prevKeyState.IsKeyDown(key) && Instance.currentKeyState.IsKeyDown(key);
 		}
 		
 		public static bool IsKeyHeld(Keys key)
 		{
-			return Instance.currentState.IsKeyDown(key);
+			return Instance.currentKeyState.IsKeyDown(key);
 		}
 
 		public static bool IsAnyKeyPressed()
 		{
-			return Instance.currentState.GetPressedKeyCount() > 0 && Instance.prevState.GetPressedKeyCount() == 0;
+			return Instance.currentKeyState.GetPressedKeyCount() > 0 && Instance.prevKeyState.GetPressedKeyCount() == 0;
 		}
 
 		public static bool IsGamepadButtonPressed(Buttons button, int gamepadIndex = 0)
@@ -167,9 +178,23 @@ namespace StarPong.Framework
 			return false;
 		}
 
+		public static bool IsMouseButtonHeld(MouseButton button, bool prev=false)
+		{
+			MouseState ms = prev ? Instance.prevMouseState : Instance.currentMouseState;
+			if (button == MouseButton.Left && ms.LeftButton == ButtonState.Pressed) return true;
+			else if (button == MouseButton.Right && ms.RightButton == ButtonState.Pressed) return true;
+			else if (button == MouseButton.Middle && ms.MiddleButton == ButtonState.Pressed) return true;
+			return false;
+		}
+
+		public static bool IsMouseButtonPressed(MouseButton button)
+		{
+			return IsMouseButtonHeld(button) && !IsMouseButtonHeld(button, true);
+		}
+
 		public static Vector2 GetMousePosition()
 		{
-			MouseState ms = Mouse.GetState();
+			MouseState ms = Instance.currentMouseState;
 			Vector2 pos = new Vector2(ms.Position.X, ms.Position.Y);
 			Vector2 orig = Engine.Viewport.GetTL();
 

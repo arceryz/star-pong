@@ -80,6 +80,17 @@ namespace StarPong
 			// Input Setup.
 			Input.AddSequence("toggle_secret",   new InputSequence([Keys.B, Keys.E, Keys.A, Keys.U]));
 
+			Input.AddAction("ui_select", new InputAction([new IEKey(Keys.Enter), new IEMouseButton(MouseButton.Left), 
+				new IEButton(Buttons.A, 0), new IEButton(Buttons.B, 0), new IEButton(Buttons.X, 0), new IEButton(Buttons.Y, 0),
+				new IEButton(Buttons.A, 1), new IEButton(Buttons.B, 1), new IEButton(Buttons.X, 1), new IEButton(Buttons.Y, 1)]));
+			Input.AddAction("ui_up", new InputAction([new IEKey(Keys.Up), 
+				new IEButton(Buttons.DPadUp, 0), new IEButton(Buttons.LeftThumbstickUp, 0),
+				new IEButton(Buttons.DPadUp, 1), new IEButton(Buttons.LeftThumbstickUp, 1)]));
+			Input.AddAction("ui_down", new InputAction([new IEKey(Keys.Down),
+				new IEButton(Buttons.DPadDown, 0), new IEButton(Buttons.LeftThumbstickDown, 0),
+				new IEButton(Buttons.DPadDown, 1), new IEButton(Buttons.LeftThumbstickDown, 1)]));
+			Input.AddAction("main_menu", new InputAction([new IEKey(Keys.R, true), new IEButton(Buttons.Start, 0), new IEButton(Buttons.Start, 1)]));
+
 			Input.AddAction("player0_move_up",   new InputAction([new IEKey(Keys.W),    new IEButton(Buttons.DPadUp, 0), new IEButton(Buttons.LeftThumbstickUp, 0)]));
 			Input.AddAction("player0_move_down", new InputAction([new IEKey(Keys.S),    new IEButton(Buttons.DPadDown, 0), new IEButton(Buttons.LeftThumbstickDown, 0)]));
 			Input.AddAction("player0_shoot",     new InputAction([new IEKey(Keys.C),    new IEButton(Buttons.LeftShoulder, 0), new IEButton(Buttons.RightShoulder, 0)]));
@@ -111,10 +122,9 @@ namespace StarPong
 
 			input.Update();
             if (Input.IsKeyPressed(Keys.Z)) EnableDebugDraw = !EnableDebugDraw;
-            if (Input.IsKeyHeld(Keys.Escape)) Exit();
             if (Input.IsKeyPressed(Keys.T)) EnableTreeDraw = !EnableTreeDraw;
 			if (Input.IsKeyPressed(Keys.F)) graphics.ToggleFullScreen();
-			if (Input.IsKeyPressed(Keys.R) && Input.IsKeyHeld(Keys.LeftShift)) Engine.ChangeScene(SceneName.MenuScene);
+			if (Input.IsActionPressed("main_menu")) ChangeScene(SceneName.MenuScene);
 
 			physics.Update(delta);
 			sceneTree.Update(delta);
@@ -251,7 +261,8 @@ namespace StarPong
 
         public static void AddCameraShake(float strength)
         {
-            Engine.cameraShake += strength;
+			if (SettingsScene.ShakeDisabled) return;
+			Engine.cameraShake += strength;
         }
 
         #endregion

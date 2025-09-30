@@ -10,14 +10,17 @@ namespace StarPong.Framework
 	public class IEKey : InputEvent
 	{
 		Keys key;
-		public IEKey(Keys key)
+		bool shiftModifier;
+
+		public IEKey(Keys key, bool shiftModifier=false)
 		{
 			this.key = key;
+			this.shiftModifier = shiftModifier;
 		}
 
 		public override bool IsHeld()
 		{
-			return Input.IsKeyHeld(key);
+			return Input.IsKeyHeld(key) && (!shiftModifier || Input.IsKeyHeld(Keys.LeftShift));
 		}
 	}
 
@@ -35,6 +38,20 @@ namespace StarPong.Framework
 		public override bool IsHeld()
 		{
 			return Input.IsGamepadButtonHeld(button, gamepadIndex);
+		}
+	}
+
+	public class IEMouseButton : InputEvent
+	{
+		MouseButton button;
+		public IEMouseButton(MouseButton button)
+		{
+			this.button = button;
+		}
+
+		public override bool IsHeld()
+		{
+			return Input.IsMouseButtonHeld(button);
 		}
 	}
 }
