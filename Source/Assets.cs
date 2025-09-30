@@ -17,6 +17,7 @@
 			public static string Red_Mothership = "Mothership/Red_Mother";
 
 			public static string Bomb = "Bomb/Bomb";
+			public static string BombOutline = "Bomb/BombOutline";
 
 			public static string MuzzleFlash = "Player/Muzzle_Flash";
 			public static string Blue_Player = "Player/Blue_Ship";

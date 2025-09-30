@@ -32,6 +32,7 @@ namespace StarPong.Framework
 		public int FrameIndex = 0;
 		public float RotationDeg = 0;
 		public float Scale = 1;
+		public Color Modulate = Color.White;
 
 		Dictionary<string, Animation> animations = new();
 		Animation animation;
@@ -71,11 +72,11 @@ namespace StarPong.Framework
 		{
 			if (animation != null)
 			{
-				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Color.White, Flip, true, RotationDeg, Scale);
+				DrawTexture(batch, spriteSheet, GlobalPosition, animation.Frames[FrameIndex], Modulate, Flip, true, RotationDeg, Scale);
 			}
 			if (sliceCountX == 1 && sliceCountY == 1)
 			{
-				DrawTexture(batch, spriteSheet, GlobalPosition, Color.White, Flip, true, RotationDeg, Scale);
+				DrawTexture(batch, spriteSheet, GlobalPosition, Modulate, Flip, true, RotationDeg, Scale);
 			}
 		}
 

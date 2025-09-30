@@ -22,19 +22,27 @@ namespace StarPong.Game
 		const float waitingDuration = 3.0f;
 		const float waitingTickInterval = 0.5f;
 
+		Color blueColor = new Color(47, 21, 255);
+		Color redColor = new Color(255, 21, 21);
+
 		Sprite sprite;
+		Sprite outline;
 		Label waitLabel;
 		float waitingTimer = 0;
+		Team headingSide = Team.Blue;
 
 		public Bomb()
 		{
-			Texture2D bombSheet = Engine.Load<Texture2D>(Assets.Textures.Bomb);
-			sprite = new Sprite(bombSheet, 4, 1);
+			sprite = new Sprite(Engine.Load<Texture2D>(Assets.Textures.Bomb), 4, 1);
 			sprite.AddAnimation("default", 8, 0, 0, 4);
 			sprite.Play("default");
 			AddChild(sprite);
 
-			CollisionRect = sprite.FrameSize.Centered().Scaled(0.7f, 0.9f);
+			outline = new Sprite(Engine.Load<Texture2D>(Assets.Textures.BombOutline), 1, 1);
+			outline.Scale = 2;
+			sprite.AddChild(outline);
+
+			CollisionRect = sprite.FrameSize.Centered().Scaled(0.8f, 0.9f);
 
 			waitLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Bronze), "3", 4);
 			waitLabel.Position = new Vector2(0, -sprite.FrameSize.Height);
@@ -46,6 +54,8 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
+			outline.Modulate = (headingSide == Team.Blue && Velocity.X == 0 || Velocity.X < 0) ? redColor : blueColor;
+
 			if (waitingTimer < waitingDuration)
 			{
 				IsActive = false;
@@ -68,11 +78,7 @@ namespace StarPong.Game
 						Velocity *= 1.5f;
 					Velocity.Rotate(rotateAngle);
 
-					float dir = 0;
-					if (PlayingScene.LastDamagedTeam == Team.Neutral)
-						dir = Utility.RandBool() ? 1.0f : -1.0f;
-					else
-						dir = PlayingScene.LastDamagedTeam == Team.Blue ? 1.0f : -1.0f;
+					float dir = headingSide == Team.Blue ? -1.0f : 1.0f;
 					Velocity *= dir;
 				}
 				return;
@@ -103,6 +109,12 @@ namespace StarPong.Game
 			Position = Engine.GetAnchor(0, 0);
 			waitingTimer = 0;
 			waitLabel.Visible = true;
+			Velocity.X = 0;
+
+			if (PlayingScene.LastDamagedTeam == Team.Neutral)
+				headingSide = Utility.RandBool() ? Team.Blue : Team.Red;
+			else
+				headingSide = PlayingScene.LastDamagedTeam == Team.Blue ? Team.Red : Team.Blue;
 		}
 
 		public void Explode()
