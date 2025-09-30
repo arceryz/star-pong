@@ -182,6 +182,7 @@ namespace StarPong
 			if (SceneTree.Instance.Root != null)
 			{
 				TransitionCover trans = new TransitionCover(Color.Black, 7, 1, 0.2f);
+				trans.DrawLayer = DrawSorter.TopLayer;
 				trans.Finished += () =>
 				{
 					ActiveScene = scene;

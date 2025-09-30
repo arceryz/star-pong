@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using StarPong.Framework;
+using System.Diagnostics;
+using System;
 
 namespace StarPong.Framework
 {
@@ -17,8 +14,9 @@ namespace StarPong.Framework
 	/// </summary>
 	public class DrawSorter
 	{
+		public const int TopLayer = 32;
 		public static DrawSorter Instance;
-		Dictionary<int, List<GameObject>> drawLayers;
+		List<GameObject>[] drawLayers;
 
 		public DrawSorter()
 		{
@@ -27,37 +25,30 @@ namespace StarPong.Framework
 
 		public void ResetLayers()
 		{
-			drawLayers = new();
+			drawLayers = new List<GameObject>[TopLayer+1];
+			for (int i = 0; i < drawLayers.Length; i++) drawLayers[i] = new List<GameObject>();
 		}
+	
 
 		public void DrawLayers(SpriteBatch batch)
 		{
-			foreach (int layer in drawLayers.Keys)
+			foreach (List<GameObject> layer in drawLayers)
 			{
-				List<GameObject> objects = drawLayers[layer];
-				foreach (GameObject obj in objects) obj.Draw(batch);
+				foreach (GameObject obj in layer) obj.Draw(batch);
 			}
 		}
 
 		public void DebugDrawLayers(SpriteBatch batch)
 		{
-			foreach (int layer in drawLayers.Keys)
+			foreach (List<GameObject> layer in drawLayers)
 			{
-				List<GameObject> objects = drawLayers[layer];
-				foreach (GameObject obj in objects) obj.DebugDraw(batch);
+				foreach (GameObject obj in layer) obj.DebugDraw(batch);
 			}
 		}
 
 		public void QueueDrawObject(GameObject obj)
 		{
-			if (!drawLayers.ContainsKey(obj.GlobalDrawLayer))
-			{
-				drawLayers[obj.GlobalDrawLayer] = new List<GameObject>([obj]);
-			}
-			else
-			{
-				drawLayers[obj.GlobalDrawLayer].Add(obj);
-			}
+			drawLayers[Math.Min(TopLayer, obj.GlobalDrawLayer)].Add(obj);
 		}
 	}
 }
