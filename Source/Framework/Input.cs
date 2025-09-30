@@ -3,9 +3,71 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Transactions;
 
 namespace StarPong.Framework
 {
+	public class InputAction
+	{
+		InputEvent[] events;
+		bool isHeld = false;
+		bool isPressed = false;
+
+		public InputAction(InputEvent[] events)
+		{
+			this.events = events;
+		}
+
+		public void Update()
+		{
+			bool held = false;
+			foreach (InputEvent ie in events)
+			{
+				if (ie.IsHeld())
+				{
+					held = true;
+					break;
+				}
+			}
+
+			isPressed = !isHeld && held;
+			isHeld = held;
+		}
+
+		public bool IsHeld() => isHeld;
+		public bool IsPressed() => isPressed;
+	}
+
+	public class InputSequence
+	{
+		public bool Activated = false;
+		Keys[] keys;
+		int currentIndex = 0;
+
+		public InputSequence(Keys[] keys)
+		{
+			this.keys = keys;
+		}
+
+		public void Update()
+		{
+			if (Input.IsAnyKeyPressed())
+			{
+				Keys nextKey = keys[currentIndex];
+				if (Input.IsKeyPressed(nextKey))
+				{
+					currentIndex++;
+					if (currentIndex == keys.Length)
+					{
+						Activated = true;
+						currentIndex = 0;
+					}
+				}
+				else currentIndex = 0;
+			}
+		}
+	}
+
 	/// <summary>
 	/// This class records key presses within a single frame and keeps
 	/// track of sequences of key presses, called input actions.
@@ -13,41 +75,16 @@ namespace StarPong.Framework
 	/// </summary>
 	public class Input
 	{
-		class InputAction
-		{
-			public bool Activated = false;
-			Keys[] keys;
-			int currentIndex = 0;
-
-			public InputAction(Keys[] keys)
-			{
-				this.keys = keys;
-			}
-
-			public void Update()
-			{
-				if (Input.IsAnyKeyPressed())
-				{
-					Keys nextKey = keys[currentIndex];
-					if (Input.IsKeyPressed(nextKey))
-					{
-						currentIndex++;
-						if (currentIndex == keys.Length)
-						{
-							Activated = true;
-							currentIndex = 0;
-						}
-					}
-					else currentIndex = 0;
-				}
-			}
-		}
-
 		static Input Instance;
 
+		const int MaxGamepads = 2;
 		KeyboardState prevState = new();
 		KeyboardState currentState = new();
-		Dictionary<string, InputAction> inputActions = new();
+		GamePadState[] prevGamepadStates = new GamePadState[MaxGamepads];
+		GamePadState[] currentGamepadStates = new GamePadState[MaxGamepads];
+
+		Dictionary<string, InputSequence> inputSequences = new();
+		Dictionary<string, InputAction> actions = new();
 
 		public Input() 
 		{
@@ -58,13 +95,24 @@ namespace StarPong.Framework
 		{
 			prevState = currentState;
 			currentState = Keyboard.GetState();
-			foreach (InputAction combination in inputActions.Values)
+
+			foreach (InputSequence combination in inputSequences.Values)
 			{
 				combination.Activated = false;
 				combination.Update();
 			}
+			foreach (InputAction action in actions.Values)
+			{
+				action.Update();
+			}
+			for (int i = 0; i < MaxGamepads; i++)
+			{
+				prevGamepadStates[i] = currentGamepadStates[i];
+				currentGamepadStates[i] = GamePad.GetState(i);
+			}
 		}
 
+		#region Input Queries
 		public static bool IsKeyPressed(Keys key)
 		{
 			return !Instance.prevState.IsKeyDown(key) && Instance.currentState.IsKeyDown(key);
@@ -80,11 +128,41 @@ namespace StarPong.Framework
 			return Instance.currentState.GetPressedKeyCount() > 0 && Instance.prevState.GetPressedKeyCount() == 0;
 		}
 
+		public static bool IsGamepadButtonPressed(Buttons button, int gamepadIndex = 0)
+		{
+			if (gamepadIndex < 0 || gamepadIndex >= MaxGamepads) return false;
+			return !Instance.prevGamepadStates[gamepadIndex].IsButtonDown(button) && Instance.currentGamepadStates[gamepadIndex].IsButtonDown(button);
+		}
+
+		public static bool IsGamepadButtonHeld(Buttons button, int gamepadIndex = 0)
+		{
+			if (gamepadIndex < 0 || gamepadIndex >= MaxGamepads) return false;
+			return Instance.currentGamepadStates[gamepadIndex].IsButtonDown(button);
+		}
+
+		public static bool IsActionHeld(string name)
+		{
+			if (Instance.actions.ContainsKey(name))
+			{
+				return Instance.actions[name].IsHeld();
+			}
+			return false;
+		}
+
 		public static bool IsActionPressed(string name)
 		{
-			if (Instance.inputActions.ContainsKey(name))
+			if (Instance.actions.ContainsKey(name))
 			{
-				return Instance.inputActions[name].Activated;
+				return Instance.actions[name].IsPressed();
+			}
+			return false;
+		}
+
+		public static bool IsSequencePressed(string name)
+		{
+			if (Instance.inputSequences.ContainsKey(name))
+			{
+				return Instance.inputSequences[name].Activated;
 			}
 			return false;
 		}
@@ -102,14 +180,25 @@ namespace StarPong.Framework
 
 			return mpos;
 		}
+		#endregion
 
-		public static void AddAction(string name, Keys[] keys)
+		#region Setup
+
+		public static void AddAction(string name, InputAction action)
 		{
-			if (!Instance.inputActions.ContainsKey(name))
+			if (!Instance.actions.ContainsKey(name))
 			{
-				InputAction ia = new InputAction(keys);
-				Instance.inputActions.Add(name, ia);
+				Instance.actions.Add(name, action);
+			}
+		}	
+
+		public static void AddSequence(string name, InputSequence seq)
+		{
+			if (!Instance.inputSequences.ContainsKey(name))
+			{
+				Instance.inputSequences.Add(name, seq);
 			}
 		}
+		#endregion
 	}
 }

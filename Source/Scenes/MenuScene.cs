@@ -68,7 +68,7 @@ namespace StarPong.Scenes
 				authorLabel.Color = colors[Utility.RandInt32() % colors.Length];
 			}
 
-			if (Input.IsActionPressed("toggle_secret"))
+			if (Input.IsSequencePressed("toggle_secret"))
 			{
 				Engine.ChangeScene(SceneName.SecretScene);
 			}

@@ -74,9 +74,21 @@ namespace StarPong
 			base.Initialize();
 			ChangeScene(SceneName.MenuScene);
 
-			Input.AddAction("toggle_secret", [Keys.B, Keys.E, Keys.A, Keys.U]);
 			MediaPlayer.Volume = 0.5f;
 			MediaPlayer.IsRepeating = true;
+
+			// Input Setup.
+			Input.AddSequence("toggle_secret",   new InputSequence([Keys.B, Keys.E, Keys.A, Keys.U]));
+
+			Input.AddAction("player0_move_up",   new InputAction([new IEKey(Keys.W),    new IEButton(Buttons.DPadUp, 0), new IEButton(Buttons.LeftThumbstickUp, 0)]));
+			Input.AddAction("player0_move_down", new InputAction([new IEKey(Keys.S),    new IEButton(Buttons.DPadDown, 0), new IEButton(Buttons.LeftThumbstickDown, 0)]));
+			Input.AddAction("player0_shoot",     new InputAction([new IEKey(Keys.C),    new IEButton(Buttons.LeftShoulder, 0), new IEButton(Buttons.RightShoulder, 0)]));
+			Input.AddAction("player0_shield",    new InputAction([new IEKey(Keys.V),    new IEButton(Buttons.LeftTrigger, 0), new IEButton(Buttons.RightTrigger, 0)]));
+
+			Input.AddAction("player1_move_up",   new InputAction([new IEKey(Keys.Up),   new IEButton(Buttons.DPadUp, 1), new IEButton(Buttons.LeftThumbstickUp, 1)]));
+			Input.AddAction("player1_move_down", new InputAction([new IEKey(Keys.Down), new IEButton(Buttons.DPadDown, 1), new IEButton(Buttons.LeftThumbstickDown, 1)]));
+			Input.AddAction("player1_shoot",     new InputAction([new IEKey(Keys.O),    new IEButton(Buttons.LeftShoulder, 1), new IEButton(Buttons.RightShoulder, 1)]));
+			Input.AddAction("player1_shield",    new InputAction([new IEKey(Keys.P),    new IEButton(Buttons.LeftTrigger, 1), new IEButton(Buttons.RightTrigger, 1)]));
 		}
 
         protected override void LoadContent()

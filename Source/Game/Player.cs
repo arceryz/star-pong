@@ -20,39 +20,7 @@ namespace StarPong.Game
 	/// </summary>
 	public class Player: CollisionObject, IDamageable
     {
-        public enum StateEnum
-        {
-            Playing,
-			Exploding,
-			RespawnWait,
-            Spawning
-        }
-
-		public enum InputAction
-        {
-            MoveUp,
-            MoveDown,
-            Shoot,
-            RaiseShield,
-        }
-
 		#region Settings
-
-		static Dictionary<InputAction, Keys> inputMappingLeft = new()
-        {
-            { InputAction.MoveUp, Keys.W },
-            { InputAction.MoveDown, Keys.S },
-            { InputAction.Shoot, Keys.C },
-            { InputAction.RaiseShield, Keys.V },
-        };
-
-		static Dictionary<InputAction, Keys> inputMappingRight = new()
-		{
-			{ InputAction.MoveUp, Keys.Up },
-			{ InputAction.MoveDown, Keys.Down },
-            { InputAction.Shoot, Keys.O },
-            { InputAction.RaiseShield, Keys.P }
-		};
 
         public const float ShootCooldownTime = 0.25f;
         public const float EnergyRegenCooldownTime = 0.5f;
@@ -78,6 +46,14 @@ namespace StarPong.Game
 
 		#endregion
 
+		public enum StateEnum
+		{
+			Playing,
+			Exploding,
+			RespawnWait,
+			Spawning
+		}
+
 		public Team Team { get; private set; }
         public int Health { get; private set; } = 3;
         public float Energy = 0;
@@ -93,7 +69,6 @@ namespace StarPong.Game
 		float energyRegenCooldown = 0;
 		float moveDirection = 0;
 		Vector2 bulletSpawnOrigin = Vector2.Zero;
-		Dictionary<InputAction, Keys> inputMapping;
 
         Shield shield;
         Sprite muzzleFlash;
@@ -106,16 +81,11 @@ namespace StarPong.Game
 			if (Team == Team.Blue)
             {
                 texture = Engine.Load<Texture2D>(Assets.Textures.Blue_Player);
-                inputMapping = inputMappingLeft;
             }
             else
             {
                 Flip = true;
 				texture = Engine.Load<Texture2D>(Assets.Textures.Red_Player);
-
-				// Use a bot for team red if the setting is enabled.
-				// Bot is used when input mapping is not set.
-				if (!SettingsScene.BotEnabled) inputMapping = inputMappingRight;
             }
 
             ship = new Sprite(texture, 3, 3);
@@ -149,8 +119,8 @@ namespace StarPong.Game
         {
 			if (State == StateEnum.Playing)
 			{
-				if (inputMapping != null) PlayerControlUpdate(delta);
-				else BotControlUpdate(delta);
+				if (SettingsScene.BotEnabled && Team == Team.Red) BotControlUpdate(delta);
+				else PlayerControlUpdate(delta);
 
 				UpdateMovement(delta);
 				if (!PlayingScene.IsGameFinished) UpdateCombat(delta);
@@ -208,7 +178,6 @@ namespace StarPong.Game
 			{
 				energyRegenCooldown = EnergyRegenCooldownTime;
 				Energy -= ShieldEnergyCostSec * delta;
-				if (Energy <= 0) shield.Deactivate();
 			}
 
 			// Energy regen.
@@ -254,27 +223,30 @@ namespace StarPong.Game
 			return false;
 		}
 
-		void ToggleShield()
+		void RaiseShield()
 		{
 			if (shield.IsActive)
 			{
-				shield.Deactivate();
+				if (Energy > 0) shield.GivePower();
 			}
-			else if (Energy >= ShieldActivateMinEnergy)
+			else
 			{
-				Energy -= ShieldActivateEnergyCost;
-				shield.Activate();
+				if (Energy >= ShieldActivateMinEnergy)
+				{
+					Energy -= ShieldActivateEnergyCost;
+					shield.GivePower();
+				}
 			}
 		}
 
 		void PlayerControlUpdate(float delta)
 		{
-			if (Input.IsKeyHeld(inputMapping[InputAction.MoveUp])) moveDirection = -1;
-			else if (Input.IsKeyHeld(inputMapping[InputAction.MoveDown])) moveDirection = 1;
+			string prefix = Team == Team.Blue ? "player0_" : "player1_";
+			if (Input.IsActionHeld(prefix + "move_up")) moveDirection = -1;
+			else if (Input.IsActionHeld(prefix + "move_down")) moveDirection = 1;
 			else moveDirection = 0;
-
-			if (Input.IsKeyPressed(inputMapping[InputAction.RaiseShield])) ToggleShield();
-			if (Input.IsKeyHeld(inputMapping[InputAction.Shoot])) Shoot();
+			if (Input.IsActionHeld(prefix + "shield")) RaiseShield();
+			if (Input.IsActionHeld(prefix + "shoot")) Shoot();
 		}
 
 		// BOT SETTINGS
@@ -364,11 +336,7 @@ namespace StarPong.Game
 			// Lowering this reduces the efficiency of the bot.
 			if (bombProximity > 0.9)
 			{
-				if (!shield.IsActive) ToggleShield();
-			}
-			else
-			{
-				if (shield.IsActive) ToggleShield();
+				RaiseShield();
 			}
 
 			// Shooting behavior.
@@ -436,7 +404,6 @@ namespace StarPong.Game
 
 		public void StartExploding()
         {
-			if (shield.IsActive) ToggleShield();
             ChainExplosionFX exp = new ChainExplosionFX(CollisionRect, 1.0f, 0.25f, 0);
 			exp.TreeExited += () => StartRespawnWait();
             AddChild(exp);

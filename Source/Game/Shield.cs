@@ -17,6 +17,7 @@ namespace StarPong.Game
 		public Team Team { get; private set; }
 		public int Health { get; private set; } = 0;
 		public bool IsActive { get { return CollisionEnabled; } }
+		bool isPowered = false;
 
 		Sprite sprite;
 		SoundEffectInstance activateSFX;
@@ -43,7 +44,7 @@ namespace StarPong.Game
 			sprite.AddAnimation("running", 0, 0, 2, 1, true);
 			sprite.RotationDeg = Team == Team.Blue ? 90 : -90;
 			sprite.Scale = 2;
-			sprite.AnimationFinished += OnAnimationFinished;
+			sprite.AnimationFinished += onAnimationFinished;
 			AddChild(sprite);
 
 			CollisionRect = new Rect2(-4, 0, 16, sprite.FrameSize.Width * 1.5f).Centered();
@@ -60,10 +61,20 @@ namespace StarPong.Game
 
 		public override void Update(float delta)
 		{
-			if (PlayingScene.IsGameFinished && CollisionEnabled) Deactivate();
+			if (IsActive && !isPowered) deactivate();
+			isPowered = false;
 		}
 
-		public void Activate()
+		/// <summary>
+		/// Keeps the shield active for another tick.
+		/// </summary>
+		public void GivePower()
+		{
+			if (!IsActive) activate();
+			isPowered = true;
+		}
+
+		void activate()
 		{
 			CollisionEnabled = true;
 			Visible = true;
@@ -71,7 +82,7 @@ namespace StarPong.Game
 			activateSFX.Play();
 		}
 
-		public void Deactivate()
+		void deactivate()
 		{
 			CollisionEnabled = false;
 			sprite.Play("deactivate");
@@ -79,7 +90,7 @@ namespace StarPong.Game
 			runningSFX.Stop();
 		}
 
-		public void OnAnimationFinished()
+		void onAnimationFinished()
 		{
 			if (sprite.CurrentAnimation == "activate")
 			{
