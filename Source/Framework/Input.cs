@@ -83,6 +83,8 @@ namespace StarPong.Framework
 	public class Input
 	{
 		static Input Instance;
+		public static bool UsingGamepad { get; private set; } = false;
+		public static Action InputMethodChanged;
 
 		const int MaxGamepads = 2;
 		KeyboardState prevKeyState = new();
@@ -121,6 +123,17 @@ namespace StarPong.Framework
 				prevGamepadStates[i] = currentGamepadStates[i];
 				currentGamepadStates[i] = GamePad.GetState(i);
 			}
+
+			if (IsAnyGamepadButtonPressed())
+			{
+				UsingGamepad = true;
+				InputMethodChanged?.Invoke();
+			}
+			if (IsAnyKeyPressed())
+			{
+				UsingGamepad = false;
+				InputMethodChanged?.Invoke();
+			}
 		}
 
 		#region Input Queries
@@ -137,6 +150,22 @@ namespace StarPong.Framework
 		public static bool IsAnyKeyPressed()
 		{
 			return Instance.currentKeyState.GetPressedKeyCount() > 0 && Instance.prevKeyState.GetPressedKeyCount() == 0;
+		}
+
+		public static bool IsAnyGamepadButtonPressed()
+		{
+			for (int i = 0; i < MaxGamepads; i++)
+			{
+				GamePadState st = Instance.currentGamepadStates[i];
+				if (st.IsConnected)
+				{
+					foreach (Buttons b in Enum.GetValues(typeof(Buttons)))
+					{
+						if (st.IsButtonDown(b)) return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		public static bool IsGamepadButtonPressed(Buttons button, int gamepadIndex = 0)

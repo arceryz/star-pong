@@ -75,6 +75,7 @@ namespace StarPong.Scenes
 			};
 
 			UpdateUI();
+			Input.InputMethodChanged += UpdateUI;
 
 			Button playButton = new Button(gyrussGold, "play", 4);
 			playButton.Position = Engine.GetAnchor(0, 1, 0, -100);
@@ -108,21 +109,43 @@ namespace StarPong.Scenes
 		
 		public void UpdateUI()
 		{
-			if (BotEnabled)
+			if (Input.UsingGamepad)
 			{
-				teamNames.Text = "           blue   red-bot  ";
-				control1.Text = "ship movement        w-s              bot      ";
-				control2.Text = "shoot                 c               bot      ";
-				control3.Text = "toggle shield         v               bot      ";
-				botButton.Text = " bot    enabled ";
+				if (BotEnabled)
+				{
+					teamNames.Text = "           blue   red-bot  ";
+					control1.Text = "ship movement     left stick          bot      ";
+					control2.Text = "shoot           shoulder l1-r1        bot      ";
+					control3.Text = "raise shield    trigger  l2-r2        bot      ";
+					botButton.Text = " bot    enabled ";
+				}
+				else
+				{
+					teamNames.Text = "           blue     red    ";
+					control1.Text = "ship movement             left stick          ";
+					control2.Text = "shoot                   shoulder l1-r1        ";
+					control3.Text = "raise shield            trigger  l2-r2        ";
+					botButton.Text = " bot    disabled";
+				}
 			}
-			else
+			else 
 			{
-				teamNames.Text = "           blue     red    ";
-				control1.Text = "ship movement        w-s         up-down arrows";
-				control2.Text = "shoot                 c                o       ";
-				control3.Text = "toggle shield         v                p       ";
-				botButton.Text = " bot    disabled";
+				if (BotEnabled)
+				{
+					teamNames.Text = "           blue   red-bot  ";
+					control1.Text = "ship movement        w-s              bot      ";
+					control2.Text = "shoot                 c               bot      ";
+					control3.Text = "raise shield          v               bot      ";
+					botButton.Text = " bot    enabled ";
+				}
+				else
+				{
+					teamNames.Text = "           blue     red    ";
+					control1.Text = "ship movement        w-s         up-down arrows";
+					control2.Text = "shoot                 c                o       ";
+					control3.Text = "raise shield          v                p       ";
+					botButton.Text = " bot    disabled";
+				}
 			}
 
 			turboButton.Text = TurboModeEnabled ? "turbo   enabled " : "turbo   disabled";

@@ -11,7 +11,7 @@ namespace StarPong.Game
 	/// </summary>
 	public class PlayerUI: GameObject
 	{
-		public const float HOffset = 120;
+		public const float HOffset = 190;
 		public const float VOffset = 42;
 		public const float EnergyPipEnergyQuantity = 10;
 
@@ -29,7 +29,7 @@ namespace StarPong.Game
 			AddChild(respawnLabel);
 
 			noEnergyLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.BattleCircuit_Blue), "low energy", 3);
-			noEnergyLabel.Position = new Vector2(150, 60);
+			noEnergyLabel.Position = new Vector2(100, 60);
 			AddChild(noEnergyLabel);
 
 			if (player.Team == Team.Blue)
@@ -57,8 +57,12 @@ namespace StarPong.Game
 				Visible = false;
 				return;
 			}
+
+			noEnergyLabel.Visible = false;
 			if (player.Health == 1 && Engine.Time % 0.1f < 0.05f || player.Health > 1)
 			{
+				noEnergyLabel.Visible = player.Energy <= Player.ShieldActivateMinEnergy && Engine.Time % 0.2f < 0.1f;
+
 				// Draw health pips next to each other.
 				// Keep in mind the direction based on team
 				int dir = player.Team == Team.Blue ? -1 : 1;
@@ -89,7 +93,6 @@ namespace StarPong.Game
 				respawnLabel.Visible = true;
 			}
 			else respawnLabel.Visible = false;
-			noEnergyLabel.Visible = player.Energy <= Player.ShieldActivateMinEnergy && Engine.Time % 0.2f < 0.1f;
 		}
 	}
 }

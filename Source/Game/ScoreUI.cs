@@ -22,7 +22,7 @@ namespace StarPong.Game
 		{
 			this.mother1 = mother1;
 			this.mother2 = mother2;
-			Position = Engine.GetAnchor(0, -1, 0, 30);
+			Position = Engine.GetAnchor(0, -1, 0, 45);
 
 			stageLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Gold), "", 4);
 			healthLabel = new Label(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey), "", 2);
@@ -33,7 +33,7 @@ namespace StarPong.Game
 			timeLabel.Position = Engine.GetAnchor(0, 1, 0, -30);
 
 			AddChild(stageLabel);
-			AddChild(healthLabel);
+			//AddChild(healthLabel);
 			AddChild(timeLabel);
 		}
 
@@ -44,7 +44,7 @@ namespace StarPong.Game
 				stageLabel.Visible = false;
 				healthLabel.Visible = false;
 			}
-			stageLabel.Text = $"{(int)mother1.HullStatus} - {(int)mother2.HullStatus}";
+			stageLabel.Text = $"{(int)mother1.GetTotalHealth()} - {(int)mother2.GetTotalHealth()}";
 			healthLabel.Text = $"{mother1.Health} - {mother2.Health}";
 			timeLabel.Text = $"{(int)PlayingScene.GameRunningTime}";
 		} 
