@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarPong.Framework;
 using StarPong.Scenes;
@@ -37,6 +38,11 @@ namespace StarPong.Game
 			AddChild(timeLabel);
 		}
 
+		int getMotherHealth(Mothership mother)
+		{
+			return (int)(Math.Ceiling((float)mother.GetTotalHealth() / 10.0f)) * 10;
+		}
+
 		public override void Draw(SpriteBatch batch)
 		{
 			if (PlayingScene.IsGameFinished)
@@ -44,7 +50,7 @@ namespace StarPong.Game
 				stageLabel.Visible = false;
 				healthLabel.Visible = false;
 			}
-			stageLabel.Text = $"{(int)mother1.GetTotalHealth()} - {(int)mother2.GetTotalHealth()}";
+			stageLabel.Text = $"{getMotherHealth(mother1)} - {getMotherHealth(mother2)}";
 			healthLabel.Text = $"{mother1.Health} - {mother2.Health}";
 			timeLabel.Text = $"{(int)PlayingScene.GameRunningTime}";
 		} 
