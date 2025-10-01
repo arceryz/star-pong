@@ -38,7 +38,6 @@ namespace StarPong.Scenes
 			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
 			returnButton.Position = Engine.GetAnchor(0, 0, 0, 100);
 
-			playButton.GrabFocus();
 			playButton.FocusDown = returnButton;
 			returnButton.FocusUp = playButton;
 

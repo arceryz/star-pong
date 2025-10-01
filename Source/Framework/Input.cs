@@ -84,6 +84,7 @@ namespace StarPong.Framework
 	{
 		static Input Instance;
 		public static bool UsingGamepad { get; private set; } = false;
+		public static bool UsingMouse { get; private set; } = false;
 		public static Action InputMethodChanged;
 
 		const int MaxGamepads = 2;
@@ -134,6 +135,9 @@ namespace StarPong.Framework
 				UsingGamepad = false;
 				InputMethodChanged?.Invoke();
 			}
+
+			UsingMouse = prevMouseState.Position != currentMouseState.Position;
+			if (UsingMouse) UsingGamepad = false;
 		}
 
 		#region Input Queries

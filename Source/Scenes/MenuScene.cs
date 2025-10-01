@@ -33,7 +33,6 @@ namespace StarPong.Scenes
 				.SetFlicker(0.5f);
 			playButton.Position = Engine.GetAnchor(0, 0);
 			playButton.Pressed += () => Engine.ChangeScene(SceneName.SettingsScene);
-			playButton.GrabFocus();
 
 			ParallaxLayer bg1 = new ParallaxLayer(stars, 50.0f);
 			ParallaxLayer bg2 = new ParallaxLayer(planets, 150.0f);

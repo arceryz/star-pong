@@ -30,7 +30,6 @@ namespace StarPong.Scenes
 
 			Button returnButton = new Button(Engine.Load<ImageFont>(Assets.Fonts.Gyruss_Grey), "love u xxx", 4);
 			returnButton.Position = Engine.GetAnchor(0, 1, 0, -100);
-			returnButton.GrabFocus();
 			returnButton.Pressed += () => Engine.ChangeScene(SceneName.MenuScene);
 
 

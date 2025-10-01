@@ -55,13 +55,13 @@ namespace StarPong.Framework
 			return this;
 		}
 
+		public override void ExitTree()
+		{
+			ReleaseFocus();
+		}
+
 		public override void Update(float delta)
 		{
-			if (!isMouseHovering && IsMouseHovering())
-			{
-				isMouseHovering = true;
-				GrabFocus();
-			}
 			if (isMouseHovering && !IsMouseHovering()) isMouseHovering = false;
 
 			if (isFocused)
@@ -95,6 +95,28 @@ namespace StarPong.Framework
 			{
 				isFocused = true;
 			}
+
+			if (!isMouseHovering && IsMouseHovering())
+			{
+				isMouseHovering = true;
+				GrabFocus();
+			}
+
+			if (Input.UsingGamepad)
+			{
+				if (FocusedButton == null && FocusUp == null)
+				{
+					GrabFocus();
+				}
+			}
+			else
+			{
+				if (!isMouseHovering)
+				{
+					ReleaseFocus();
+				}
+			}
+
 		}
 
 		public override void Draw(SpriteBatch batch)
@@ -123,6 +145,15 @@ namespace StarPong.Framework
 		{
 			if (FocusedButton != null) FocusedButton.isFocused = false;
 			FocusedButton = this;
+		}
+
+		public void ReleaseFocus()
+		{
+			if (isFocused)
+			{
+				FocusedButton = null;
+				isFocused = false;
+			}
 		}
 	}
 }

@@ -88,7 +88,6 @@ namespace StarPong.Scenes
 			shakeButton.FocusUp = turboButton;
 			shakeButton.FocusDown = playButton;
 			playButton.FocusUp = shakeButton;
-			playButton.GrabFocus();
 
 			ParallaxLayer bg = new ParallaxLayer(stars, 50.0f);
 
@@ -122,9 +121,9 @@ namespace StarPong.Scenes
 				else
 				{
 					teamNames.Text = "           blue     red    ";
-					control1.Text = "ship movement             left stick          ";
-					control2.Text = "shoot                   shoulder l1-r1        ";
-					control3.Text = "raise shield            trigger  l2-r2        ";
+					control1.Text = "ship movement             left stick           ";
+					control2.Text = "shoot                   shoulder l1-r1         ";
+					control3.Text = "raise shield            trigger  l2-r2         ";
 					botButton.Text = " bot    disabled";
 				}
 			}
